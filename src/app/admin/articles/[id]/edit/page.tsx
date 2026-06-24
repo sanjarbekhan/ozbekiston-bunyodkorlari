@@ -17,6 +17,7 @@ export default function EditArticlePage() {
   const [status, setStatus] = useState("published");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [errorText, setErrorText] = useState("");
 
   useEffect(() => {
@@ -45,6 +46,32 @@ export default function EditArticlePage() {
 
     loadArticle();
   }, [params.id]);
+
+  async function uploadImage(file: File) {
+    setUploadingImage(true);
+    setErrorText("");
+
+    const fileExt = file.name.split(".").pop() || "jpg";
+    const fileName = `${Date.now()}-${crypto.randomUUID()}.${fileExt}`;
+    const filePath = `articles/${fileName}`;
+
+    const { error } = await supabase.storage
+      .from("article-images")
+      .upload(filePath, file);
+
+    if (error) {
+      setErrorText(error.message);
+      setUploadingImage(false);
+      return;
+    }
+
+    const { data } = supabase.storage
+      .from("article-images")
+      .getPublicUrl(filePath);
+
+    setImageUrl(data.publicUrl);
+    setUploadingImage(false);
+  }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -104,7 +131,16 @@ export default function EditArticlePage() {
     <main className="min-h-screen bg-[#f7f3ea] p-6 text-[#14231b]">
       <section className="mx-auto max-w-4xl rounded-3xl bg-white p-8 shadow-xl">
         <div className="mb-6 flex items-center justify-between gap-4">
-          <h1 className="text-3xl font-bold">Maqolani tahrirlash</h1>
+          <div>
+            <button
+              onClick={() => router.push("/admin")}
+              className="mb-4 rounded-xl bg-[#0f3d2e] px-4 py-2 font-semibold text-white"
+            >
+              ← Admin panelga qaytish
+            </button>
+
+            <h1 className="text-3xl font-bold">Maqolani tahrirlash</h1>
+          </div>
 
           <button
             onClick={handleDelete}
@@ -116,7 +152,9 @@ export default function EditArticlePage() {
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="mb-2 block font-semibold">Ism familiya / Sarlavha</label>
+            <label className="mb-2 block font-semibold">
+              Ism familiya / Sarlavha
+            </label>
             <input
               className="w-full rounded-xl border px-4 py-3"
               value={title}
@@ -145,12 +183,44 @@ export default function EditArticlePage() {
           </div>
 
           <div>
-            <label className="mb-2 block font-semibold">Rasm URL</label>
+            <label className="mb-2 block font-semibold">Rasm yuklash</label>
+
             <input
+              type="file"
+              accept="image/*"
               className="w-full rounded-xl border px-4 py-3"
-              value={imageUrl}
-              onChange={(e) => setImageUrl(e.target.value)}
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  uploadImage(file);
+                }
+              }}
             />
+
+            {uploadingImage && (
+              <p className="mt-2 text-sm font-semibold text-emerald-700">
+                Rasm yuklanmoqda...
+              </p>
+            )}
+
+            {imageUrl && (
+              <div className="mt-4 rounded-2xl bg-[#f7f3ea] p-4">
+                <img
+                  src={imageUrl}
+                  alt="Maqola rasmi"
+                  className="mb-3 h-64 w-full rounded-2xl object-cover"
+                />
+
+                <label className="mb-2 block text-sm font-semibold">
+                  Rasm URL
+                </label>
+                <input
+                  className="w-full rounded-xl border px-4 py-3"
+                  value={imageUrl}
+                  onChange={(e) => setImageUrl(e.target.value)}
+                />
+              </div>
+            )}
           </div>
 
           <div>
@@ -184,12 +254,14 @@ export default function EditArticlePage() {
           </div>
 
           {errorText && (
-            <p className="rounded-xl bg-red-50 p-4 text-red-600">{errorText}</p>
+            <p className="rounded-xl bg-red-50 p-4 text-red-600">
+              {errorText}
+            </p>
           )}
 
           <button
-            disabled={saving}
-            className="rounded-xl bg-[#0f3d2e] px-6 py-3 font-semibold text-white"
+            disabled={saving || uploadingImage}
+            className="rounded-xl bg-[#0f3d2e] px-6 py-3 font-semibold text-white disabled:opacity-60"
           >
             {saving ? "Saqlanmoqda..." : "O‘zgarishlarni saqlash"}
           </button>

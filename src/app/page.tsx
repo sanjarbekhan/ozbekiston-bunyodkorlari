@@ -26,9 +26,11 @@ export default async function Home() {
           <p className="mb-3 text-sm uppercase tracking-[0.3em] text-emerald-100">
             Ensiklopediya
           </p>
+
           <h1 className="text-4xl font-bold md:text-6xl">
             O‘zbekiston Bunyodkor Yoshlari
           </h1>
+
           <p className="mt-4 max-w-2xl text-lg text-emerald-50">
             Yurt ravnaqiga hissa qo‘shayotgan faol, iqtidorli va bunyodkor yoshlar haqidagi biografik maqolalar.
           </p>
@@ -44,11 +46,13 @@ export default async function Home() {
               className="overflow-hidden rounded-3xl bg-white shadow-md transition hover:-translate-y-1 hover:shadow-xl"
             >
               {article.image_url && (
-                <img
-                  src={article.image_url}
-                  alt={article.title}
-                  className="h-64 w-full object-cover"
-                />
+                <div className="flex h-72 w-full items-center justify-center bg-[#f7f3ea] p-2">
+                  <img
+                    src={article.image_url}
+                    alt={article.title}
+                    className="max-h-full max-w-full object-contain"
+                  />
+                </div>
               )}
 
               <div className="p-5">
@@ -57,7 +61,9 @@ export default async function Home() {
                     {article.category}
                   </p>
                 )}
+
                 <h3 className="text-xl font-bold">{article.title}</h3>
+
                 {article.description && (
                   <div
                     className="mt-3 line-clamp-3 text-sm text-gray-600"
