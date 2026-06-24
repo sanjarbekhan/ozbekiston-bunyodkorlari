@@ -22,14 +22,14 @@ export default async function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-white text-[#111827]">
+    <main className="min-h-screen overflow-x-hidden bg-white text-[#111827]">
       <header className="sticky top-0 z-50 border-b border-gray-100 bg-white/95 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-5 py-4">
-          <Link href="/" className="flex items-center gap-3">
+        <div className="mx-auto flex max-w-7xl items-center justify-center px-4 py-3 lg:justify-between lg:px-5 lg:py-4">
+          <Link href="/" className="flex items-center">
             <img
               src="/tilda/images/tild3231-6436-4338-a534-366335323233__56517f45-cd2a-49fb-8.png"
               alt="O‘zbekiston Bunyodkor Yoshlari"
-              className="h-14 w-auto max-w-[260px] object-contain"
+              className="h-10 w-auto max-w-[210px] object-contain sm:h-14 sm:max-w-[260px]"
             />
           </Link>
 
@@ -56,32 +56,32 @@ export default async function Home() {
         </div>
       </header>
 
-      <section className="relative min-h-[720px] overflow-hidden bg-[#0b1628] text-white">
+      <section className="relative overflow-hidden bg-[#0b1628] text-white">
         <div
-          className="absolute inset-0 bg-cover bg-center opacity-75"
+          className="absolute inset-0 bg-cover bg-center opacity-55 md:opacity-75"
           style={{
             backgroundImage:
               "url('/tilda/images/tild6130-3635-4939-b332-343333356531__yangi_uzb.png')",
           }}
         />
 
-        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/55 to-black/20" />
+        <div className="absolute inset-0 bg-black/65 md:bg-gradient-to-r md:from-black/80 md:via-black/55 md:to-black/20" />
 
-        <div className="relative mx-auto flex min-h-[720px] max-w-7xl flex-col justify-center px-5 py-20">
+        <div className="relative mx-auto max-w-7xl px-4 py-12 sm:py-16 md:px-5 md:py-24">
           <div className="max-w-3xl">
-            <h1 className="max-w-3xl text-[34px] font-extrabold leading-[1.14] tracking-[-0.035em] md:text-[48px] lg:text-[52px]">
+            <h1 className="text-[28px] font-extrabold leading-[1.12] tracking-[-0.04em] sm:text-[36px] md:text-[52px]">
               Bu yerda O‘zbekiston rivojiga munosib hissa qo‘shayotgan
               bunyodkor yoshlarning ismlari jamlangan
             </h1>
 
-            <p className="mt-8 max-w-2xl text-xl font-semibold leading-relaxed text-white/95 md:text-2xl">
+            <p className="mt-5 text-base font-semibold leading-7 text-white/95 sm:text-xl md:mt-8 md:text-2xl">
               Ular qatorida siz ham bo‘lishingiz mumkin, biz bilan bog‘laning!!!
             </p>
 
-            <div className="mt-9 flex max-w-sm flex-col gap-4">
+            <div className="mt-7 flex w-[230px] flex-col gap-3 sm:w-[260px] md:mt-9 md:w-[340px]">
               <Link
                 href="/ariza-qoldrish"
-                className="rounded-full bg-[#0043a4] px-9 py-4 text-center text-sm font-bold uppercase tracking-[0.14em] text-white shadow-xl transition hover:bg-[#00327c]"
+                className="rounded-full bg-[#0043a4] px-4 py-3 text-center text-[10px] font-bold uppercase tracking-[0.08em] text-white shadow-lg transition hover:bg-[#00327c] sm:text-[11px] md:px-6 md:py-4 md:text-sm"
               >
                 Ariza qoldirish
               </Link>
@@ -90,44 +90,44 @@ export default async function Home() {
                 href="https://t.me/UzBYE_bot"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-full bg-[#0043a4] px-9 py-4 text-center text-sm font-bold uppercase tracking-[0.14em] text-white shadow-xl transition hover:bg-[#00327c]"
+                className="rounded-full bg-[#0043a4] px-4 py-3 text-center text-[10px] font-bold uppercase tracking-[0.08em] text-white shadow-lg transition hover:bg-[#00327c] sm:text-[11px] md:px-6 md:py-4 md:text-sm"
               >
                 Bot orqali ariza qoldirish
               </a>
             </div>
           </div>
 
-          <div className="mt-16 grid gap-5 md:grid-cols-3">
-            <div className="rounded-[26px] border border-white/15 bg-white/10 p-6 backdrop-blur-md">
-              <div className="mb-5 h-[2px] w-14 bg-white/80" />
-              <h3 className="text-lg font-bold leading-snug">
-                O‘zbekiston bunyodkorlari ensiklopediyasi: Kelajakni qurayotgan
-                iqtidorlar maskani.
+          <div className="mt-10 grid gap-7 md:mt-16 md:grid-cols-3 md:gap-8">
+            <div className="text-white">
+              <div className="mb-3 h-[2px] w-10 bg-white/80 md:mb-5 md:w-14" />
+              <h3 className="text-base font-extrabold leading-snug md:text-lg">
+                O‘zbekiston bunyodkorlari ensiklopediyasi
               </h3>
-              <p className="mt-4 text-sm leading-7 text-white/82">
-                Ushbu platforma mamlakatimizning eng yorqin va tashabbuskor
-                yoshlari erishgan natijalarni bir nuqtaga birlashtiradi.
+              <p className="mt-3 text-sm font-medium leading-6 text-white/90 md:leading-7">
+                Kelajakni qurayotgan iqtidorlar maskani. Ushbu platforma
+                mamlakatimizning eng yorqin va tashabbuskor yoshlari erishgan
+                natijalarni bir nuqtaga birlashtiradi.
               </p>
             </div>
 
-            <div className="rounded-[26px] border border-white/15 bg-white/10 p-6 backdrop-blur-md">
-              <div className="mb-5 h-[2px] w-14 bg-white/80" />
-              <h3 className="text-lg font-bold leading-snug">
+            <div className="text-white">
+              <div className="mb-3 h-[2px] w-10 bg-white/80 md:mb-5 md:w-14" />
+              <h3 className="text-base font-extrabold leading-snug md:text-lg">
                 Biz nimalar qilamiz?
               </h3>
-              <p className="mt-4 text-sm leading-7 text-white/82">
+              <p className="mt-3 text-sm font-medium leading-6 text-white/90 md:leading-7">
                 O‘zbekiston bunyodkorlari haqidagi eng to‘liq va ishonchli
                 ensiklopediya — bu nafaqat ma’lumot manbai, balki ilhom va
                 rag‘batdir.
               </p>
             </div>
 
-            <div className="rounded-[26px] border border-white/15 bg-white/10 p-6 backdrop-blur-md">
-              <div className="mb-5 h-[2px] w-14 bg-white/80" />
-              <h3 className="text-lg font-bold leading-snug">
+            <div className="text-white">
+              <div className="mb-3 h-[2px] w-10 bg-white/80 md:mb-5 md:w-14" />
+              <h3 className="text-base font-extrabold leading-snug md:text-lg">
                 O‘z kelajagingni biz bilan bunyod et!
               </h3>
-              <p className="mt-4 text-sm leading-7 text-white/82">
+              <p className="mt-3 text-sm font-medium leading-6 text-white/90 md:leading-7">
                 Mashhur bunyodkorlarimiz hayoti va faoliyati bilan tanishing,
                 ularning qadamlarini izlang va o‘z kelajagingizni bunyod eting.
               </p>
@@ -136,14 +136,14 @@ export default async function Home() {
         </div>
       </section>
 
-      <section id="bunyodkorlar" className="bg-[#f2f2f2] px-5 py-16 md:py-20">
+      <section id="bunyodkorlar" className="bg-[#f2f2f2] px-4 py-12 md:px-5 md:py-20">
         <div className="mx-auto max-w-7xl">
-          <div className="mx-auto mb-10 max-w-5xl text-center">
-            <h2 className="text-[36px] font-black uppercase leading-tight tracking-[-0.045em] text-[#111827] md:text-[58px]">
+          <div className="mx-auto mb-8 max-w-5xl text-center md:mb-10">
+            <h2 className="text-[30px] font-black uppercase leading-[0.95] tracking-[-0.04em] text-[#111827] sm:text-[42px] md:text-[58px]">
               ULAR QAYSI SOHALARDA?
             </h2>
 
-            <p className="mx-auto mt-5 max-w-4xl text-base font-bold leading-8 text-[#0043a4] md:text-lg">
+            <p className="mx-auto mt-5 max-w-4xl text-sm font-bold leading-7 text-[#0043a4] md:text-lg md:leading-8">
               Bu yerda faqat so‘nggi bunyodkorlar haqidagi ma’lumotlar
               ko‘rinadi. Qaysidir bunyodkorni qidirayotgan bo‘lsangiz,
               “Bunyodkorlar sahifasi”ga o‘ting yoki qidirish tugmasini bosing!
@@ -152,23 +152,23 @@ export default async function Home() {
 
           <Link
             href="#bunyodkorlar"
-            className="mb-12 block w-full bg-[#0043a4] px-8 py-5 text-center text-sm font-black uppercase tracking-[0.22em] text-white shadow-lg transition hover:bg-[#00327c]"
+            className="mb-8 block w-full bg-[#0043a4] px-4 py-4 text-center text-[11px] font-black uppercase tracking-[0.08em] text-white shadow-lg transition hover:bg-[#00327c] sm:text-xs md:mb-12 md:px-8 md:py-5 md:text-sm md:tracking-[0.22em]"
           >
             Bunyodkorlar sahifasiga o‘tish
           </Link>
 
           <PublicArticles articles={articles || []} />
 
-          <div className="mt-20 bg-white px-6 py-16 md:px-12">
-            <div className="mx-auto grid max-w-6xl items-center gap-10 md:grid-cols-[1.1fr_0.9fr]">
+          <div className="mt-14 bg-white px-4 py-10 md:mt-20 md:px-12 md:py-16">
+            <div className="mx-auto grid max-w-6xl items-center gap-8 md:grid-cols-[1.1fr_0.9fr] md:gap-10">
               <div>
-                <h2 className="max-w-2xl text-[46px] font-black leading-[0.95] tracking-[-0.05em] text-[#0043a4] md:text-[72px]">
+                <h2 className="text-[34px] font-black leading-[0.98] tracking-[-0.05em] text-[#0043a4] sm:text-[48px] md:text-[72px]">
                   Qoidalar bilan tanishing
                 </h2>
 
-                <div className="mt-16 space-y-0">
-                  <div className="grid border-t-[7px] border-[#0043a4] py-7 md:grid-cols-[260px_1fr]">
-                    <h3 className="text-3xl font-black leading-tight text-[#0043a4]">
+                <div className="mt-8 md:mt-16">
+                  <div className="border-t-[5px] border-[#0043a4] py-5 md:grid md:grid-cols-[260px_1fr] md:border-t-[7px] md:py-7">
+                    <h3 className="mb-2 text-2xl font-black leading-tight text-[#0043a4] md:mb-0 md:text-3xl">
                       Ariza qoldirish
                     </h3>
                     <p className="text-sm font-bold leading-6 text-black">
@@ -177,8 +177,8 @@ export default async function Home() {
                     </p>
                   </div>
 
-                  <div className="grid border-t-[7px] border-[#0043a4] py-7 md:grid-cols-[260px_1fr]">
-                    <h3 className="text-3xl font-black leading-tight text-[#0043a4]">
+                  <div className="border-t-[5px] border-[#0043a4] py-5 md:grid md:grid-cols-[260px_1fr] md:border-t-[7px] md:py-7">
+                    <h3 className="mb-2 text-2xl font-black leading-tight text-[#0043a4] md:mb-0 md:text-3xl">
                       Siz bilan bog‘lanamiz
                     </h3>
                     <p className="text-sm font-bold leading-6 text-black">
@@ -187,15 +187,14 @@ export default async function Home() {
                     </p>
                   </div>
 
-                  <div className="grid border-t-[7px] border-[#0043a4] py-7 md:grid-cols-[260px_1fr]">
-                    <h3 className="text-3xl font-black leading-tight text-[#0043a4]">
+                  <div className="border-t-[5px] border-[#0043a4] py-5 md:grid md:grid-cols-[260px_1fr] md:border-t-[7px] md:py-7">
+                    <h3 className="mb-2 text-2xl font-black leading-tight text-[#0043a4] md:mb-0 md:text-3xl">
                       Ma’lumotlarni taqdim etish
                     </h3>
                     <p className="text-sm font-bold leading-6 text-black">
                       Ko‘rsatilgan maxsus shaklda ma’lumotlar taqdim etilgach,
                       nomzod ensiklopedik ahamiyatga mos ekanligi o‘rganilib,
-                      bir xulosaga kelinadi. Agar ma’qullansa, 24 soat ichida
-                      ijtimoiy tarmoq va saytga joylanadi.
+                      bir xulosaga kelinadi.
                     </p>
                   </div>
                 </div>
@@ -205,7 +204,7 @@ export default async function Home() {
                 <img
                   src="/tilda/images/tild3263-6635-4137-b135-643566303437__acsacs.png"
                   alt="O‘ZBYE"
-                  className="w-full max-w-[430px] object-contain"
+                  className="w-full max-w-[240px] object-contain sm:max-w-[320px] md:max-w-[430px]"
                 />
               </div>
             </div>
