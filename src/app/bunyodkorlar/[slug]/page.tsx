@@ -22,6 +22,11 @@ function cleanText(text: string | null) {
   return text.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
 }
 
+function firstCategory(category: string | null) {
+  if (!category) return "";
+  return category.split(";").map((item) => item.trim()).filter(Boolean)[0] || "";
+}
+
 function formatDate(date: string | null) {
   if (!date) return "";
   const [year, month, day] = date.slice(0, 10).split("-");
@@ -51,6 +56,15 @@ export default async function BunyodkorArticlePage({
   }
 
   const article = articles[0] as Article;
+
+  const { data: relatedArticles } = await supabase
+    .from("articles")
+    .select("id, title, slug, category, image_url, description, content, published_at, created_at")
+    .eq("status", "published")
+    .neq("slug", decodedSlug)
+    .order("created_at", { ascending: false })
+    .limit(4);
+
   const description = cleanText(article.description);
   const date = formatDate(article.published_at || article.created_at);
 
@@ -85,7 +99,7 @@ export default async function BunyodkorArticlePage({
         </div>
       </section>
 
-      <article className="px-4 pb-16 md:px-6 md:pb-24">
+      <article className="px-4 pb-12 md:px-6 md:pb-16">
         <div className="mx-auto -mt-6 max-w-6xl overflow-hidden bg-white shadow-[0_20px_60px_rgba(0,0,0,0.16)] md:-mt-10">
           {article.image_url && (
             <div className="bg-white">
@@ -126,7 +140,7 @@ export default async function BunyodkorArticlePage({
             <div>
               {article.content ? (
                 <div
-                  className="article-content text-[17px] font-medium leading-8 text-[#1f2937] md:text-[19px] md:leading-9"
+                  className="text-[17px] font-medium leading-8 text-[#1f2937] md:text-[19px] md:leading-9 [&_a]:font-bold [&_a]:text-[#0043a4] [&_h1]:mb-5 [&_h1]:mt-8 [&_h1]:text-3xl [&_h1]:font-black [&_h2]:mb-4 [&_h2]:mt-8 [&_h2]:text-2xl [&_h2]:font-black [&_h3]:mb-3 [&_h3]:mt-6 [&_h3]:text-xl [&_h3]:font-black [&_img]:my-6 [&_img]:h-auto [&_img]:w-full [&_li]:mb-2 [&_ol]:my-5 [&_ol]:list-decimal [&_ol]:pl-6 [&_p]:mb-5 [&_strong]:font-black [&_ul]:my-5 [&_ul]:list-disc [&_ul]:pl-6"
                   dangerouslySetInnerHTML={{ __html: article.content }}
                 />
               ) : (
@@ -147,6 +161,70 @@ export default async function BunyodkorArticlePage({
           </div>
         </div>
       </article>
+
+      {relatedArticles && relatedArticles.length > 0 && (
+        <section className="px-4 pb-16 md:px-6 md:pb-24">
+          <div className="mx-auto max-w-6xl">
+            <div className="mb-8 flex items-end justify-between gap-5">
+              <div>
+                <p className="text-xs font-black uppercase tracking-[0.24em] text-[#0043a4]">
+                  Yana o‘qing
+                </p>
+                <h2 className="mt-3 text-[34px] font-black leading-[0.95] tracking-[-0.05em] text-[#111827] md:text-[52px]">
+                  Boshqa bunyodkorlar
+                </h2>
+              </div>
+
+              <Link
+                href="/#bunyodkorlar"
+                className="hidden rounded-full bg-[#0043a4] px-5 py-3 text-xs font-black uppercase tracking-[0.12em] text-white md:inline-flex"
+              >
+                Barchasini ko‘rish
+              </Link>
+            </div>
+
+            <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-5 md:mx-0 md:grid md:grid-cols-4 md:gap-6 md:overflow-visible md:px-0 md:pb-0">
+              {(relatedArticles as Article[]).map((item) => {
+                const cat = firstCategory(item.category);
+
+                return (
+                  <Link
+                    key={item.id}
+                    href={`/bunyodkorlar/${item.slug}`}
+                    className="group block min-w-[78%] snap-start overflow-hidden bg-white shadow-[0_12px_30px_rgba(0,0,0,0.1)] transition hover:-translate-y-1 hover:shadow-[0_18px_40px_rgba(0,0,0,0.16)] sm:min-w-[48%] md:min-w-0"
+                  >
+                    <div className="relative bg-white">
+                      {cat && (
+                        <span className="absolute left-3 top-3 z-10 bg-[#0043a4] px-3 py-2 text-[9px] font-black uppercase tracking-[0.1em] text-white">
+                          {cat}
+                        </span>
+                      )}
+
+                      {item.image_url && (
+                        <img
+                          src={item.image_url}
+                          alt={item.title}
+                          className="block h-auto w-full"
+                        />
+                      )}
+                    </div>
+
+                    <div className="p-5">
+                      <h3 className="line-clamp-3 text-[20px] font-black leading-[1] tracking-[-0.04em] text-[#111827]">
+                        {item.title}
+                      </h3>
+
+                      <p className="mt-4 text-[11px] font-black uppercase tracking-[0.14em] text-[#0043a4]">
+                        Maqolani o‘qish
+                      </p>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
     </main>
   );
 }
