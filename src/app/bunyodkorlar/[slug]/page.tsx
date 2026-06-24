@@ -58,54 +58,92 @@ export default async function BunyodkorArticlePage({
     <main className="min-h-screen overflow-x-hidden bg-[#f2f2f2] text-[#111827]">
       <SiteMenu />
 
-      <article className="px-4 pb-16 pt-24 md:px-6 md:pb-24 md:pt-28">
-        <div className="mx-auto max-w-4xl overflow-hidden bg-white shadow-xl">
-          {article.image_url && (
-            <img
-              src={article.image_url}
-              alt={article.title}
-              className="block h-auto w-full"
-            />
+      <section className="bg-[#0043a4] px-4 pb-10 pt-24 text-white md:px-6 md:pb-14 md:pt-28">
+        <div className="mx-auto max-w-6xl">
+          <Link
+            href="/#bunyodkorlar"
+            className="inline-flex rounded-full bg-white px-5 py-3 text-xs font-black uppercase tracking-[0.14em] text-[#0043a4] shadow-lg transition hover:bg-[#f2f2f2]"
+          >
+            ← Ortga qaytish
+          </Link>
+
+          {article.category && (
+            <p className="mt-8 text-xs font-black uppercase tracking-[0.28em] text-white/75">
+              {article.category}
+            </p>
           )}
 
-          <div className="px-5 py-8 md:px-12 md:py-12">
-            <Link
-              href="/#bunyodkorlar"
-              className="inline-block rounded-full bg-[#0043a4] px-5 py-3 text-xs font-black uppercase tracking-[0.12em] text-white transition hover:bg-[#00327c]"
-            >
-              Ortga qaytish
-            </Link>
+          <h1 className="mt-4 max-w-5xl text-[38px] font-black leading-[0.92] tracking-[-0.06em] text-white sm:text-[54px] md:text-[76px]">
+            {article.title}
+          </h1>
 
-            {article.category && (
-              <p className="mt-8 text-xs font-black uppercase tracking-[0.22em] text-[#0043a4]">
-                {article.category}
-              </p>
-            )}
+          {date && (
+            <p className="mt-6 text-sm font-bold text-white/80 md:text-base">
+              {date}
+            </p>
+          )}
+        </div>
+      </section>
 
-            <h1 className="mt-4 text-[34px] font-black leading-[0.95] tracking-[-0.05em] text-[#111827] sm:text-[46px] md:text-[64px]">
-              {article.title}
-            </h1>
-
-            {date && (
-              <p className="mt-5 text-sm font-bold text-gray-500">{date}</p>
-            )}
-
-            {description && (
-              <p className="mt-8 text-lg font-bold leading-8 text-[#0043a4] md:text-xl md:leading-9">
-                {description}
-              </p>
-            )}
-
-            {article.content ? (
-              <div
-                className="mt-10 max-w-none text-base leading-8 text-gray-800 md:text-lg md:leading-9 [&_h1]:text-3xl [&_h1]:font-black [&_h2]:text-2xl [&_h2]:font-black [&_h3]:text-xl [&_h3]:font-black [&_img]:my-6 [&_img]:h-auto [&_img]:w-full [&_p]:mb-5"
-                dangerouslySetInnerHTML={{ __html: article.content }}
+      <article className="px-4 pb-16 md:px-6 md:pb-24">
+        <div className="mx-auto -mt-6 max-w-6xl overflow-hidden bg-white shadow-[0_20px_60px_rgba(0,0,0,0.16)] md:-mt-10">
+          {article.image_url && (
+            <div className="bg-white">
+              <img
+                src={article.image_url}
+                alt={article.title}
+                className="block h-auto w-full"
               />
-            ) : (
-              <p className="mt-10 text-base leading-8 text-gray-700">
-                Ushbu maqola matni hozircha kiritilmagan.
+            </div>
+          )}
+
+          <div className="grid gap-8 px-5 py-8 md:grid-cols-[0.75fr_1.25fr] md:px-10 md:py-12 lg:px-14 lg:py-16">
+            <aside className="border-b border-gray-200 pb-6 md:border-b-0 md:border-r md:pb-0 md:pr-8">
+              <p className="text-xs font-black uppercase tracking-[0.24em] text-[#0043a4]">
+                Maqola haqida
               </p>
-            )}
+
+              <h2 className="mt-4 text-2xl font-black leading-tight text-[#111827]">
+                O‘zbekiston Bunyodkor Yoshlari ensiklopediyasi
+              </h2>
+
+              {description && (
+                <p className="mt-5 text-sm font-bold leading-7 text-[#0043a4]">
+                  {description}
+                </p>
+              )}
+
+              <div className="mt-7 rounded-3xl bg-[#f2f2f2] p-5">
+                <p className="text-xs font-black uppercase tracking-[0.18em] text-gray-500">
+                  Sahifa havolasi
+                </p>
+                <p className="mt-2 break-words text-sm font-bold text-[#111827]">
+                  /bunyodkorlar/{article.slug}
+                </p>
+              </div>
+            </aside>
+
+            <div>
+              {article.content ? (
+                <div
+                  className="article-content text-[17px] font-medium leading-8 text-[#1f2937] md:text-[19px] md:leading-9"
+                  dangerouslySetInnerHTML={{ __html: article.content }}
+                />
+              ) : (
+                <p className="text-base leading-8 text-gray-700">
+                  Ushbu maqola matni hozircha kiritilmagan.
+                </p>
+              )}
+
+              <div className="mt-12 border-t border-gray-200 pt-8">
+                <Link
+                  href="/#bunyodkorlar"
+                  className="inline-flex rounded-full bg-[#0043a4] px-6 py-4 text-xs font-black uppercase tracking-[0.14em] text-white shadow-lg transition hover:bg-[#00327c]"
+                >
+                  Bosh sahifaga qaytish
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </article>
