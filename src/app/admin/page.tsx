@@ -59,7 +59,7 @@ export default function AdminPage() {
   return (
     <main className="min-h-screen bg-[#f7f3ea] p-6 text-[#14231b]">
       <section className="mx-auto max-w-6xl">
-        <div className="mb-8 flex items-center justify-between rounded-3xl bg-[#0f3d2e] p-6 text-white">
+        <div className="mb-8 flex flex-wrap items-center justify-between gap-4 rounded-3xl bg-[#0f3d2e] p-6 text-white">
           <div>
             <h1 className="text-3xl font-bold">Admin panel</h1>
             <p className="mt-1 text-emerald-100">
@@ -67,12 +67,21 @@ export default function AdminPage() {
             </p>
           </div>
 
-          <button
-            onClick={logout}
-            className="rounded-xl bg-white px-4 py-2 font-semibold text-[#0f3d2e]"
-          >
-            Chiqish
-          </button>
+          <div className="flex gap-3">
+            <Link
+              href="/admin/articles/new"
+              className="rounded-xl bg-emerald-100 px-4 py-2 font-semibold text-[#0f3d2e]"
+            >
+              + Yangi maqola
+            </Link>
+
+            <button
+              onClick={logout}
+              className="rounded-xl bg-white px-4 py-2 font-semibold text-[#0f3d2e]"
+            >
+              Chiqish
+            </button>
+          </div>
         </div>
 
         <div className="overflow-hidden rounded-3xl bg-white shadow-xl">
@@ -83,6 +92,7 @@ export default function AdminPage() {
                 <th className="p-4">Kategoriya</th>
                 <th className="p-4">Status</th>
                 <th className="p-4">Saytda ko‘rish</th>
+                <th className="p-4">Tahrirlash</th>
               </tr>
             </thead>
 
@@ -102,6 +112,14 @@ export default function AdminPage() {
                       className="font-semibold text-emerald-700"
                     >
                       Ochish
+                    </Link>
+                  </td>
+                  <td className="p-4">
+                    <Link
+                      href={`/admin/articles/${article.id}/edit`}
+                      className="font-semibold text-blue-700"
+                    >
+                      Tahrirlash
                     </Link>
                   </td>
                 </tr>
