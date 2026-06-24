@@ -23,36 +23,57 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen overflow-x-hidden bg-white text-[#111827]">
-      <header className="sticky top-0 z-50 border-b border-gray-100 bg-white/95 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-center px-4 py-3 lg:justify-between lg:px-5 lg:py-4">
-          <Link href="/" className="flex items-center">
-            <img
-              src="/tilda/images/tild3231-6436-4338-a534-366335323233__56517f45-cd2a-49fb-8.png"
-              alt="O‘zbekiston Bunyodkor Yoshlari"
-              className="h-10 w-auto max-w-[210px] object-contain sm:h-14 sm:max-w-[260px]"
-            />
-          </Link>
+      <header className="absolute left-0 top-0 z-50 w-full">
+        <div className="mx-auto flex max-w-7xl items-start justify-between px-4 py-4 md:px-6">
+          <details className="group relative">
+            <summary className="flex h-12 w-12 cursor-pointer list-none items-center justify-center rounded-full bg-white/95 shadow-lg backdrop-blur marker:hidden">
+              <span className="relative block h-[2px] w-6 bg-black before:absolute before:left-0 before:top-[-8px] before:h-[2px] before:w-6 before:bg-black before:content-[''] after:absolute after:left-0 after:top-[8px] after:h-[2px] after:w-6 after:bg-black after:content-['']" />
+            </summary>
 
-          <nav className="hidden items-center gap-7 text-[13px] font-bold text-[#111827] lg:flex">
-            <Link href="/haqida" className="hover:text-[#0043a4]">
-              Biz haqimizda
-            </Link>
-            <Link href="#bunyodkorlar" className="hover:text-[#0043a4]">
-              Bunyodkorlar Sahifasi
-            </Link>
-            <Link href="/tavsiyalari" className="hover:text-[#0043a4]">
-              Tavsiyalar
-            </Link>
-            <Link href="/sahifasi" className="hover:text-[#0043a4]">
-              Iqtiboslar
-            </Link>
-            <Link href="/ariza-qoldrish" className="hover:text-[#0043a4]">
-              Ariza qoldirish
-            </Link>
-            <Link href="/hamkor-loyihasi" className="hover:text-[#0043a4]">
-              Hamkor loyihasi
-            </Link>
-          </nav>
+            <div className="absolute left-0 top-16 w-[260px] overflow-hidden rounded-2xl bg-white shadow-2xl">
+              <Link
+                href="/haqida"
+                className="block border-b border-gray-100 px-5 py-4 text-sm font-bold text-[#111827] hover:bg-[#0043a4] hover:text-white"
+              >
+                Biz haqimizda
+              </Link>
+
+              <Link
+                href="#bunyodkorlar"
+                className="block border-b border-gray-100 px-5 py-4 text-sm font-bold text-[#111827] hover:bg-[#0043a4] hover:text-white"
+              >
+                Bunyodkorlar Sahifasi
+              </Link>
+
+              <Link
+                href="/tavsiyalari"
+                className="block border-b border-gray-100 px-5 py-4 text-sm font-bold text-[#111827] hover:bg-[#0043a4] hover:text-white"
+              >
+                Tavsiyalar
+              </Link>
+
+              <Link
+                href="/sahifasi"
+                className="block border-b border-gray-100 px-5 py-4 text-sm font-bold text-[#111827] hover:bg-[#0043a4] hover:text-white"
+              >
+                Iqtiboslar
+              </Link>
+
+              <Link
+                href="/ariza-qoldrish"
+                className="block border-b border-gray-100 px-5 py-4 text-sm font-bold text-[#111827] hover:bg-[#0043a4] hover:text-white"
+              >
+                Ariza qoldirish
+              </Link>
+
+              <Link
+                href="/hamkor-loyihasi"
+                className="block px-5 py-4 text-sm font-bold text-[#111827] hover:bg-[#0043a4] hover:text-white"
+              >
+                Hamkor loyihasi
+              </Link>
+            </div>
+          </details>
         </div>
       </header>
 
@@ -67,7 +88,7 @@ export default async function Home() {
 
         <div className="absolute inset-0 bg-black/65 md:bg-gradient-to-r md:from-black/80 md:via-black/55 md:to-black/20" />
 
-        <div className="relative mx-auto max-w-7xl px-4 py-12 sm:py-16 md:px-5 md:py-24">
+        <div className="relative mx-auto max-w-7xl px-4 pb-12 pt-24 sm:pb-16 sm:pt-28 md:px-5 md:py-24">
           <div className="max-w-3xl">
             <h1 className="text-[28px] font-extrabold leading-[1.12] tracking-[-0.04em] sm:text-[36px] md:text-[52px]">
               Bu yerda O‘zbekiston rivojiga munosib hissa qo‘shayotgan
