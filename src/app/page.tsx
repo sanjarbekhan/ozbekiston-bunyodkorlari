@@ -1,5 +1,5 @@
-import Link from "next/link";
-import { supabase } from "@/lib/supabase";
+﻿import { supabase } from "@/lib/supabase";
+import PublicArticles from "@/components/PublicArticles";
 
 export const revalidate = 60;
 
@@ -36,44 +36,24 @@ export default async function Home() {
           </p>
         </div>
 
-        <h2 className="mb-6 text-2xl font-bold">Bunyodkorlar</h2>
+        <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <h2 className="text-2xl font-bold uppercase">
+              ULAR QAYSI SOHALARDA?
+            </h2>
+            <p className="mt-2 max-w-3xl text-gray-600">
+              Bu yerda faqat so‘nggi bunyodkorlar haqidagi ma’lumotlar ko‘rinadi.
+              Qaysidir bunyodkorni qidirayotgan bo‘lsangiz, “Bunyodkorlar sahifasi”ga
+              o‘ting yoki qidirish tugmasini bosing!
+            </p>
+          </div>
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {articles?.map((article) => (
-            <Link
-              key={article.id}
-              href={`/bunyodkorlar/${article.slug}`}
-              className="overflow-hidden rounded-3xl bg-white shadow-md transition hover:-translate-y-1 hover:shadow-xl"
-            >
-              {article.image_url && (
-                <div className="flex h-72 w-full items-center justify-center bg-[#f7f3ea] p-2">
-                  <img
-                    src={article.image_url}
-                    alt={article.title}
-                    className="max-h-full max-w-full object-contain"
-                  />
-                </div>
-              )}
-
-              <div className="p-5">
-                {article.category && (
-                  <p className="mb-2 text-sm font-semibold text-emerald-700">
-                    {article.category}
-                  </p>
-                )}
-
-                <h3 className="text-xl font-bold">{article.title}</h3>
-
-                {article.description && (
-                  <div
-                    className="mt-3 line-clamp-3 text-sm text-gray-600"
-                    dangerouslySetInnerHTML={{ __html: article.description }}
-                  />
-                )}
-              </div>
-            </Link>
-          ))}
+          <div className="rounded-full bg-white px-5 py-2 text-sm font-semibold shadow">
+            Jami: {articles?.length || 0} ta maqola
+          </div>
         </div>
+
+        <PublicArticles articles={articles || []} />
       </section>
     </main>
   );
