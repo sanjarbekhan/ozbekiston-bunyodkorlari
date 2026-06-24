@@ -1,6 +1,9 @@
-﻿export default function TavsiyalariPage() {
+﻿import SiteMenu from "@/components/SiteMenu";
+
+export default function TavsiyalariPage() {
   return (
     <main className="min-h-screen bg-white">
+      <SiteMenu />
       <iframe
         src="/tilda/tavsiyalari.html"
         title="Tavsiyalar"

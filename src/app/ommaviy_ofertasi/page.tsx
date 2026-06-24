@@ -1,6 +1,9 @@
-﻿export default function OmmaviyOfertaPage() {
+﻿import SiteMenu from "@/components/SiteMenu";
+
+export default function OmmaviyOfertaPage() {
   return (
     <main className="min-h-screen bg-white">
+      <SiteMenu />
       <iframe
         src="/tilda/ommaviy_ofertasi.html"
         title="Ommaviy oferta"

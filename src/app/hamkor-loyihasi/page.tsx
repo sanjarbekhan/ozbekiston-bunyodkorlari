@@ -1,6 +1,9 @@
-﻿export default function HamkorLoyihasiPage() {
+﻿import SiteMenu from "@/components/SiteMenu";
+
+export default function HamkorLoyihasiPage() {
   return (
     <main className="min-h-screen bg-white">
+      <SiteMenu />
       <iframe
         src="/tilda/hamkor-loyihasi.html"
         title="Hamkor loyihasi"
