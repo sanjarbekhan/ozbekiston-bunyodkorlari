@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import SiteMenu from "@/components/SiteMenu";
@@ -34,12 +35,7 @@ function formatDate(date: string | null) {
   return `${day}.${month}.${year}`;
 }
 
-export default async function BunyodkorArticlePage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
-  const { slug } = await params;
+async function getArticle(slug: string) {
   const decodedSlug = decodeURIComponent(slug);
 
   const { data: articles, error } = await supabase
@@ -52,10 +48,61 @@ export default async function BunyodkorArticlePage({
     .limit(1);
 
   if (error || !articles || articles.length === 0) {
-    notFound();
+    return null;
   }
 
-  const article = articles[0] as Article;
+  return articles[0] as Article;
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const article = await getArticle(slug);
+
+  if (!article) {
+    return {
+      title: "Maqola topilmadi | O‘zbekiston Bunyodkor Yoshlari",
+    };
+  }
+
+  const description =
+    cleanText(article.description) ||
+    `${article.title} haqida O‘zbekiston Bunyodkor Yoshlari ensiklopediyasidagi maqola.`;
+
+  return {
+    title: `${article.title} | O‘zbekiston Bunyodkor Yoshlari`,
+    description,
+    openGraph: {
+      title: article.title,
+      description,
+      type: "article",
+      images: article.image_url ? [article.image_url] : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: article.title,
+      description,
+      images: article.image_url ? [article.image_url] : [],
+    },
+  };
+}
+
+export default async function BunyodkorArticlePage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const decodedSlug = decodeURIComponent(slug);
+
+  const article = await getArticle(slug);
+
+  if (!article) {
+    notFound();
+  }
 
   const { data: relatedArticles } = await supabase
     .from("articles")
