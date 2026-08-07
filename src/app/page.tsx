@@ -11,7 +11,7 @@ export default async function Home() {
     .select("id, title, slug, category, image_url, description, status, created_at")
     .eq("status", "published")
     .order("created_at", { ascending: false })
-    .limit(40);
+    .limit(500);
 
   if (error) {
     return (
