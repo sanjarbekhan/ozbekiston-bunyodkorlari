@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import ArticleContent from "@/components/ArticleContent";
+import PublicArticleCard from "@/components/PublicArticleCard";
+import SiteFooter from "@/components/SiteFooter";
 import SiteMenu from "@/components/SiteMenu";
 import type { ArticleRecord } from "@/lib/article-types";
 import { supabase } from "@/lib/supabase";
@@ -13,27 +15,57 @@ function plain(value?: string | null) {
   return (value || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
 }
 
+function formatDate(value?: string | null) {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  return new Intl.DateTimeFormat("uz-UZ", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(date);
+}
+
 async function getArticle(slug: string) {
-  const { data } = await supabase.from("articles").select("*")
-    .eq("status", "published").eq("slug", decodeURIComponent(slug)).maybeSingle();
+  const { data } = await supabase
+    .from("articles")
+    .select("*")
+    .eq("status", "published")
+    .eq("slug", decodeURIComponent(slug))
+    .maybeSingle();
   return data as ArticleRecord | null;
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
   const { slug } = await params;
   const article = await getArticle(slug);
-  if (!article) return { title: "Maqola topilmadi", robots: { index: false, follow: false } };
+  if (!article) {
+    return { title: "Maqola topilmadi", robots: { index: false, follow: false } };
+  }
+
   const title = article.seo_title || article.title;
-  const description = article.seo_description || plain(article.description) || `${article.title} haqida ensiklopedik maqola.`;
+  const description =
+    article.seo_description ||
+    plain(article.description) ||
+    `${article.title} haqida ensiklopedik maqola.`;
   const image = article.social_image_url || article.image_url || undefined;
   const canonical = article.canonical_url || `${SITE_URL}/bunyodkorlar/${article.slug}`;
+
   return {
     title,
     description,
-    keywords: article.seo_keywords?.split(",").map((item) => item.trim()).filter(Boolean),
+    keywords: article.seo_keywords
+      ?.split(",")
+      .map((item) => item.trim())
+      .filter(Boolean),
     alternates: { canonical },
     openGraph: {
-      type: "article", url: canonical,
+      type: "article",
+      url: canonical,
       title: article.social_title || title,
       description: article.social_description || description,
       publishedTime: article.published_at || undefined,
@@ -41,66 +73,215 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       authors: article.author_name ? [article.author_name] : undefined,
       images: image ? [{ url: image, alt: article.title }] : undefined,
     },
-    twitter: { card: "summary_large_image", title: article.social_title || title, description: article.social_description || description, images: image ? [image] : undefined },
-    robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 } },
+    twitter: {
+      card: "summary_large_image",
+      title: article.social_title || title,
+      description: article.social_description || description,
+      images: image ? [image] : undefined,
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+        "max-video-preview": -1,
+      },
+    },
   };
 }
 
-export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function ArticlePage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
   const { slug } = await params;
   const article = await getArticle(slug);
   if (!article) notFound();
 
-  const { data: related } = await supabase.from("articles")
-    .select("id,title,slug,image_url,category")
-    .eq("status", "published").neq("id", article.id)
-    .order("published_at", { ascending: false }).limit(4);
+  const { data: related } = await supabase
+    .from("articles")
+    .select("id,title,slug,image_url,category,description,published_at,created_at")
+    .eq("status", "published")
+    .neq("id", article.id)
+    .order("published_at", { ascending: false })
+    .limit(4);
 
   const canonical = article.canonical_url || `${SITE_URL}/bunyodkorlar/${article.slug}`;
+  const intro = plain(article.description);
+  const published = formatDate(article.published_at || article.created_at);
   const schema = {
     "@context": "https://schema.org",
     "@type": "Article",
     headline: article.title,
-    description: article.seo_description || plain(article.description),
+    description: article.seo_description || intro,
     image: [article.social_image_url || article.image_url].filter(Boolean),
     datePublished: article.published_at || article.created_at,
     dateModified: article.updated_at || article.published_at || article.created_at,
     mainEntityOfPage: canonical,
     inLanguage: "uz-UZ",
-    author: { "@type": "Organization", name: article.author_name || "O‘zbekiston Bunyodkor Yoshlari Ensiklopediyasi", url: article.author_url || SITE_URL },
-    publisher: { "@type": "Organization", name: "O‘zbekiston Bunyodkor Yoshlari Ensiklopediyasi", url: SITE_URL },
+    author: {
+      "@type": "Organization",
+      name: article.author_name || "O‘zbekiston Bunyodkor Yoshlari Ensiklopediyasi",
+      url: article.author_url || SITE_URL,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "O‘zbekiston Bunyodkor Yoshlari Ensiklopediyasi",
+      url: SITE_URL,
+    },
   };
 
-  return <main className="min-h-screen bg-[#f1f4f9] text-[#111827]">
-    <SiteMenu />
-    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, "\\u003c") }} />
-    <header className="bg-[#0043a4] px-4 pb-16 pt-24 text-white md:px-8 md:pt-28">
-      <div className="mx-auto max-w-6xl">
-        <Link href="/bunyodkorlar" className="text-sm font-black uppercase tracking-wider text-white/80">← Bunyodkorlar</Link>
-        {article.category && <p className="mt-8 text-xs font-black uppercase tracking-[.25em] text-white/70">{article.category}</p>}
-        <h1 className="mt-4 max-w-5xl text-4xl font-black leading-[.95] tracking-[-.05em] sm:text-6xl md:text-7xl">{article.title}</h1>
-        <div className="mt-7 flex flex-wrap gap-5 text-sm font-semibold text-white/80">
-          {article.author_name && <span>{article.author_name}</span>}
-          {article.published_at && <time dateTime={article.published_at}>{new Intl.DateTimeFormat("uz-UZ", { dateStyle: "long" }).format(new Date(article.published_at))}</time>}
-          <span>{article.reading_minutes || 1} daqiqa o‘qish</span>
-        </div>
-      </div>
-    </header>
+  return (
+    <main className="min-h-screen bg-[#f4f7fb] text-[#111827]">
+      <SiteMenu />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(schema).replace(/</g, "\\u003c"),
+        }}
+      />
 
-    <article className="mx-auto -mt-8 max-w-6xl px-4 pb-16 md:px-8">
-      <div className="overflow-hidden rounded-2xl bg-white shadow-2xl">
-        {article.image_url && <img src={article.image_url} alt={article.title} className="max-h-[760px] w-full object-contain bg-white" />}
-        <div className="grid gap-8 p-6 md:grid-cols-[260px_1fr] md:p-12">
-          <aside className="border-b pb-7 md:border-b-0 md:border-r md:pb-0 md:pr-8">
-            <p className="text-xs font-black uppercase tracking-[.2em] text-[#0043a4]">Maqola haqida</p>
-            {article.description && <div className="mt-4 font-semibold leading-7 text-[#0043a4]" dangerouslySetInnerHTML={{ __html: article.description }} />}
-            {article.video_url && <a href={article.video_url} target="_blank" rel="noopener noreferrer" className="mt-6 block rounded-xl bg-[#0043a4] p-4 text-center font-bold text-white">Videoni ko‘rish</a>}
+      <section className="border-b border-slate-200 bg-white px-4 pb-12 pt-24 md:px-8 md:pb-16 md:pt-28">
+        <div className="mx-auto max-w-7xl">
+          <Link
+            href="/bunyodkorlar"
+            className="inline-flex items-center gap-2 text-sm font-extrabold text-[#0043a4] transition hover:gap-3"
+          >
+            ← Bunyodkorlar katalogi
+          </Link>
+
+          <div className="mt-8 grid gap-8 lg:grid-cols-[360px_1fr] lg:items-center lg:gap-14">
+            <div className="overflow-hidden rounded-[30px] border border-slate-200 bg-[#f4f7fb] shadow-[0_18px_50px_rgba(15,23,42,.08)]">
+              {article.image_url ? (
+                <img
+                  src={article.image_url}
+                  alt={article.title}
+                  className="aspect-[4/5] w-full object-cover"
+                />
+              ) : (
+                <div className="flex aspect-[4/5] items-center justify-center p-8 text-center text-sm font-bold text-slate-400">
+                  Profil rasmi mavjud emas
+                </div>
+              )}
+            </div>
+
+            <div>
+              {article.category && (
+                <span className="inline-flex rounded-full bg-[#eaf2ff] px-4 py-2 text-xs font-extrabold uppercase tracking-[0.14em] text-[#0043a4]">
+                  {article.category}
+                </span>
+              )}
+              <h1 className="mt-5 max-w-4xl text-[38px] font-extrabold leading-[1.02] tracking-[-0.048em] text-[#111827] sm:text-[50px] md:text-[62px]">
+                {article.title}
+              </h1>
+
+              {intro && (
+                <p className="mt-6 max-w-3xl text-base font-medium leading-7 text-slate-600 md:text-lg md:leading-8">
+                  {intro}
+                </p>
+              )}
+
+              <div className="mt-7 flex flex-wrap gap-2.5 text-xs font-bold text-slate-600">
+                {published && (
+                  <span className="rounded-full border border-slate-200 bg-[#f8fafc] px-4 py-2.5">
+                    Nashr: {published}
+                  </span>
+                )}
+                <span className="rounded-full border border-slate-200 bg-[#f8fafc] px-4 py-2.5">
+                  Ensiklopediya profili
+                </span>
+                {article.video_url && (
+                  <a
+                    href={article.video_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rounded-full bg-[#0043a4] px-4 py-2.5 text-white transition hover:bg-[#003681]"
+                  >
+                    Video →
+                  </a>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 py-10 md:px-8 md:py-14">
+        <div className="grid gap-7 lg:grid-cols-[230px_minmax(0,820px)] lg:justify-center lg:gap-10">
+          <aside className="h-fit rounded-[24px] border border-slate-200 bg-white p-5 lg:sticky lg:top-6">
+            <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#0043a4]">
+              Profil haqida
+            </p>
+            <dl className="mt-5 space-y-4 text-sm">
+              {article.category && (
+                <div>
+                  <dt className="font-semibold text-slate-400">Yo‘nalish</dt>
+                  <dd className="mt-1 font-extrabold text-[#111827]">{article.category}</dd>
+                </div>
+              )}
+              {published && (
+                <div>
+                  <dt className="font-semibold text-slate-400">Nashr sanasi</dt>
+                  <dd className="mt-1 font-extrabold text-[#111827]">{published}</dd>
+                </div>
+              )}
+              <div>
+                <dt className="font-semibold text-slate-400">Manba</dt>
+                <dd className="mt-1 font-extrabold leading-5 text-[#111827]">
+                  O‘zbekiston Bunyodkor Yoshlari Ensiklopediyasi
+                </dd>
+              </div>
+            </dl>
           </aside>
-          <ArticleContent blocks={article.content_blocks} legacyHtml={article.content} />
-        </div>
-      </div>
-    </article>
 
-    {related && related.length > 0 && <section className="mx-auto max-w-6xl px-4 pb-24 md:px-8"><h2 className="mb-7 text-4xl font-black tracking-tight">Boshqa bunyodkorlar</h2><div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">{related.map((item) => <Link key={item.id} href={`/bunyodkorlar/${item.slug}`} className="overflow-hidden rounded-2xl bg-white shadow-lg transition hover:-translate-y-1">{item.image_url && <img src={item.image_url} alt={item.title} className="aspect-[4/5] w-full object-cover" />}<div className="p-5"><p className="text-xs font-black uppercase tracking-wider text-[#0043a4]">{item.category || "Bunyodkor"}</p><h3 className="mt-2 text-xl font-black leading-tight">{item.title}</h3></div></Link>)}</div></section>}
-  </main>;
+          <article className="min-w-0 rounded-[28px] border border-slate-200 bg-white p-6 shadow-[0_12px_40px_rgba(15,23,42,.05)] sm:p-8 md:p-11">
+            <ArticleContent
+              blocks={article.content_blocks}
+              legacyHtml={article.content}
+              articleTitle={article.title}
+              articleDescription={article.description}
+            />
+          </article>
+        </div>
+      </section>
+
+      {related && related.length > 0 && (
+        <section className="mx-auto max-w-7xl px-4 pb-20 pt-4 md:px-8 md:pb-24">
+          <div className="mb-8 flex items-end justify-between gap-5">
+            <div>
+              <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#0043a4]">
+                Davom eting
+              </p>
+              <h2 className="mt-2 text-3xl font-extrabold tracking-[-.035em] md:text-4xl">
+                Boshqa bunyodkorlar
+              </h2>
+            </div>
+            <Link href="/bunyodkorlar" className="hidden text-sm font-extrabold text-[#0043a4] sm:block">
+              Barchasi →
+            </Link>
+          </div>
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {related.map((item) => (
+              <PublicArticleCard
+                key={item.id}
+                title={item.title}
+                slug={item.slug}
+                imageUrl={item.image_url}
+                category={item.category}
+                description={item.description}
+                date={item.published_at || item.created_at}
+                compact
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
+      <SiteFooter />
+    </main>
+  );
 }

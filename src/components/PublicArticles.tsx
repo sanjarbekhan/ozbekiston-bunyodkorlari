@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { useMemo, useState } from "react";
+import PublicArticleCard from "@/components/PublicArticleCard";
 
 type Article = {
   id: string;
@@ -10,8 +10,9 @@ type Article = {
   category: string | null;
   image_url: string | null;
   description: string | null;
-  status: string;
-  created_at?: string;
+  status?: string;
+  created_at?: string | null;
+  published_at?: string | null;
 };
 
 function cleanText(text: string | null) {
@@ -24,13 +25,6 @@ function splitCategories(category: string | null) {
     .split(";")
     .map((item) => item.trim())
     .filter(Boolean);
-}
-
-function formatDate(date?: string) {
-  if (!date) return "";
-  const [year, month, day] = date.slice(0, 10).split("-");
-  if (!year || !month || !day) return "";
-  return `${day}.${month}.${year}`;
 }
 
 export default function PublicArticles({ articles }: { articles: Article[] }) {
@@ -47,9 +41,7 @@ export default function PublicArticles({ articles }: { articles: Article[] }) {
       });
     });
 
-    return Array.from(normalized.values()).sort((a, b) =>
-      a.localeCompare(b, "uz")
-    );
+    return Array.from(normalized.values()).sort((a, b) => a.localeCompare(b, "uz"));
   }, [articles]);
 
   const filteredArticles = useMemo(() => {
@@ -71,106 +63,96 @@ export default function PublicArticles({ articles }: { articles: Article[] }) {
       const matchesCategory =
         categoryFilter === "all" ||
         splitCategories(article.category).some(
-          (item) =>
-            item.toLocaleLowerCase("uz") ===
-            categoryFilter.toLocaleLowerCase("uz")
+          (item) => item.toLocaleLowerCase("uz") === categoryFilter.toLocaleLowerCase("uz")
         );
 
       return matchesSearch && matchesCategory;
     });
   }, [articles, search, categoryFilter]);
 
-  const isFiltering = search.trim().length > 0 || categoryFilter !== "all";
-  const visibleArticles = isFiltering
-    ? filteredArticles
-    : filteredArticles.slice(0, 40);
+  const hasFilters = search.trim().length > 0 || categoryFilter !== "all";
+
+  function resetFilters() {
+    setSearch("");
+    setCategoryFilter("all");
+  }
 
   return (
     <>
-      <div className="mb-8 rounded-[18px] bg-white p-4 shadow-[0_8px_24px_rgba(0,0,0,0.06)] md:mb-12 md:p-5">
-        <div className="grid gap-3 md:grid-cols-[1fr_280px] md:gap-4">
-          <input
-            className="w-full rounded-[12px] border border-gray-200 bg-white px-4 py-3 text-sm font-semibold outline-none transition focus:border-[#0043a4] md:px-5 md:py-4 md:text-base md:font-bold"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Qidirish"
-          />
+      <div className="mb-8 rounded-[24px] border border-slate-200 bg-white p-4 shadow-[0_10px_30px_rgba(15,23,42,.06)] md:mb-10 md:p-5">
+        <div className="grid gap-3 md:grid-cols-[1fr_300px_auto] md:gap-4">
+          <label className="block">
+            <span className="sr-only">Ism yoki kalit so‘z</span>
+            <input
+              className="w-full rounded-2xl border border-slate-200 bg-[#f8fafc] px-4 py-3.5 text-sm font-semibold text-[#111827] outline-none transition placeholder:text-slate-400 focus:border-[#0043a4] focus:bg-white md:px-5 md:text-base"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Ism, familiya yoki kalit so‘z..."
+            />
+          </label>
 
-          <select
-            className="w-full rounded-[12px] border border-gray-200 bg-white px-4 py-3 text-sm font-semibold outline-none transition focus:border-[#0043a4] md:px-5 md:py-4 md:text-base md:font-bold"
-            value={categoryFilter}
-            onChange={(e) => setCategoryFilter(e.target.value)}
-          >
-            <option value="all">Barcha yo‘nalishlar</option>
-            {categories.map((category) => (
-              <option key={category} value={category}>
-                {category}
-              </option>
-            ))}
-          </select>
+          <label className="block">
+            <span className="sr-only">Yo‘nalish</span>
+            <select
+              className="w-full rounded-2xl border border-slate-200 bg-[#f8fafc] px-4 py-3.5 text-sm font-semibold text-[#111827] outline-none transition focus:border-[#0043a4] focus:bg-white md:px-5 md:text-base"
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+            >
+              <option value="all">Barcha yo‘nalishlar</option>
+              {categories.map((category) => (
+                <option key={category} value={category}>
+                  {category}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          {hasFilters && (
+            <button
+              type="button"
+              onClick={resetFilters}
+              className="rounded-2xl border border-slate-200 px-5 py-3.5 text-sm font-extrabold text-slate-600 transition hover:border-[#0043a4]/30 hover:text-[#0043a4]"
+            >
+              Tozalash
+            </button>
+          )}
         </div>
 
-        <p className="mt-3 text-xs font-bold text-[#0043a4] md:mt-4 md:text-sm">
-          {isFiltering
-            ? `Topildi: ${filteredArticles.length} ta maqola`
-            : `Ko‘rsatilmoqda: ${visibleArticles.length} ta · Jami: ${articles.length} ta maqola`}
+        <p className="mt-4 text-sm font-semibold text-slate-500">
+          <span className="font-extrabold text-[#0043a4]">{filteredArticles.length}</span> ta profil topildi
         </p>
       </div>
 
-      <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-6 md:mx-0 md:grid md:grid-cols-2 md:gap-5 md:overflow-visible md:px-0 md:pb-0 lg:grid-cols-4 lg:gap-5">
-        {visibleArticles.map((article) => {
-          const desc = cleanText(article.description);
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {filteredArticles.map((article) => (
+          <PublicArticleCard
+            key={article.id}
+            title={article.title}
+            slug={article.slug}
+            imageUrl={article.image_url}
+            category={article.category}
+            description={article.description}
+            date={article.published_at || article.created_at}
+          />
+        ))}
 
-          return (
-            <Link
-              key={article.id}
-              href={`/bunyodkorlar/${article.slug}`}
-              className="group block min-w-[82%] snap-start overflow-hidden rounded-[28px] bg-white shadow-[0_8px_22px_rgba(0,0,0,0.10)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_14px_30px_rgba(0,0,0,0.18)] sm:min-w-[48%] md:min-w-0"
-            >
-              <div className="aspect-square w-full overflow-hidden bg-[#e8e8e8]">
-                {article.image_url ? (
-                  <img
-                    src={article.image_url}
-                    alt={article.title}
-                    loading="lazy"
-                    className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.025]"
-                  />
-                ) : (
-                  <div className="flex h-full w-full items-center justify-center text-sm font-bold text-gray-400">
-                    Rasm mavjud emas
-                  </div>
-                )}
-              </div>
-
-              <div className="p-5 md:p-5">
-                <h3 className="line-clamp-3 text-[20px] font-black leading-[1.02] tracking-[-0.035em] text-[#111] md:text-[22px]">
-                  {article.title}
-                </h3>
-
-                {desc && (
-                  <p className="mt-4 line-clamp-4 text-[10px] font-bold leading-[1.55] text-[#0043a4] md:text-[11px]">
-                    {desc}
-                  </p>
-                )}
-
-                {article.created_at && (
-                  <p className="mt-5 text-[11px] font-medium text-gray-400">
-                    {formatDate(article.created_at)}
-                  </p>
-                )}
-              </div>
-            </Link>
-          );
-        })}
-
-        {visibleArticles.length === 0 && (
-          <div className="min-w-full rounded-[24px] bg-white p-8 text-center shadow-sm md:col-span-full md:min-w-0 md:p-10">
-            <h3 className="text-xl font-black text-[#111827] md:text-2xl">
-              Maqola topilmadi
+        {filteredArticles.length === 0 && (
+          <div className="rounded-[26px] border border-slate-200 bg-white p-10 text-center shadow-sm sm:col-span-2 lg:col-span-3 xl:col-span-4">
+            <h3 className="text-2xl font-extrabold tracking-tight text-[#111827]">
+              Profil topilmadi
             </h3>
-            <p className="mt-2 text-sm text-gray-600 md:text-base">
+            <p className="mx-auto mt-3 max-w-xl text-sm font-medium leading-6 text-slate-600 md:text-base">
               Boshqa ism, familiya yoki yo‘nalish bilan qidirib ko‘ring.
             </p>
+            {hasFilters && (
+              <button
+                type="button"
+                onClick={resetFilters}
+                className="mt-6 rounded-full bg-[#0043a4] px-6 py-3 text-sm font-extrabold text-white"
+              >
+                Barcha profillarni ko‘rish
+              </button>
+            )}
           </div>
         )}
       </div>

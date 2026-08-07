@@ -1,23 +1,35 @@
 import Link from "next/link";
-import { supabase } from "@/lib/supabase";
-import PublicArticles from "@/components/PublicArticles";
+import PublicArticleCard from "@/components/PublicArticleCard";
+import SiteFooter from "@/components/SiteFooter";
 import SiteMenu from "@/components/SiteMenu";
+import { supabase } from "@/lib/supabase";
 
 export const revalidate = 60;
+
+type HomeArticle = {
+  id: string;
+  title: string;
+  slug: string;
+  category: string | null;
+  image_url: string | null;
+  description: string | null;
+  published_at: string | null;
+  created_at: string;
+};
 
 export default async function Home() {
   const { data: articles, error } = await supabase
     .from("articles")
-    .select("id, title, slug, category, image_url, description, status, created_at")
+    .select("id, title, slug, category, image_url, description, published_at, created_at")
     .eq("status", "published")
-    .order("created_at", { ascending: false })
-    .limit(500);
+    .order("published_at", { ascending: false })
+    .limit(12);
 
   if (error) {
     return (
-      <main className="min-h-screen p-8">
-        <h1 className="text-2xl font-bold text-red-600">Xatolik</h1>
-        <p>{error.message}</p>
+      <main className="min-h-screen bg-white p-8 text-[#111827]">
+        <h1 className="text-2xl font-bold">Sahifani yuklab bo‘lmadi</h1>
+        <p className="mt-2 text-slate-600">Iltimos, birozdan so‘ng qayta urinib ko‘ring.</p>
       </main>
     );
   }
@@ -28,30 +40,32 @@ export default async function Home() {
 
       <section className="relative overflow-hidden bg-[#0b1628] text-white">
         <div
-          className="absolute inset-0 bg-cover bg-center opacity-55 md:opacity-75"
+          className="absolute inset-0 bg-cover bg-center opacity-55 md:opacity-70"
           style={{
             backgroundImage:
               "url('/tilda/images/tild6130-3635-4939-b332-343333356531__yangi_uzb.png')",
           }}
         />
+        <div className="absolute inset-0 bg-[#071426]/72 md:bg-gradient-to-r md:from-[#071426]/95 md:via-[#071426]/70 md:to-[#071426]/30" />
 
-        <div className="absolute inset-0 bg-black/65 md:bg-gradient-to-r md:from-black/80 md:via-black/55 md:to-black/20" />
-
-        <div className="relative mx-auto max-w-7xl px-4 pb-12 pt-24 sm:pb-16 sm:pt-28 md:px-5 md:py-24">
-          <div className="max-w-3xl">
-            <h1 className="text-[28px] font-extrabold leading-[1.12] tracking-[-0.04em] sm:text-[36px] md:text-[52px]">
-              Bu yerda O‘zbekiston rivojiga munosib hissa qo‘shayotgan
-              bunyodkor yoshlarning ismlari jamlangan
+        <div className="relative mx-auto max-w-7xl px-4 pb-14 pt-24 sm:pb-16 sm:pt-28 md:px-8 md:py-28">
+          <div className="max-w-4xl">
+            <p className="mb-5 text-xs font-extrabold uppercase tracking-[0.2em] text-white/65 sm:text-sm">
+              O‘zbekiston Bunyodkor Yoshlari Ensiklopediyasi
+            </p>
+            <h1 className="max-w-4xl text-[31px] font-extrabold leading-[1.08] tracking-[-0.045em] sm:text-[40px] md:text-[58px] lg:text-[66px]">
+              O‘zbekiston rivojiga munosib hissa qo‘shayotgan bunyodkor yoshlar
             </h1>
 
-            <p className="mt-5 text-base font-semibold leading-7 text-white/95 sm:text-xl md:mt-8 md:text-2xl">
-              Ular qatorida siz ham bo‘lishingiz mumkin, biz bilan bog‘laning!!!
+            <p className="mt-6 max-w-2xl text-base font-medium leading-7 text-white/82 sm:text-lg md:text-xl md:leading-8">
+              Ularning faoliyati, yutuqlari va hayot yo‘li bir joyda jamlanadi.
+              Siz ham bunyodkorlar safidan joy olishingiz mumkin.
             </p>
 
-            <div className="mt-7 flex w-[230px] flex-col gap-3 sm:w-[260px] md:mt-9 md:w-[340px]">
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row md:mt-10">
               <Link
                 href="/ariza-qoldrish"
-                className="rounded-full bg-[#0043a4] px-4 py-3 text-center text-[10px] font-bold uppercase tracking-[0.08em] text-white shadow-lg transition hover:bg-[#00327c] sm:text-[11px] md:px-6 md:py-4 md:text-sm"
+                className="rounded-full bg-[#0043a4] px-7 py-4 text-center text-sm font-extrabold text-white shadow-[0_10px_30px_rgba(0,67,164,.28)] transition hover:bg-[#003681]"
               >
                 Ariza qoldirish
               </Link>
@@ -60,127 +74,115 @@ export default async function Home() {
                 href="https://t.me/UzBYE_bot"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-full bg-[#0043a4] px-4 py-3 text-center text-[10px] font-bold uppercase tracking-[0.08em] text-white shadow-lg transition hover:bg-[#00327c] sm:text-[11px] md:px-6 md:py-4 md:text-sm"
+                className="rounded-full border border-white/45 bg-white/8 px-7 py-4 text-center text-sm font-extrabold text-white backdrop-blur transition hover:bg-white hover:text-[#071426]"
               >
-                Bot orqali ariza qoldirish
+                Telegram bot orqali
               </a>
             </div>
           </div>
 
-          <div className="mt-10 grid gap-7 md:mt-16 md:grid-cols-3 md:gap-8">
-            <div className="text-white">
-              <div className="mb-3 h-[2px] w-10 bg-white/80 md:mb-5 md:w-14" />
-              <h3 className="text-base font-extrabold leading-snug md:text-lg">
-                O‘zbekiston bunyodkorlari ensiklopediyasi
-              </h3>
-              <p className="mt-3 text-sm font-medium leading-6 text-white/90 md:leading-7">
-                Kelajakni qurayotgan iqtidorlar maskani. Ushbu platforma
-                mamlakatimizning eng yorqin va tashabbuskor yoshlari erishgan
-                natijalarni bir nuqtaga birlashtiradi.
+          <div className="mt-12 grid gap-7 border-t border-white/15 pt-9 md:mt-18 md:grid-cols-3 md:gap-10 md:pt-10">
+            <div>
+              <p className="text-sm font-extrabold text-white">Ensiklopedik xotira</p>
+              <p className="mt-2 text-sm font-medium leading-6 text-white/68">
+                Yoshlarning muhim natijalari va faoliyati tartibli, qidirish mumkin bo‘lgan profillarda jamlanadi.
               </p>
             </div>
-
-            <div className="text-white">
-              <div className="mb-3 h-[2px] w-10 bg-white/80 md:mb-5 md:w-14" />
-              <h3 className="text-base font-extrabold leading-snug md:text-lg">
-                Biz nimalar qilamiz?
-              </h3>
-              <p className="mt-3 text-sm font-medium leading-6 text-white/90 md:leading-7">
-                O‘zbekiston bunyodkorlari haqidagi eng to‘liq va ishonchli
-                ensiklopediya — bu nafaqat ma’lumot manbai, balki ilhom va
-                rag‘batdir.
+            <div>
+              <p className="text-sm font-extrabold text-white">Ishonchli ma’lumot</p>
+              <p className="mt-2 text-sm font-medium leading-6 text-white/68">
+                Taqdim etilgan ma’lumotlar ensiklopedik formatga moslab tahrir qilinadi va nashrga tayyorlanadi.
               </p>
             </div>
-
-            <div className="text-white">
-              <div className="mb-3 h-[2px] w-10 bg-white/80 md:mb-5 md:w-14" />
-              <h3 className="text-base font-extrabold leading-snug md:text-lg">
-                O‘z kelajagingni biz bilan bunyod et!
-              </h3>
-              <p className="mt-3 text-sm font-medium leading-6 text-white/90 md:leading-7">
-                Mashhur bunyodkorlarimiz hayoti va faoliyati bilan tanishing,
-                ularning qadamlarini izlang va o‘z kelajagingizni bunyod eting.
+            <div>
+              <p className="text-sm font-extrabold text-white">Ilhom va namuna</p>
+              <p className="mt-2 text-sm font-medium leading-6 text-white/68">
+                Turli sohalardagi tengdoshlar tajribasi yangi maqsadlar va tashabbuslar uchun yo‘l ko‘rsatadi.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      <section id="bunyodkorlar" className="bg-[#f2f2f2] px-4 py-12 md:px-5 md:py-20">
+      <section id="bunyodkorlar" className="bg-[#f4f7fb] px-4 py-14 md:px-8 md:py-20">
         <div className="mx-auto max-w-7xl">
-          <div className="mx-auto mb-8 max-w-5xl text-center md:mb-10">
-            <h2 className="text-[30px] font-black uppercase leading-[0.95] tracking-[-0.04em] text-[#111827] sm:text-[42px] md:text-[58px]">
-              ULAR QAYSI SOHALARDA?
-            </h2>
-
-            <p className="mx-auto mt-5 max-w-4xl text-sm font-bold leading-7 text-[#0043a4] md:text-lg md:leading-8">
-              Bu yerda faqat so‘nggi bunyodkorlar haqidagi ma’lumotlar
-              ko‘rinadi. Qaysidir bunyodkorni qidirayotgan bo‘lsangiz,
-              “Bunyodkorlar sahifasi”ga o‘ting yoki qidirish tugmasini bosing!
+          <div className="mb-9 flex flex-col gap-5 md:mb-12 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="text-xs font-extrabold uppercase tracking-[0.2em] text-[#0043a4]">
+                So‘nggi profillar
+              </p>
+              <h2 className="mt-3 max-w-3xl text-[36px] font-extrabold leading-[1.02] tracking-[-0.045em] text-[#111827] sm:text-[48px] md:text-[58px]">
+                Bunyodkor yoshlar bilan tanishing
+              </h2>
+            </div>
+            <p className="max-w-lg text-sm font-medium leading-6 text-slate-600 md:text-right md:text-base md:leading-7">
+              Bu yerda eng yangi profillar ko‘rsatiladi. Ism, soha yoki kalit so‘z bo‘yicha qidirish uchun to‘liq katalogdan foydalaning.
             </p>
           </div>
 
-          <Link
-            href="#bunyodkorlar"
-            className="mb-8 block w-full bg-[#0043a4] px-4 py-4 text-center text-[11px] font-black uppercase tracking-[0.08em] text-white shadow-lg transition hover:bg-[#00327c] sm:text-xs md:mb-12 md:px-8 md:py-5 md:text-sm md:tracking-[0.22em]"
-          >
-            Bunyodkorlar sahifasiga o‘tish
-          </Link>
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {(articles || []).map((article: HomeArticle) => (
+              <PublicArticleCard
+                key={article.id}
+                title={article.title}
+                slug={article.slug}
+                imageUrl={article.image_url}
+                category={article.category}
+                description={article.description}
+                date={article.published_at || article.created_at}
+              />
+            ))}
+          </div>
 
-          <PublicArticles articles={articles || []} />
+          <div className="mt-10 flex justify-center">
+            <Link
+              href="/bunyodkorlar"
+              className="rounded-full bg-[#0043a4] px-7 py-4 text-sm font-extrabold text-white transition hover:bg-[#003681]"
+            >
+              Barcha bunyodkorlarni ko‘rish →
+            </Link>
+          </div>
+        </div>
+      </section>
 
-          <div className="mt-14 bg-white px-4 py-10 md:mt-20 md:px-12 md:py-16">
-            <div className="mx-auto grid max-w-6xl items-center gap-8 md:grid-cols-[1.1fr_0.9fr] md:gap-10">
-              <div>
-                <h2 className="text-[34px] font-black leading-[0.98] tracking-[-0.05em] text-[#0043a4] sm:text-[48px] md:text-[72px]">
-                  Qoidalar bilan tanishing
-                </h2>
+      <section className="bg-white px-4 py-16 md:px-8 md:py-24">
+        <div className="mx-auto grid max-w-7xl gap-12 md:grid-cols-[1.15fr_0.85fr] md:items-center">
+          <div>
+            <p className="text-xs font-extrabold uppercase tracking-[0.2em] text-[#0043a4]">
+              Jarayon
+            </p>
+            <h2 className="mt-3 text-[38px] font-extrabold leading-[1.02] tracking-[-0.045em] text-[#111827] sm:text-[52px] md:text-[64px]">
+              Qoidalar bilan tanishing
+            </h2>
 
-                <div className="mt-8 md:mt-16">
-                  <div className="border-t-[5px] border-[#0043a4] py-5 md:grid md:grid-cols-[260px_1fr] md:border-t-[7px] md:py-7">
-                    <h3 className="mb-2 text-2xl font-black leading-tight text-[#0043a4] md:mb-0 md:text-3xl">
-                      Ariza qoldirish
-                    </h3>
-                    <p className="text-sm font-bold leading-6 text-black">
-                      Web-sayt yoki ijtimoiy tarmoqlar orqali qoldirilgan
-                      so‘rovnomani to‘ldirib ariza qoldiriladi.
-                    </p>
-                  </div>
-
-                  <div className="border-t-[5px] border-[#0043a4] py-5 md:grid md:grid-cols-[260px_1fr] md:border-t-[7px] md:py-7">
-                    <h3 className="mb-2 text-2xl font-black leading-tight text-[#0043a4] md:mb-0 md:text-3xl">
-                      Siz bilan bog‘lanamiz
-                    </h3>
-                    <p className="text-sm font-bold leading-6 text-black">
-                      Mutaxassislarimiz avval sizga qo‘ng‘iroq qilishadi va
-                      keyin Telegramdan bog‘lanishadi.
-                    </p>
-                  </div>
-
-                  <div className="border-t-[5px] border-[#0043a4] py-5 md:grid md:grid-cols-[260px_1fr] md:border-t-[7px] md:py-7">
-                    <h3 className="mb-2 text-2xl font-black leading-tight text-[#0043a4] md:mb-0 md:text-3xl">
-                      Ma’lumotlarni taqdim etish
-                    </h3>
-                    <p className="text-sm font-bold leading-6 text-black">
-                      Ko‘rsatilgan maxsus shaklda ma’lumotlar taqdim etilgach,
-                      nomzod ensiklopedik ahamiyatga mos ekanligi o‘rganilib,
-                      bir xulosaga kelinadi.
-                    </p>
-                  </div>
+            <div className="mt-10 divide-y divide-slate-200 border-y border-slate-200">
+              {[
+                ["01", "Ariza qoldirish", "Sayt yoki Telegram bot orqali ariza yuborasiz."],
+                ["02", "Siz bilan bog‘lanamiz", "Tahririyat kerakli ma’lumotlarni aniqlashtirish uchun siz bilan bog‘lanadi."],
+                ["03", "Ma’lumotlarni taqdim etish", "Ma’lumotlar ensiklopedik ahamiyat va tahrir mezonlari asosida ko‘rib chiqiladi."],
+              ].map(([number, title, text]) => (
+                <div key={number} className="grid gap-3 py-6 sm:grid-cols-[64px_220px_1fr] sm:items-start">
+                  <span className="text-sm font-extrabold text-[#0043a4]">{number}</span>
+                  <h3 className="text-xl font-extrabold tracking-tight text-[#111827]">{title}</h3>
+                  <p className="text-sm font-medium leading-6 text-slate-600">{text}</p>
                 </div>
-              </div>
+              ))}
+            </div>
+          </div>
 
-              <div className="flex items-center justify-center md:justify-end">
-                <img
-                  src="/tilda/images/ozbye-new-logo.svg"
-                  alt="O‘ZBYE"
-                  className="w-full max-w-[240px] object-contain sm:max-w-[320px] md:max-w-[430px]"
-                />
-              </div>
+          <div className="flex items-center justify-center md:justify-end">
+            <div className="rounded-[32px] bg-[#f4f7fb] p-10 sm:p-14">
+              <img
+                src="/tilda/images/ozbye-new-logo.svg"
+                alt="O‘zbekiston Bunyodkor Yoshlari"
+                className="w-full max-w-[300px] object-contain md:max-w-[380px]"
+              />
             </div>
           </div>
         </div>
       </section>
+
+      <SiteFooter />
     </main>
   );
 }
