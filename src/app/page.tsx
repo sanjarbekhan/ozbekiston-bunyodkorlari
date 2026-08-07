@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import PublicArticles from "@/components/PublicArticles";
 import SiteMenu from "@/components/SiteMenu";
@@ -172,7 +172,7 @@ export default async function Home() {
 
               <div className="flex items-center justify-center md:justify-end">
                 <img
-                  src="/tilda/images/tild3263-6635-4137-b135-643566303437__acsacs.png"
+                  src="/tilda/images/ozbye-new-logo.svg"
                   alt="O‘ZBYE"
                   className="w-full max-w-[240px] object-contain sm:max-w-[320px] md:max-w-[430px]"
                 />
@@ -184,5 +184,3 @@ export default async function Home() {
     </main>
   );
 }
-
-
