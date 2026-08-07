@@ -1,6 +1,6 @@
 import { supabase } from "@/lib/supabase";
 
-const SITE_URL = "https://bunyodkor.com";
+const SITE_URL = "https://www.bunyodkor.com";
 const escapeXml = (value: string) => value.replace(/[<>&'\"]/g, (char) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", "'": "&apos;", '"': "&quot;" }[char] || char));
 
 export async function GET() {
