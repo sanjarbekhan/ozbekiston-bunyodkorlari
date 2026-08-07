@@ -4,21 +4,9 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import type { ContentBlock } from "@/lib/article-types";
+import CategoryPicker from "@/components/admin/CategoryPicker";
 
 const ADMIN_EMAIL = "sanjarhasanov465@gmail.com";
-const CATEGORIES = [
-  "Ta'lim",
-  "IT",
-  "Sport",
-  "Huquq",
-  "Tibbiyot",
-  "OAV",
-  "San'at",
-  "Siyosat",
-  "Tashkilot",
-  "Harbiy",
-  "Valantyorlik",
-] as const;
 
 type ArticleDraft = {
   id?: string;
@@ -112,20 +100,8 @@ export default function MobileArticleEditor({ initial }: { initial?: Partial<Art
     [form.slug, form.title]
   );
 
-  const selectedCategories = useMemo(
-    () => form.category.split(";").map((item) => item.trim()).filter(Boolean),
-    [form.category]
-  );
-
   function patch(values: Partial<ArticleDraft>) {
     setForm((current) => ({ ...current, ...values }));
-  }
-
-  function toggleCategory(category: string) {
-    const next = selectedCategories.includes(category)
-      ? selectedCategories.filter((item) => item !== category)
-      : [...selectedCategories, category];
-    patch({ category: next.join(";") });
   }
 
   function addBlock(type: ContentBlock["ty"]) {
@@ -336,26 +312,8 @@ export default function MobileArticleEditor({ initial }: { initial?: Partial<Art
 
           <section className="rounded-[26px] bg-white p-4 shadow-[0_10px_30px_rgba(15,23,42,.06)] sm:p-6">
             <p className="text-xs font-black uppercase tracking-[0.18em] text-[#0043a4]">3. Yo‘nalish</p>
-            <p className="mt-1 text-sm font-medium text-slate-500">Bir nechta yo‘nalishni tanlash mumkin.</p>
-            <div className="mt-4 flex flex-wrap gap-2">
-              {CATEGORIES.map((category) => {
-                const active = selectedCategories.includes(category);
-                return (
-                  <button
-                    key={category}
-                    type="button"
-                    onClick={() => toggleCategory(category)}
-                    className={`rounded-full px-4 py-2.5 text-sm font-extrabold transition ${
-                      active
-                        ? "bg-[#0043a4] text-white"
-                        : "border border-slate-200 bg-white text-slate-600"
-                    }`}
-                  >
-                    {active ? "✓ " : ""}{category}
-                  </button>
-                );
-              })}
-            </div>
+            <p className="mt-1 text-sm font-medium text-slate-500">Bir nechta yo‘nalishni tanlash yoki yangisini qo‘shish mumkin.</p>
+            <CategoryPicker value={form.category} onChange={(category) => patch({ category })} />
           </section>
 
           <section className="rounded-[26px] bg-white p-4 shadow-[0_10px_30px_rgba(15,23,42,.06)] sm:p-6">
