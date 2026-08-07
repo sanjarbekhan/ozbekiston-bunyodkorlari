@@ -9,7 +9,7 @@ import type { ArticleRecord } from "@/lib/article-types";
 import { supabase } from "@/lib/supabase";
 
 export const revalidate = 60;
-const SITE_URL = "https://bunyodkor.com";
+const SITE_URL = "https://www.bunyodkor.com";
 
 function plain(value?: string | null) {
   return (value || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
@@ -24,6 +24,10 @@ function formatDate(value?: string | null) {
     month: "long",
     year: "numeric",
   }).format(date);
+}
+
+function canonicalFor(slug: string) {
+  return `${SITE_URL}/bunyodkorlar/${slug}`;
 }
 
 async function getArticle(slug: string) {
@@ -53,7 +57,7 @@ export async function generateMetadata({
     plain(article.description) ||
     `${article.title} haqida ensiklopedik maqola.`;
   const image = article.social_image_url || article.image_url || undefined;
-  const canonical = article.canonical_url || `${SITE_URL}/bunyodkorlar/${article.slug}`;
+  const canonical = canonicalFor(article.slug);
 
   return {
     title,
@@ -110,7 +114,7 @@ export default async function ArticlePage({
     .order("published_at", { ascending: false })
     .limit(4);
 
-  const canonical = article.canonical_url || `${SITE_URL}/bunyodkorlar/${article.slug}`;
+  const canonical = canonicalFor(article.slug);
   const intro = plain(article.description);
   const published = formatDate(article.published_at || article.created_at);
   const schema = {
@@ -126,7 +130,7 @@ export default async function ArticlePage({
     author: {
       "@type": "Organization",
       name: article.author_name || "O‘zbekiston Bunyodkor Yoshlari Ensiklopediyasi",
-      url: article.author_url || SITE_URL,
+      url: SITE_URL,
     },
     publisher: {
       "@type": "Organization",
