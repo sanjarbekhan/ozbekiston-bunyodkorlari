@@ -1,4 +1,5 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
+import AdminQuickNav from "@/components/admin/AdminQuickNav";
 
 export const metadata: Metadata = {
   title: "Admin panel",
@@ -19,5 +20,10 @@ export default function AdminLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return children;
+  return (
+    <>
+      {children}
+      <AdminQuickNav />
+    </>
+  );
 }
