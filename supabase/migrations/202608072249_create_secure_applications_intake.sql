@@ -18,19 +18,23 @@ revoke all on public.applications from anon, authenticated;
 grant insert on public.applications to anon, authenticated;
 grant select, update, delete on public.applications to authenticated;
 
+drop policy if exists "Public submit applications" on public.applications;
 create policy "Public submit applications" on public.applications
 for insert to anon, authenticated
 with check (status = 'new' and source = 'web' and admin_note is null);
 
+drop policy if exists "Admin read applications" on public.applications;
 create policy "Admin read applications" on public.applications
 for select to authenticated
 using ((select auth.uid()) = '988b7d1f-4028-42a6-9a8f-be869224be6e'::uuid);
 
+drop policy if exists "Admin update applications" on public.applications;
 create policy "Admin update applications" on public.applications
 for update to authenticated
 using ((select auth.uid()) = '988b7d1f-4028-42a6-9a8f-be869224be6e'::uuid)
 with check ((select auth.uid()) = '988b7d1f-4028-42a6-9a8f-be869224be6e'::uuid);
 
+drop policy if exists "Admin delete applications" on public.applications;
 create policy "Admin delete applications" on public.applications
 for delete to authenticated
 using ((select auth.uid()) = '988b7d1f-4028-42a6-9a8f-be869224be6e'::uuid);
@@ -50,6 +54,7 @@ begin
 end;
 $$;
 
+drop trigger if exists set_applications_updated_at on public.applications;
 create trigger set_applications_updated_at
 before update on public.applications
 for each row execute function public.set_applications_updated_at();
