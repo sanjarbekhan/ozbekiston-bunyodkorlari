@@ -1,7 +1,6 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { supabase } from "@/lib/supabase";
 
 const initialForm = {
   full_name: "",
@@ -43,25 +42,25 @@ export default function ApplicationForm() {
     }
 
     setBusy(true);
-    const { error: insertError } = await supabase.from("applications").insert({
-      full_name: form.full_name.trim(),
-      phone: form.phone.trim(),
-      telegram: form.telegram.trim() || null,
-      gender: form.gender || null,
-      age_group: form.age_group.trim() || null,
-      promo_code: form.promo_code.trim() || null,
-      status: "new",
-      source: "web",
-    });
+    try {
+      const response = await fetch("/api/applications", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
 
-    setBusy(false);
-    if (insertError) {
+      if (!response.ok) {
+        setError("Arizani yuborishda xatolik yuz berdi. Iltimos, qayta urinib ko‘ring.");
+        return;
+      }
+
+      setForm(initialForm);
+      setDone(true);
+    } catch {
       setError("Arizani yuborishda xatolik yuz berdi. Iltimos, qayta urinib ko‘ring.");
-      return;
+    } finally {
+      setBusy(false);
     }
-
-    setForm(initialForm);
-    setDone(true);
   }
 
   if (done) {
@@ -172,7 +171,7 @@ export default function ApplicationForm() {
         {busy ? "Yuborilmoqda..." : "Arizani yuborish"}
       </button>
       <p className="mt-3 text-center text-xs font-medium leading-5 text-slate-400">
-        Arizani yuborish orqali siz bilan bog‘lanish uchun taqdim etgan ma’lumotlaringizdan foydalanishga rozilik bildirasiz.
+        Arizani yuborish orqali siz bilan bog‘lanish uchun taqdim etgan ma’lumotlaringizdan foydalanishga va xavfsizlik maqsadida so‘rov IP manzili qayd etilishiga rozilik bildirasiz.
       </p>
     </form>
   );
