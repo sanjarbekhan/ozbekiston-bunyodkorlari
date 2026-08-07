@@ -34,7 +34,11 @@ function isMajorHeading(value?: string | null) {
   ].some((keyword) => text.includes(keyword));
 }
 
-function cleanLegacyHtml(html: string, title?: string | null, description?: string | null) {
+function cleanLegacyHtml(
+  html: string,
+  title?: string | null,
+  description?: string | null
+) {
   let output = html;
   const titlePlain = plain(title);
   const descriptionPlain = plain(description);
@@ -44,21 +48,25 @@ function cleanLegacyHtml(html: string, title?: string | null, description?: stri
     output = output.replace(firstHeading, "");
   }
 
-  const firstText = output.match(/<(?:div|p)\b[^>]*class=["'][^"']*t-redactor__text[^"']*["'][^>]*>[\s\S]*?<\/(?:div|p)>/i)?.[0];
+  const firstText = output.match(
+    /<(?:div|p)\b[^>]*class=["'][^"']*t-redactor__text[^"']*["'][^>]*>[\s\S]*?<\/(?:div|p)>/i
+  )?.[0];
   if (
     firstText &&
     descriptionPlain &&
-    (plain(firstText) === descriptionPlain || plain(firstText).startsWith(descriptionPlain))
+    (plain(firstText) === descriptionPlain ||
+      plain(firstText).startsWith(descriptionPlain))
   ) {
     output = output.replace(firstText, "");
   }
 
   output = output.replace(
     /<h3\b([^>]*)>([\s\S]*?)<\/h3>/gi,
-    (match, attrs, inner) =>
-      isMajorHeading(inner)
-        ? match
-        : `<h4 class="article-minor-heading"${attrs}>${inner}</h4>`
+    (match, attrs, inner) => {
+      if (isMajorHeading(inner)) return match;
+      const cleanAttrs = String(attrs).replace(/\sclass=(['"])[\s\S]*?\1/i, "");
+      return `<h4 class="article-minor-heading"${cleanAttrs}>${inner}</h4>`;
+    }
   );
 
   return output;
@@ -122,18 +130,38 @@ export default function ArticleContent({
         if (block.ty === "heading") {
           const level = safeLevel(block.le);
           if (level === 4 || (level === 3 && !isMajorHeading(block.te))) {
-            return <h4 key={key} dangerouslySetInnerHTML={{ __html: block.te || "" }} />;
+            return (
+              <h4
+                key={key}
+                className="article-minor-heading"
+                dangerouslySetInnerHTML={{ __html: block.te || "" }}
+              />
+            );
           }
           if (level === 3) {
-            return <h3 key={key} dangerouslySetInnerHTML={{ __html: block.te || "" }} />;
+            return (
+              <h3
+                key={key}
+                dangerouslySetInnerHTML={{ __html: block.te || "" }}
+              />
+            );
           }
-          return <h2 key={key} dangerouslySetInnerHTML={{ __html: block.te || "" }} />;
+          return (
+            <h2
+              key={key}
+              dangerouslySetInnerHTML={{ __html: block.te || "" }}
+            />
+          );
         }
 
         if (["text", "preface", "html"].includes(block.ty)) {
           const html =
             block.ty === "html"
-              ? cleanLegacyHtml(block.te || "", articleTitle, articleDescription)
+              ? cleanLegacyHtml(
+                  block.te || "",
+                  articleTitle,
+                  articleDescription
+                )
               : block.te || "";
           return (
             <div
@@ -147,7 +175,11 @@ export default function ArticleContent({
         if (block.ty === "image" && block.url) {
           return (
             <figure key={key}>
-              <img src={block.url} alt={block.alt || block.caption || "Maqola rasmi"} loading="lazy" />
+              <img
+                src={block.url}
+                alt={block.alt || block.caption || "Maqola rasmi"}
+                loading="lazy"
+              />
               {block.caption && <figcaption>{block.caption}</figcaption>}
             </figure>
           );
@@ -156,7 +188,9 @@ export default function ArticleContent({
         if (block.ty === "video" && block.url) {
           const isYoutube = /youtube\.com|youtu\.be/.test(block.url);
           if (isYoutube) {
-            const id = block.url.match(/(?:youtu\.be\/|v=|embed\/)([A-Za-z0-9_-]{6,})/)?.[1];
+            const id = block.url.match(
+              /(?:youtu\.be\/|v=|embed\/)([A-Za-z0-9_-]{6,})/
+            )?.[1];
             return id ? (
               <div key={key} className="article-video-frame">
                 <iframe
@@ -170,7 +204,12 @@ export default function ArticleContent({
           }
 
           return (
-            <video key={key} controls preload="metadata" poster={block.alt || undefined}>
+            <video
+              key={key}
+              controls
+              preload="metadata"
+              poster={block.alt || undefined}
+            >
               <source src={block.url} />
             </video>
           );
