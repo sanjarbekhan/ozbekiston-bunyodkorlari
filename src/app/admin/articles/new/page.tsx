@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import ArticleEditor from "@/components/admin/ArticleEditor";
+import MobileArticleEditor from "@/components/admin/MobileArticleEditor";
 
 export const metadata: Metadata = {
   title: "Yangi maqola",
@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function NewArticlePage() {
-  return <ArticleEditor />;
+  return <MobileArticleEditor />;
 }

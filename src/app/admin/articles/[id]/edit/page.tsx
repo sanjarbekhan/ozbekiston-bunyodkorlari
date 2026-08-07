@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import ArticleEditor from "@/components/admin/ArticleEditor";
+import MobileArticleEditor from "@/components/admin/MobileArticleEditor";
 import type { ArticleRecord } from "@/lib/article-types";
 import { supabase } from "@/lib/supabase";
 
@@ -19,10 +19,10 @@ export default function EditArticlePage() {
       });
   }, [params.id]);
 
-  if (error) return <main className="min-h-screen bg-[#eef3fb] p-8"><p className="rounded-xl bg-white p-5 text-red-600 shadow">{error}</p></main>;
-  if (!article) return <main className="min-h-screen bg-[#eef3fb] p-8"><p>Yuklanmoqda...</p></main>;
+  if (error) return <main className="min-h-screen bg-[#eef3fb] p-4 md:p-8"><p className="rounded-xl bg-white p-5 text-red-600 shadow">{error}</p></main>;
+  if (!article) return <main className="min-h-screen bg-[#eef3fb] p-4 md:p-8"><p>Yuklanmoqda...</p></main>;
 
-  return <ArticleEditor initial={{
+  return <MobileArticleEditor initial={{
     id: article.id,
     title: article.title,
     slug: article.slug,
