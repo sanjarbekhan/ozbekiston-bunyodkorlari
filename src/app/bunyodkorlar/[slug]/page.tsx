@@ -7,7 +7,7 @@ import type { ArticleRecord } from "@/lib/article-types";
 import { supabase } from "@/lib/supabase";
 
 export const revalidate = 60;
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://bunyodkor.com";
+const SITE_URL = "https://bunyodkor.com";
 
 function plain(value?: string | null) {
   return (value || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
