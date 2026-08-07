@@ -10,6 +10,21 @@ type PublicArticleCardProps = {
   compact?: boolean;
 };
 
+const UZ_MONTHS = [
+  "yanvar",
+  "fevral",
+  "mart",
+  "aprel",
+  "may",
+  "iyun",
+  "iyul",
+  "avgust",
+  "sentabr",
+  "oktabr",
+  "noyabr",
+  "dekabr",
+] as const;
+
 function cleanText(value?: string | null) {
   return (value || "").replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
 }
@@ -18,11 +33,11 @@ function formatDate(value?: string | null) {
   if (!value) return "";
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "";
-  return new Intl.DateTimeFormat("uz-UZ", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  }).format(date);
+
+  const day = date.getUTCDate();
+  const month = UZ_MONTHS[date.getUTCMonth()];
+  const year = date.getUTCFullYear();
+  return `${day}-${month}, ${year}`;
 }
 
 export default function PublicArticleCard({
