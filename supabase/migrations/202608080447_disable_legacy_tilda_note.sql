@@ -1,0 +1,2 @@
+-- Frontend-only hotfix marker: legacy Tilda form submission is disabled in the iframe bridge.
+-- Applications must be submitted only through /api/applications into public.applications.
