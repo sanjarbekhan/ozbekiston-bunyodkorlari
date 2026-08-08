@@ -11,6 +11,8 @@ type Article = {
   slug: string;
   category: string | null;
   status: string;
+  suspension_reason: string | null;
+  suspended_at: string | null;
   created_at: string;
 };
 
@@ -18,7 +20,15 @@ function statusLabel(status: string) {
   if (status === "published") return "E’lon qilingan";
   if (status === "draft") return "Qoralama";
   if (status === "archived") return "Arxiv";
+  if (status === "suspended") return "To‘xtatilgan";
   return status;
+}
+
+function statusClass(status: string) {
+  if (status === "published") return "bg-emerald-50 text-emerald-700";
+  if (status === "draft") return "bg-amber-50 text-amber-700";
+  if (status === "suspended") return "bg-red-50 text-red-700";
+  return "bg-slate-100 text-slate-600";
 }
 
 export default function AdminPage() {
@@ -27,6 +37,7 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [busyId, setBusyId] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadAdmin() {
@@ -38,10 +49,10 @@ export default function AdminPage() {
 
       const { data, error } = await supabase
         .from("articles")
-        .select("id, title, slug, category, status, created_at")
+        .select("id, title, slug, category, status, suspension_reason, suspended_at, created_at")
         .order("created_at", { ascending: false });
 
-      if (!error && data) setArticles(data);
+      if (!error && data) setArticles(data as Article[]);
       setLoading(false);
     }
 
@@ -54,7 +65,8 @@ export default function AdminPage() {
       const matchesSearch =
         article.title.toLowerCase().includes(query) ||
         article.slug.toLowerCase().includes(query) ||
-        (article.category || "").toLowerCase().includes(query);
+        (article.category || "").toLowerCase().includes(query) ||
+        (article.suspension_reason || "").toLowerCase().includes(query);
       const matchesStatus = statusFilter === "all" || article.status === statusFilter;
       return matchesSearch && matchesStatus;
     });
@@ -62,14 +74,87 @@ export default function AdminPage() {
 
   const publishedCount = articles.filter((article) => article.status === "published").length;
   const draftCount = articles.filter((article) => article.status === "draft").length;
+  const suspendedCount = articles.filter((article) => article.status === "suspended").length;
 
   async function logout() {
     await supabase.auth.signOut();
     router.push("/admin/login");
   }
 
+  async function toggleSuspension(article: Article) {
+    if (busyId) return;
+
+    if (article.status === "suspended") {
+      if (!confirm(`${article.title} maqolasi yana saytda e’lon qilinsinmi?`)) return;
+      setBusyId(article.id);
+      const { error } = await supabase
+        .from("articles")
+        .update({
+          status: "published",
+          suspension_reason: null,
+          suspended_at: null,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", article.id);
+
+      if (!error) {
+        setArticles((current) =>
+          current.map((item) =>
+            item.id === article.id
+              ? { ...item, status: "published", suspension_reason: null, suspended_at: null }
+              : item
+          )
+        );
+      } else {
+        alert(`Xato: ${error.message}`);
+      }
+      setBusyId(null);
+      return;
+    }
+
+    const reason = prompt(
+      "Maqolani to‘xtatish sababini yozing. Bu sabab faqat admin panelda ko‘rinadi.",
+      "To‘lov amalga oshirilmagan"
+    );
+    if (reason === null) return;
+
+    setBusyId(article.id);
+    const suspendedAt = new Date().toISOString();
+    const { error } = await supabase
+      .from("articles")
+      .update({
+        status: "suspended",
+        suspension_reason: reason.trim() || "Sabab ko‘rsatilmagan",
+        suspended_at: suspendedAt,
+        updated_at: suspendedAt,
+      })
+      .eq("id", article.id);
+
+    if (!error) {
+      setArticles((current) =>
+        current.map((item) =>
+          item.id === article.id
+            ? {
+                ...item,
+                status: "suspended",
+                suspension_reason: reason.trim() || "Sabab ko‘rsatilmagan",
+                suspended_at: suspendedAt,
+              }
+            : item
+        )
+      );
+    } else {
+      alert(`Xato: ${error.message}`);
+    }
+    setBusyId(null);
+  }
+
   if (loading) {
-    return <main className="min-h-screen bg-[#f4f7fb] p-5 text-[#111827]"><p className="font-bold">Yuklanmoqda...</p></main>;
+    return (
+      <main className="min-h-screen bg-[#f4f7fb] p-5 text-[#111827]">
+        <p className="font-bold">Yuklanmoqda...</p>
+      </main>
+    );
   }
 
   return (
@@ -89,7 +174,7 @@ export default function AdminPage() {
             + Yangi maqola
           </Link>
 
-          <div className="mt-5 grid grid-cols-3 gap-2 sm:gap-3">
+          <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
             <div className="rounded-2xl bg-white/8 p-3 sm:p-4">
               <p className="text-[11px] font-bold text-white/50 sm:text-xs">Jami</p>
               <p className="mt-1 text-xl font-black sm:text-2xl">{articles.length}</p>
@@ -101,6 +186,10 @@ export default function AdminPage() {
             <div className="rounded-2xl bg-white/8 p-3 sm:p-4">
               <p className="text-[11px] font-bold text-white/50 sm:text-xs">Qoralama</p>
               <p className="mt-1 text-xl font-black sm:text-2xl">{draftCount}</p>
+            </div>
+            <div className="rounded-2xl bg-red-500/15 p-3 sm:p-4">
+              <p className="text-[11px] font-bold text-red-100/70 sm:text-xs">To‘xtatilgan</p>
+              <p className="mt-1 text-xl font-black sm:text-2xl">{suspendedCount}</p>
             </div>
           </div>
         </header>
@@ -117,6 +206,7 @@ export default function AdminPage() {
               ["all", "Hammasi"],
               ["published", "E’lon qilingan"],
               ["draft", "Qoralama"],
+              ["suspended", "To‘xtatilgan"],
               ["archived", "Arxiv"],
             ].map(([value, label]) => (
               <button
@@ -139,22 +229,22 @@ export default function AdminPage() {
 
         <div className="mt-3 space-y-3 md:hidden">
           {filteredArticles.map((article) => (
-            <article key={article.id} className="rounded-[22px] bg-white p-4 shadow-[0_8px_24px_rgba(15,23,42,.05)]">
+            <article key={article.id} className={`rounded-[22px] bg-white p-4 shadow-[0_8px_24px_rgba(15,23,42,.05)] ${article.status === "suspended" ? "border border-red-100" : ""}`}>
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
                   <h2 className="text-base font-black leading-5">{article.title}</h2>
                   <p className="mt-1 truncate text-xs font-medium text-slate-400">/bunyodkorlar/{article.slug}</p>
                 </div>
-                <span className={`shrink-0 rounded-full px-3 py-1.5 text-[11px] font-black ${
-                  article.status === "published"
-                    ? "bg-emerald-50 text-emerald-700"
-                    : article.status === "draft"
-                    ? "bg-amber-50 text-amber-700"
-                    : "bg-slate-100 text-slate-600"
-                }`}>
+                <span className={`shrink-0 rounded-full px-3 py-1.5 text-[11px] font-black ${statusClass(article.status)}`}>
                   {statusLabel(article.status)}
                 </span>
               </div>
+
+              {article.status === "suspended" && article.suspension_reason && (
+                <div className="mt-3 rounded-xl bg-red-50 px-3 py-2.5 text-xs font-bold leading-5 text-red-700">
+                  Sabab: {article.suspension_reason}
+                </div>
+              )}
 
               <div className="mt-3 flex flex-wrap items-center gap-2 text-xs font-semibold text-slate-500">
                 {article.category && <span className="rounded-full bg-[#eef3fb] px-3 py-1.5">{article.category}</span>}
@@ -168,6 +258,24 @@ export default function AdminPage() {
                 <Link href={`/admin/articles/${article.id}/edit`} className="flex min-h-11 items-center justify-center rounded-xl bg-[#0043a4] px-3 py-2 text-sm font-extrabold text-white">
                   Tahrirlash
                 </Link>
+                {(article.status === "published" || article.status === "suspended") && (
+                  <button
+                    type="button"
+                    disabled={busyId === article.id}
+                    onClick={() => toggleSuspension(article)}
+                    className={`col-span-2 min-h-11 rounded-xl px-3 py-2 text-sm font-extrabold disabled:opacity-50 ${
+                      article.status === "suspended"
+                        ? "bg-emerald-600 text-white"
+                        : "bg-red-50 text-red-700"
+                    }`}
+                  >
+                    {busyId === article.id
+                      ? "Saqlanmoqda..."
+                      : article.status === "suspended"
+                      ? "Qayta e’lon qilish"
+                      : "Maqolani to‘xtatish"}
+                  </button>
+                )}
               </div>
             </article>
           ))}
@@ -190,18 +298,35 @@ export default function AdminPage() {
             </thead>
             <tbody>
               {filteredArticles.map((article) => (
-                <tr key={article.id} className="border-t border-slate-100">
+                <tr key={article.id} className={`border-t border-slate-100 ${article.status === "suspended" ? "bg-red-50/30" : ""}`}>
                   <td className="p-4">
                     <p className="font-extrabold">{article.title}</p>
                     <p className="mt-1 text-xs text-slate-400">/bunyodkorlar/{article.slug}</p>
+                    {article.status === "suspended" && article.suspension_reason && (
+                      <p className="mt-2 max-w-md text-xs font-semibold text-red-600">Sabab: {article.suspension_reason}</p>
+                    )}
                   </td>
                   <td className="p-4 text-sm">{article.category || "—"}</td>
-                  <td className="p-4"><span className="rounded-full bg-[#eef3fb] px-3 py-1.5 text-xs font-extrabold">{statusLabel(article.status)}</span></td>
+                  <td className="p-4"><span className={`rounded-full px-3 py-1.5 text-xs font-extrabold ${statusClass(article.status)}`}>{statusLabel(article.status)}</span></td>
                   <td className="p-4 text-sm text-slate-500">{new Date(article.created_at).toLocaleDateString("uz-UZ")}</td>
                   <td className="p-4">
-                    <div className="flex gap-3 text-sm font-extrabold">
+                    <div className="flex flex-wrap gap-3 text-sm font-extrabold">
                       <Link href={`/bunyodkorlar/${article.slug}`} className="text-slate-500">Ochish</Link>
                       <Link href={`/admin/articles/${article.id}/edit`} className="text-[#0043a4]">Tahrirlash</Link>
+                      {(article.status === "published" || article.status === "suspended") && (
+                        <button
+                          type="button"
+                          disabled={busyId === article.id}
+                          onClick={() => toggleSuspension(article)}
+                          className={article.status === "suspended" ? "text-emerald-700 disabled:opacity-50" : "text-red-600 disabled:opacity-50"}
+                        >
+                          {busyId === article.id
+                            ? "Saqlanmoqda..."
+                            : article.status === "suspended"
+                            ? "Qayta e’lon"
+                            : "To‘xtatish"}
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>
