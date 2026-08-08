@@ -2,9 +2,44 @@
 
 import { useCallback, useRef } from "react";
 
-function getText(formData: FormData, key: string) {
-  const value = formData.get(key);
-  return typeof value === "string" ? value.trim() : "";
+function findFieldGroup(form: HTMLFormElement, fieldName: string) {
+  return Array.from(form.querySelectorAll<HTMLElement>(".t-input-group")).find(
+    (group) => group.getAttribute("data-field-name") === fieldName,
+  ) || null;
+}
+
+function getFieldValue(form: HTMLFormElement, fieldName: string) {
+  const group = findFieldGroup(form, fieldName);
+
+  if (group) {
+    const checked = group.querySelector<HTMLInputElement>(
+      'input[type="radio"]:checked, input[type="checkbox"]:checked',
+    );
+    if (checked) return checked.value.trim();
+
+    const controls = Array.from(
+      group.querySelectorAll<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>(
+        'input:not([type="hidden"]):not([type="radio"]):not([type="checkbox"]), textarea, select',
+      ),
+    );
+
+    const nonEmpty = controls.find((control) => !control.disabled && control.value.trim().length > 0);
+    if (nonEmpty) return nonEmpty.value.trim();
+  }
+
+  const named = form.elements.namedItem(fieldName);
+  if (named instanceof RadioNodeList) {
+    return typeof named.value === "string" ? named.value.trim() : "";
+  }
+  if (
+    named instanceof HTMLInputElement ||
+    named instanceof HTMLTextAreaElement ||
+    named instanceof HTMLSelectElement
+  ) {
+    return named.value.trim();
+  }
+
+  return "";
 }
 
 export default function LegacyApplicationFrame() {
@@ -19,8 +54,6 @@ export default function LegacyApplicationFrame() {
     const legacyForm = doc.getElementById("form2119410573") as HTMLFormElement | null;
     if (!legacyForm || legacyForm.dataset.supabaseBridge === "1") return;
 
-    // Clone only the form. The original Tilda page/CSS/layout stays untouched,
-    // while listeners attached directly to the legacy form are discarded.
     const form = legacyForm.cloneNode(true) as HTMLFormElement;
     form.id = "form2119410573";
     form.name = "form2119410573";
@@ -37,7 +70,6 @@ export default function LegacyApplicationFrame() {
 
     const submitButton = form.querySelector("button[type='submit'], button.t-submit, .t-submit") as HTMLButtonElement | null;
     if (submitButton) {
-      // Never dispatch a native Tilda form submit/captcha flow.
       submitButton.type = "button";
       submitButton.disabled = false;
       submitButton.removeAttribute("aria-disabled");
@@ -47,7 +79,7 @@ export default function LegacyApplicationFrame() {
 
     const removeCaptcha = () => {
       doc.querySelectorAll(
-        "iframe[src*='captcha'], iframe[src*='recaptcha'], iframe[src*='hcaptcha'], [class*='captcha'], [id*='captcha']"
+        "iframe[src*='captcha'], iframe[src*='recaptcha'], iframe[src*='hcaptcha'], [class*='captcha'], [id*='captcha']",
       ).forEach((node) => node.remove());
     };
     removeCaptcha();
@@ -55,21 +87,41 @@ export default function LegacyApplicationFrame() {
     const observer = new MutationObserver(removeCaptcha);
     if (doc.body) observer.observe(doc.body, { childList: true, subtree: true });
 
+    let customError = form.querySelector<HTMLElement>("[data-ozbye-error]");
+    if (!customError) {
+      customError = doc.createElement("div");
+      customError.setAttribute("data-ozbye-error", "1");
+      customError.style.display = "none";
+      customError.style.margin = "16px 0";
+      customError.style.padding = "12px 16px";
+      customError.style.borderRadius = "8px";
+      customError.style.background = "#fff1f0";
+      customError.style.border = "1px solid #ffccc7";
+      customError.style.color = "#b42318";
+      customError.style.fontSize = "14px";
+      customError.style.lineHeight = "1.45";
+      customError.style.fontFamily = "Arial, sans-serif";
+      const submitWrap = submitButton?.closest(".t-form__submit") || submitButton?.parentElement;
+      if (submitWrap) submitWrap.before(customError);
+      else form.appendChild(customError);
+    }
+
     const showError = (message: string) => {
-      const errorBox = form.querySelector(".js-errorbox-all") as HTMLElement | null;
-      const errorItem = form.querySelector(".js-rule-error-all") as HTMLElement | null;
-      if (errorItem) errorItem.textContent = message;
-      if (errorBox) {
-        errorBox.style.display = "block";
-        errorBox.scrollIntoView({ behavior: "smooth", block: "center" });
+      const oldErrorBox = form.querySelector(".js-errorbox-all") as HTMLElement | null;
+      if (oldErrorBox) oldErrorBox.style.display = "none";
+      if (customError) {
+        customError.textContent = message;
+        customError.style.display = "block";
+        customError.scrollIntoView({ behavior: "smooth", block: "center" });
       } else {
         frameWindow.alert(message);
       }
     };
 
     const clearError = () => {
-      const errorBox = form.querySelector(".js-errorbox-all") as HTMLElement | null;
-      if (errorBox) errorBox.style.display = "none";
+      const oldErrorBox = form.querySelector(".js-errorbox-all") as HTMLElement | null;
+      if (oldErrorBox) oldErrorBox.style.display = "none";
+      if (customError) customError.style.display = "none";
     };
 
     let sending = false;
@@ -79,20 +131,27 @@ export default function LegacyApplicationFrame() {
       clearError();
       removeCaptcha();
 
-      const data = new FormData(form);
-      const fullName = getText(data, "Name");
-      const phone = getText(data, "Phone");
-      const telegram = getText(data, "Telegram profili ochiq telefon raqam yoki Telegram username");
-      const gender = getText(data, "Jinsingiz?");
-      const ageGroup = getText(data, "yosh guruhi");
-      const promoCode = getText(data, "PROMOKOD (Agar bo'lsa)");
+      const fullName = getFieldValue(form, "Name");
+      const phone = getFieldValue(form, "Phone");
+      const telegram = getFieldValue(form, "Telegram profili ochiq telefon raqam yoki Telegram username");
+      const gender = getFieldValue(form, "Jinsingiz?");
+      const ageGroup = getFieldValue(form, "yosh guruhi");
+      const promoCode = getFieldValue(form, "PROMOKOD (Agar bo'lsa)");
 
       if (fullName.length < 2) {
         showError("Ism va familiyangizni kiriting.");
         return;
       }
-      if (phone.length < 5) {
-        showError("Telefon raqamingizni kiriting.");
+      if (phone.replace(/\D/g, "").length < 7) {
+        showError("Telefon raqamingizni to‘liq kiriting.");
+        return;
+      }
+      if (!gender) {
+        showError("Jinsingizni belgilang.");
+        return;
+      }
+      if (!ageGroup) {
+        showError("Yosh guruhingizni belgilang.");
         return;
       }
 
@@ -126,6 +185,7 @@ export default function LegacyApplicationFrame() {
         const inputs = form.querySelector(".t-form__inputsbox") as HTMLElement | null;
         const success = form.querySelector(".js-successbox") as HTMLElement | null;
         if (inputs) inputs.style.display = "none";
+        if (customError) customError.style.display = "none";
         if (success) {
           success.style.display = "block";
           success.innerHTML = "<div style='font-weight:700;margin-bottom:8px'>Rahmat!</div><div>Ma’lumotlaringizni qabul qilib oldik! Tez orada siz bilan bog‘lanamiz</div>";
@@ -144,8 +204,6 @@ export default function LegacyApplicationFrame() {
       }
     };
 
-    // Capture at iframe WINDOW level. Window is first in the event path, so this
-    // runs before Tilda's document/form/button listeners can swallow the click.
     frameWindow.addEventListener("click", (event) => {
       const target = event.target as Element | null;
       const clickedButton = target && typeof target.closest === "function"
@@ -159,7 +217,6 @@ export default function LegacyApplicationFrame() {
       void submitToOzbye();
     }, true);
 
-    // Direct handler too, as a second independent path.
     if (submitButton) {
       submitButton.onclick = (event) => {
         event.preventDefault();
@@ -178,7 +235,6 @@ export default function LegacyApplicationFrame() {
       void submitToOzbye();
     }, true);
 
-    // Safety net: native submit is always blocked.
     form.addEventListener("submit", (event) => {
       event.preventDefault();
       event.stopPropagation();
