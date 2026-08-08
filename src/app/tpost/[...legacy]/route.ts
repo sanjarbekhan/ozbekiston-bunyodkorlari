@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 
 // Keep legacy Tilda profile links compatible with the canonical article route.
+// Production redeploy trigger after suspended-route fix verification.
 export async function GET(request: NextRequest, { params }: { params: Promise<{ legacy: string[] }> }) {
   const { legacy } = await params;
   const candidates = legacy.map(decodeURIComponent).filter(Boolean).reverse();
