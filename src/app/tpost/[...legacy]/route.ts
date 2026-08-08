@@ -6,11 +6,16 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   const candidates = legacy.map(decodeURIComponent).filter(Boolean).reverse();
 
   for (const value of candidates) {
-    const { data } = await supabase.from("articles").select("slug")
-      .eq("status", "published")
+    const { data } = await supabase
+      .from("articles")
+      .select("slug,status")
       .or(`slug.eq.${value},legacy_post_id.eq.${value},source_id.eq.${value}`)
-      .limit(1).maybeSingle();
-    if (data?.slug) return NextResponse.redirect(new URL(`/bunyodkorlar/${data.slug}`, request.url), 301);
+      .limit(1)
+      .maybeSingle();
+
+    if (data?.slug && (data.status === "published" || data.status === "suspended")) {
+      return NextResponse.redirect(new URL(`/bunyodkorlar/${data.slug}`, request.url), 301);
+    }
   }
 
   return NextResponse.redirect(new URL("/bunyodkorlar", request.url), 301);
