@@ -5,6 +5,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 
+const ADMIN_USER_ID = "988b7d1f-4028-42a6-9a8f-be869224be6e";
+
 type Article = {
   id: string;
   title: string;
@@ -41,9 +43,10 @@ export default function AdminPage() {
 
   useEffect(() => {
     async function loadAdmin() {
-      const { data: sessionData } = await supabase.auth.getSession();
-      if (!sessionData.session) {
-        router.push("/admin/login");
+      const { data: userData, error: userError } = await supabase.auth.getUser();
+      if (userError || !userData.user || userData.user.id !== ADMIN_USER_ID) {
+        await supabase.auth.signOut();
+        router.replace("/admin/login");
         return;
       }
 
@@ -81,72 +84,74 @@ export default function AdminPage() {
     router.push("/admin/login");
   }
 
+  async function verifyAdminSession() {
+    const { data, error } = await supabase.auth.getUser();
+    if (error || !data.user || data.user.id !== ADMIN_USER_ID) {
+      alert("Admin sessiyasi tugagan. Iltimos, qayta kiring va amalni yana bajaring.");
+      await supabase.auth.signOut();
+      router.replace("/admin/login");
+      return false;
+    }
+    return true;
+  }
+
   async function toggleSuspension(article: Article) {
     if (busyId) return;
 
-    if (article.status === "suspended") {
-      if (!confirm(`${article.title} maqolasi yana saytda e’lon qilinsinmi?`)) return;
-      setBusyId(article.id);
-      const { error } = await supabase
-        .from("articles")
-        .update({
-          status: "published",
-          suspension_reason: null,
-          suspended_at: null,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", article.id);
+    const restoring = article.status === "suspended";
+    if (restoring && !confirm(`${article.title} maqolasi yana saytda e’lon qilinsinmi?`)) return;
 
-      if (!error) {
-        setArticles((current) =>
-          current.map((item) =>
-            item.id === article.id
-              ? { ...item, status: "published", suspension_reason: null, suspended_at: null }
-              : item
-          )
-        );
-      } else {
-        alert(`Xato: ${error.message}`);
-      }
-      setBusyId(null);
-      return;
+    let reason: string | null = null;
+    if (!restoring) {
+      reason = prompt(
+        "Maqolani to‘xtatish sababini yozing. Bu sabab faqat admin panelda ko‘rinadi.",
+        "To‘lov amalga oshirilmagan"
+      );
+      if (reason === null) return;
     }
 
-    const reason = prompt(
-      "Maqolani to‘xtatish sababini yozing. Bu sabab faqat admin panelda ko‘rinadi.",
-      "To‘lov amalga oshirilmagan"
-    );
-    if (reason === null) return;
-
     setBusyId(article.id);
-    const suspendedAt = new Date().toISOString();
-    const { error } = await supabase
-      .from("articles")
-      .update({
-        status: "suspended",
-        suspension_reason: reason.trim() || "Sabab ko‘rsatilmagan",
-        suspended_at: suspendedAt,
-        updated_at: suspendedAt,
-      })
-      .eq("id", article.id);
+    try {
+      if (!(await verifyAdminSession())) return;
 
-    if (!error) {
+      const suspendedAt = restoring ? null : new Date().toISOString();
+      const nextReason = restoring ? null : reason!.trim() || "Sabab ko‘rsatilmagan";
+      const nextStatus = restoring ? "published" : "suspended";
+
+      const { data: updated, error } = await supabase
+        .from("articles")
+        .update({
+          status: nextStatus,
+          suspension_reason: nextReason,
+          suspended_at: suspendedAt,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", article.id)
+        .select("id, status, suspension_reason, suspended_at")
+        .maybeSingle();
+
+      if (error || !updated || updated.status !== nextStatus) {
+        alert(
+          `Amal bazaga saqlanmadi.${error?.message ? ` Xato: ${error.message}` : ""} Sahifani yangilang yoki admin hisobiga qayta kiring.`
+        );
+        return;
+      }
+
       setArticles((current) =>
         current.map((item) =>
           item.id === article.id
             ? {
                 ...item,
-                status: "suspended",
-                suspension_reason: reason.trim() || "Sabab ko‘rsatilmagan",
-                suspended_at: suspendedAt,
+                status: updated.status,
+                suspension_reason: updated.suspension_reason,
+                suspended_at: updated.suspended_at,
               }
             : item
         )
       );
-    } else {
-      alert(`Xato: ${error.message}`);
+    } finally {
+      setBusyId(null);
     }
-    setBusyId(null);
   }
 
   if (loading) {

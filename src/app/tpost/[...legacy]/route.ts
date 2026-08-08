@@ -13,9 +13,20 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       .limit(1)
       .maybeSingle();
 
-    if (data?.slug && (data.status === "published" || data.status === "suspended")) {
+    if (data?.slug && data.status === "published") {
       return NextResponse.redirect(new URL(`/bunyodkorlar/${data.slug}`, request.url), 301);
     }
+  }
+
+  // Suspended rows are intentionally hidden from anonymous Supabase reads by RLS.
+  // Old Tilda links use /tpost/<slug>, so preserve that slug as a safe canonical
+  // fallback. The canonical page then renders the suspended/not-found notice.
+  const legacySlug = candidates.find((value) => /^[a-z0-9]+(?:-[a-z0-9]+)+$/i.test(value));
+  if (legacySlug) {
+    return NextResponse.redirect(
+      new URL(`/bunyodkorlar/${encodeURIComponent(legacySlug)}`, request.url),
+      301
+    );
   }
 
   return NextResponse.redirect(new URL("/bunyodkorlar", request.url), 301);
