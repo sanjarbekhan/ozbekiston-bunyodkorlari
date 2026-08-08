@@ -12,9 +12,9 @@ export default function manifest(): MetadataRoute.Manifest {
     theme_color: "#0043a4",
     icons: [
       {
-        src: "/icon.png",
-        sizes: "512x512",
-        type: "image/png",
+        src: "/tilda/images/ozbye-new-logo.svg",
+        sizes: "any",
+        type: "image/svg+xml",
       },
       {
         src: "/apple-icon.png",

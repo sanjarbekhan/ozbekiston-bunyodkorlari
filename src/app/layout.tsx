@@ -23,6 +23,16 @@ export const metadata: Metadata = {
   authors: [{ name: "O‘zbekiston Bunyodkor Yoshlari Ensiklopediyasi" }],
   creator: "O‘zbekiston Bunyodkor Yoshlari Ensiklopediyasi",
   publisher: "O‘zbekiston Bunyodkor Yoshlari Ensiklopediyasi",
+  icons: {
+    icon: [
+      {
+        url: "/tilda/images/ozbye-new-logo.svg",
+        type: "image/svg+xml",
+      },
+    ],
+    shortcut: "/tilda/images/ozbye-new-logo.svg",
+    apple: "/apple-icon.png",
+  },
   openGraph: {
     type: "website",
     locale: "uz_UZ",
