@@ -13,13 +13,14 @@ export default function LegacyApplicationFrame() {
   const wireForm = useCallback(() => {
     const iframe = iframeRef.current;
     const doc = iframe?.contentDocument;
-    if (!doc) return;
+    const frameWindow = iframe?.contentWindow;
+    if (!doc || !frameWindow) return;
 
     const legacyForm = doc.getElementById("form2119410573") as HTMLFormElement | null;
     if (!legacyForm || legacyForm.dataset.supabaseBridge === "1") return;
 
-    // Clone only the form itself. This keeps all original Tilda CSS/layout intact,
-    // but drops listeners attached directly to the old form and its children.
+    // Clone only the form. The original Tilda page/CSS/layout stays untouched,
+    // while listeners attached directly to the legacy form are discarded.
     const form = legacyForm.cloneNode(true) as HTMLFormElement;
     form.id = "form2119410573";
     form.name = "form2119410573";
@@ -34,16 +35,19 @@ export default function LegacyApplicationFrame() {
 
     legacyForm.replaceWith(form);
 
-    const submitButton = form.querySelector("button[type='submit'], .t-submit") as HTMLButtonElement | null;
+    const submitButton = form.querySelector("button[type='submit'], button.t-submit, .t-submit") as HTMLButtonElement | null;
     if (submitButton) {
-      // Critical: do not dispatch a native form submit event at all.
-      // This prevents Tilda Forms/captcha from ever starting.
+      // Never dispatch a native Tilda form submit/captcha flow.
       submitButton.type = "button";
+      submitButton.disabled = false;
+      submitButton.removeAttribute("aria-disabled");
+      submitButton.style.pointerEvents = "auto";
+      submitButton.style.cursor = "pointer";
     }
 
     const removeCaptcha = () => {
       doc.querySelectorAll(
-        "iframe[src*='captcha'], iframe[src*='recaptcha'], iframe[src*='hcaptcha'], [class*='captcha'], [id*='captcha'], .t-form__errorbox-middle"
+        "iframe[src*='captcha'], iframe[src*='recaptcha'], iframe[src*='hcaptcha'], [class*='captcha'], [id*='captcha']"
       ).forEach((node) => node.remove());
     };
     removeCaptcha();
@@ -58,6 +62,8 @@ export default function LegacyApplicationFrame() {
       if (errorBox) {
         errorBox.style.display = "block";
         errorBox.scrollIntoView({ behavior: "smooth", block: "center" });
+      } else {
+        frameWindow.alert(message);
       }
     };
 
@@ -124,6 +130,8 @@ export default function LegacyApplicationFrame() {
           success.style.display = "block";
           success.innerHTML = "<div style='font-weight:700;margin-bottom:8px'>Rahmat!</div><div>Ma’lumotlaringizni qabul qilib oldik! Tez orada siz bilan bog‘lanamiz</div>";
           success.scrollIntoView({ behavior: "smooth", block: "center" });
+        } else {
+          frameWindow.alert("Rahmat! Ma’lumotlaringiz qabul qilindi.");
         }
         form.reset();
       } catch (error) {
@@ -136,27 +144,46 @@ export default function LegacyApplicationFrame() {
       }
     };
 
-    submitButton?.addEventListener("click", (event) => {
+    // Capture at iframe WINDOW level. Window is first in the event path, so this
+    // runs before Tilda's document/form/button listeners can swallow the click.
+    frameWindow.addEventListener("click", (event) => {
+      const target = event.target as Element | null;
+      const clickedButton = target && typeof target.closest === "function"
+        ? target.closest("button.t-submit, button[type='button']")
+        : null;
+      if (!clickedButton || !form.contains(clickedButton)) return;
+
       event.preventDefault();
       event.stopPropagation();
       event.stopImmediatePropagation();
       void submitToOzbye();
     }, true);
 
-    // Block Enter from creating a native submit event; use our API instead.
-    form.addEventListener("keydown", (event) => {
-      if (event.key === "Enter" && !(event.target instanceof HTMLTextAreaElement)) {
+    // Direct handler too, as a second independent path.
+    if (submitButton) {
+      submitButton.onclick = (event) => {
         event.preventDefault();
         event.stopPropagation();
         void submitToOzbye();
-      }
+      };
+    }
+
+    frameWindow.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter") return;
+      const target = event.target as Element | null;
+      if (target?.tagName?.toLowerCase() === "textarea") return;
+      if (!target || !form.contains(target)) return;
+      event.preventDefault();
+      event.stopPropagation();
+      void submitToOzbye();
     }, true);
 
-    // Safety net only. The button is type=button, so this should not fire during normal use.
+    // Safety net: native submit is always blocked.
     form.addEventListener("submit", (event) => {
       event.preventDefault();
       event.stopPropagation();
       event.stopImmediatePropagation();
+      void submitToOzbye();
     }, true);
   }, []);
 
