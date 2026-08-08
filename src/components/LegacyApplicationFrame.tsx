@@ -140,6 +140,11 @@ export default function LegacyApplicationFrame() {
       doc.open();
       doc.write(frozenHtml);
       doc.close();
+
+      window.setTimeout(() => {
+        const freshDoc = iframeRef.current?.contentDocument;
+        if (freshDoc) installApplicationHandler(freshDoc);
+      }, 0);
       return;
     }
 
