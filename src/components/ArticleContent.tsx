@@ -1,3 +1,4 @@
+// Admin text blocks support Markdown while legacy HTML remains compatible.
 import type { ContentBlock } from "@/lib/article-types";
 
 function safeLevel(value?: number) {
