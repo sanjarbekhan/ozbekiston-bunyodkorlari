@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import ArticleContent from "@/components/ArticleContent";
-import PublicArticleCard from "@/components/PublicArticleCard";
 import SiteFooter from "@/components/SiteFooter";
 import SiteMenu from "@/components/SiteMenu";
 import type { ArticleRecord } from "@/lib/article-types";
@@ -105,14 +104,6 @@ export default async function ArticlePage({
   const { slug } = await params;
   const article = await getArticle(slug);
   if (!article) notFound();
-
-  const { data: related } = await supabase
-    .from("articles")
-    .select("id,title,slug,image_url,category,description,published_at,created_at")
-    .eq("status", "published")
-    .neq("id", article.id)
-    .order("published_at", { ascending: false })
-    .limit(4);
 
   const canonical = canonicalFor(article.slug);
   const intro = plain(article.description);
@@ -252,38 +243,6 @@ export default async function ArticlePage({
           </article>
         </div>
       </section>
-
-      {related && related.length > 0 && (
-        <section className="mx-auto max-w-7xl px-4 pb-20 pt-4 md:px-8 md:pb-24">
-          <div className="mb-8 flex items-end justify-between gap-5">
-            <div>
-              <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#0043a4]">
-                Davom eting
-              </p>
-              <h2 className="mt-2 text-3xl font-extrabold tracking-[-.035em] md:text-4xl">
-                Boshqa bunyodkorlar
-              </h2>
-            </div>
-            <Link href="/bunyodkorlar" className="hidden text-sm font-extrabold text-[#0043a4] sm:block">
-              Barchasi →
-            </Link>
-          </div>
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {related.map((item) => (
-              <PublicArticleCard
-                key={item.id}
-                title={item.title}
-                slug={item.slug}
-                imageUrl={item.image_url}
-                category={item.category}
-                description={item.description}
-                date={item.published_at || item.created_at}
-                compact
-              />
-            ))}
-          </div>
-        </section>
-      )}
 
       <SiteFooter />
     </main>
