@@ -69,6 +69,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="uz">
+      <head>
+        <link
+          rel="alternate"
+          type="application/rss+xml"
+          title="O‘zbekiston Bunyodkor Yoshlari — RSS"
+          href={`${SITE_URL}/rss.xml`}
+        />
+        <link
+          rel="alternate"
+          type="application/atom+xml"
+          title="O‘zbekiston Bunyodkor Yoshlari — Atom"
+          href={`${SITE_URL}/atom.xml`}
+        />
+      </head>
       <body>{children}</body>
     </html>
   );
