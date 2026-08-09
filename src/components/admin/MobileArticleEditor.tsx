@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import type { ContentBlock } from "@/lib/article-types";
 import CategoryPicker from "@/components/admin/CategoryPicker";
+import RichTextEditor from "@/components/admin/RichTextEditor";
 
 const ADMIN_EMAIL = "sanjarhasanov465@gmail.com";
 
@@ -47,7 +48,9 @@ function newBlock(type: ContentBlock["ty"]): ContentBlock {
   const block: ContentBlock = { id: crypto.randomUUID(), ty: type };
   if (type === "heading") return { ...block, te: "", le: 2 };
   if (type === "quote") return { ...block, te: "", author: "" };
-  if (["image", "video", "file"].includes(type)) return { ...block, url: "", title: "", caption: "" };
+  if (["image", "video", "file"].includes(type)) {
+    return { ...block, url: "", title: "", caption: "" };
+  }
   return { ...block, te: "" };
 }
 
@@ -63,6 +66,14 @@ function blockLabel(type: string) {
     quote: "Iqtibos",
   };
   return labels[type] || type;
+}
+
+function firstDroppedFile(event: React.DragEvent, acceptImageOnly = false) {
+  event.preventDefault();
+  const file = event.dataTransfer.files?.[0];
+  if (!file) return null;
+  if (acceptImageOnly && !file.type.startsWith("image/")) return null;
+  return file;
 }
 
 export default function MobileArticleEditor({ initial }: { initial?: Partial<ArticleDraft> }) {
@@ -94,6 +105,7 @@ export default function MobileArticleEditor({ initial }: { initial?: Partial<Art
   });
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
+  const [mainDrag, setMainDrag] = useState(false);
 
   const publicUrl = useMemo(
     () => `/bunyodkorlar/${form.slug || slugify(form.title)}`,
@@ -143,6 +155,19 @@ export default function MobileArticleEditor({ initial }: { initial?: Partial<Art
     onDone(data.publicUrl);
     setMessage("Fayl yuklandi.");
     setBusy(false);
+  }
+
+  function uploadMainImage(file: File) {
+    if (!file.type.startsWith("image/")) {
+      setMessage("Faqat rasm faylini tashlang.");
+      return;
+    }
+    upload(file, (url) =>
+      patch({
+        image_url: url,
+        social_image_url: form.social_image_url || url,
+      })
+    );
   }
 
   async function save(nextStatus: ArticleDraft["status"]) {
@@ -271,21 +296,39 @@ export default function MobileArticleEditor({ initial }: { initial?: Partial<Art
             />
           </section>
 
-          <section className="rounded-[26px] bg-white p-4 shadow-[0_10px_30px_rgba(15,23,42,.06)] sm:p-6">
+          <section
+            onDragEnter={(event) => {
+              event.preventDefault();
+              setMainDrag(true);
+            }}
+            onDragOver={(event) => event.preventDefault()}
+            onDragLeave={() => setMainDrag(false)}
+            onDrop={(event) => {
+              setMainDrag(false);
+              const file = firstDroppedFile(event, true);
+              if (file) uploadMainImage(file);
+            }}
+            className={`rounded-[26px] bg-white p-4 shadow-[0_10px_30px_rgba(15,23,42,.06)] transition sm:p-6 ${
+              mainDrag ? "ring-2 ring-[#0f68ff] ring-offset-2" : ""
+            }`}
+          >
             <div className="flex items-center justify-between gap-3">
               <div>
                 <p className="text-xs font-black uppercase tracking-[0.18em] text-[#0043a4]">2. Asosiy rasm</p>
-                <p className="mt-1 text-sm font-medium text-slate-500">Telefondan galereya yoki kamera orqali tanlang.</p>
+                <p className="mt-1 text-sm font-medium text-slate-500">Rasmni tanlang yoki kompyuterdan shu joyga sudrab tashlang.</p>
               </div>
             </div>
 
             {form.image_url ? (
-              <div className="mt-4 overflow-hidden rounded-[22px] bg-[#eef3fb]">
+              <div className="mt-4 overflow-hidden rounded-[22px] border-2 border-dashed border-transparent bg-[#eef3fb]">
                 <img src={form.image_url} alt="Asosiy rasm" className="max-h-[520px] w-full object-contain" />
               </div>
             ) : (
-              <div className="mt-4 flex min-h-48 items-center justify-center rounded-[22px] border-2 border-dashed border-[#0043a4]/20 bg-[#f7faff] px-6 text-center">
-                <p className="text-sm font-bold text-slate-500">Hali rasm tanlanmagan</p>
+              <div className="mt-4 flex min-h-52 items-center justify-center rounded-[22px] border-2 border-dashed border-[#0043a4]/25 bg-[#f7faff] px-6 text-center">
+                <div>
+                  <p className="text-base font-black text-[#0043a4]">Rasmni shu yerga tashlang</p>
+                  <p className="mt-1 text-sm font-medium text-slate-500">yoki pastdagi tugma orqali tanlang</p>
+                </div>
               </div>
             )}
 
@@ -297,14 +340,7 @@ export default function MobileArticleEditor({ initial }: { initial?: Partial<Art
                 className="hidden"
                 onChange={(event) => {
                   const file = event.target.files?.[0];
-                  if (file) {
-                    upload(file, (url) =>
-                      patch({
-                        image_url: url,
-                        social_image_url: form.social_image_url || url,
-                      })
-                    );
-                  }
+                  if (file) uploadMainImage(file);
                 }}
               />
             </label>
@@ -318,7 +354,9 @@ export default function MobileArticleEditor({ initial }: { initial?: Partial<Art
 
           <section className="rounded-[26px] bg-white p-4 shadow-[0_10px_30px_rgba(15,23,42,.06)] sm:p-6">
             <p className="text-xs font-black uppercase tracking-[0.18em] text-[#0043a4]">4. Maqola</p>
-            <p className="mt-1 text-sm font-medium text-slate-500">Kerakli blokni bosing va matnni kiriting.</p>
+            <p className="mt-1 text-sm font-medium text-slate-500">
+              Tayyor formatlangan maqolani to‘g‘ridan-to‘g‘ri paste qiling — sarlavha, jirniy, kursiv va qatorlar saqlanadi.
+            </p>
 
             <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
               {([
@@ -371,11 +409,9 @@ export default function MobileArticleEditor({ initial }: { initial?: Partial<Art
                   )}
 
                   {["text", "html", "preface"].includes(block.ty) && (
-                    <textarea
+                    <RichTextEditor
                       value={block.te || ""}
-                      onChange={(event) => updateBlock(index, { te: event.target.value })}
-                      placeholder="Maqola matnini yozing..."
-                      className="min-h-44 w-full resize-y rounded-xl border border-slate-200 bg-white px-4 py-3.5 text-base leading-7 outline-none focus:border-[#0043a4]"
+                      onChange={(value) => updateBlock(index, { te: value })}
                     />
                   )}
 
@@ -404,18 +440,29 @@ export default function MobileArticleEditor({ initial }: { initial?: Partial<Art
                       {block.ty === "video" && block.url && (
                         <video src={block.url} controls className="max-h-96 w-full rounded-xl bg-black" />
                       )}
-                      <label className="flex min-h-11 cursor-pointer items-center justify-center rounded-xl bg-[#eaf2ff] px-4 py-3 text-sm font-extrabold text-[#0043a4]">
-                        {block.url ? "Faylni almashtirish" : "+ Fayl tanlash"}
-                        <input
-                          type="file"
-                          accept={block.ty === "image" ? "image/*" : block.ty === "video" ? "video/*" : "*/*"}
-                          className="hidden"
-                          onChange={(event) => {
-                            const file = event.target.files?.[0];
-                            if (file) upload(file, (url) => updateBlock(index, { url, title: file.name }));
-                          }}
-                        />
-                      </label>
+
+                      <div
+                        onDragOver={(event) => event.preventDefault()}
+                        onDrop={(event) => {
+                          const file = firstDroppedFile(event, block.ty === "image");
+                          if (file) upload(file, (url) => updateBlock(index, { url, title: file.name }));
+                        }}
+                        className="rounded-xl border-2 border-dashed border-[#0043a4]/20 bg-[#f7faff] p-2"
+                      >
+                        <label className="flex min-h-14 cursor-pointer items-center justify-center rounded-lg px-4 py-3 text-center text-sm font-extrabold text-[#0043a4]">
+                          {block.url ? "Faylni almashtirish yoki shu yerga tashlash" : "+ Fayl tanlash yoki shu yerga tashlash"}
+                          <input
+                            type="file"
+                            accept={block.ty === "image" ? "image/*" : block.ty === "video" ? "video/*" : "*/*"}
+                            className="hidden"
+                            onChange={(event) => {
+                              const file = event.target.files?.[0];
+                              if (file) upload(file, (url) => updateBlock(index, { url, title: file.name }));
+                            }}
+                          />
+                        </label>
+                      </div>
+
                       <input
                         value={block.caption || ""}
                         onChange={(event) => updateBlock(index, { caption: event.target.value })}
