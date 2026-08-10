@@ -37,6 +37,24 @@ export async function GET(
         return canonicalRedirect(request, data.slug);
       }
     }
+
+    // A few historical URLs contain a one-character typo in the Tilda post id
+    // (for example 0 vs o). The human-readable suffix is still stable, so use
+    // it as a safe secondary match against the stored original source URL.
+    const idPrefixed = legacyPath.match(/^[a-z0-9]{8,20}1-(.+)$/i);
+    const readableSuffix = idPrefixed?.[1];
+    if (readableSuffix && readableSuffix.length >= 8) {
+      const { data } = await supabase
+        .from("articles")
+        .select("slug,status")
+        .ilike("source_url", `%-${readableSuffix}`)
+        .limit(1)
+        .maybeSingle();
+
+      if (data?.slug && data.status === "published") {
+        return canonicalRedirect(request, data.slug);
+      }
+    }
   }
 
   // Tilda sometimes generated URLs like /tpost/<post-id>-<slug>.
