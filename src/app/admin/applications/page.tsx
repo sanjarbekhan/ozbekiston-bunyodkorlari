@@ -18,6 +18,10 @@ type Application = {
   contacted_at: string | null;
   status: "new" | "reviewing" | "accepted" | "rejected";
   admin_note: string | null;
+  attachment_path: string | null;
+  attachment_name: string | null;
+  attachment_mime: string | null;
+  attachment_size: number | null;
   created_at: string;
 };
 
@@ -43,6 +47,12 @@ function formatDate(value: string | null) {
   return `${get("day")}.${get("month")}.${get("year")} ${get("hour")}:${get("minute")}`;
 }
 
+function formatBytes(value: number | null) {
+  if (!value || value <= 0) return "";
+  if (value < 1024 * 1024) return `${Math.max(1, Math.round(value / 1024))} KB`;
+  return `${(value / 1024 / 1024).toFixed(1)} MB`;
+}
+
 export default function ApplicationsAdminPage() {
   const router = useRouter();
   const [items, setItems] = useState<Application[]>([]);
@@ -50,6 +60,7 @@ export default function ApplicationsAdminPage() {
   const [search, setSearch] = useState("");
   const [tab, setTab] = useState<"inbox" | "contacted">("inbox");
   const [savingId, setSavingId] = useState<string | null>(null);
+  const [openingId, setOpeningId] = useState<string | null>(null);
   const [message, setMessage] = useState("");
 
   useEffect(() => {
@@ -62,7 +73,7 @@ export default function ApplicationsAdminPage() {
 
       const { data, error } = await supabase
         .from("applications")
-        .select("id, full_name, phone, telegram, gender, age_group, promo_code, ip_address, contacted, contacted_at, status, admin_note, created_at")
+        .select("id, full_name, phone, telegram, gender, age_group, promo_code, ip_address, contacted, contacted_at, status, admin_note, attachment_path, attachment_name, attachment_mime, attachment_size, created_at")
         .order("created_at", { ascending: false });
 
       if (error) setMessage("Arizalarni yuklab bo‘lmadi: " + error.message);
@@ -84,6 +95,7 @@ export default function ApplicationsAdminPage() {
         item.telegram || "",
         item.promo_code || "",
         item.ip_address || "",
+        item.attachment_name || "",
       ].join(" ").toLocaleLowerCase("uz");
       const matchesTab = tab === "inbox" ? !item.contacted : item.contacted;
       return matchesTab && (!query || haystack.includes(query));
@@ -130,6 +142,28 @@ export default function ApplicationsAdminPage() {
       .update({ admin_note: note.trim() || null })
       .eq("id", item.id);
     if (error) setMessage("Izohni saqlashda xatolik: " + error.message);
+  }
+
+  async function openAttachment(item: Application) {
+    if (!item.attachment_path || openingId) return;
+
+    const popup = window.open("", "_blank");
+    setOpeningId(item.id);
+    setMessage("");
+
+    const { data, error } = await supabase.storage
+      .from("application-files")
+      .createSignedUrl(item.attachment_path, 120);
+
+    setOpeningId(null);
+    if (error || !data?.signedUrl) {
+      popup?.close();
+      setMessage("Biriktirilgan faylni ochib bo‘lmadi: " + (error?.message || "noma’lum xatolik"));
+      return;
+    }
+
+    if (popup) popup.location.href = data.signedUrl;
+    else window.location.href = data.signedUrl;
   }
 
   if (loading) {
@@ -180,13 +214,13 @@ export default function ApplicationsAdminPage() {
           <input
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            placeholder="Ism, telefon, Telegram yoki IP..."
+            placeholder="Ism, telefon, Telegram, fayl yoki IP..."
             className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-[#0043a4]"
           />
         </div>
 
         <div className="hidden overflow-x-auto border border-slate-200 bg-white shadow-sm md:block">
-          <table className="min-w-[1550px] w-full border-collapse text-left text-[13px]">
+          <table className="min-w-[1720px] w-full border-collapse text-left text-[13px]">
             <thead className="bg-[#fafafa] text-[11px] uppercase tracking-[0.08em] text-slate-500">
               <tr>
                 <th className="w-14 border-b border-r border-slate-200 px-3 py-3 text-center">★</th>
@@ -198,6 +232,7 @@ export default function ApplicationsAdminPage() {
                 <th className="min-w-24 border-b border-r border-slate-200 px-4 py-3">Yosh</th>
                 <th className="min-w-40 border-b border-r border-slate-200 px-4 py-3">IP manzil</th>
                 <th className="min-w-40 border-b border-r border-slate-200 px-4 py-3">Promokod</th>
+                <th className="min-w-52 border-b border-r border-slate-200 px-4 py-3">Biriktirma</th>
                 <th className="min-w-48 border-b border-r border-slate-200 px-4 py-3">Holat</th>
                 <th className="min-w-64 border-b border-slate-200 px-4 py-3">Admin izohi</th>
               </tr>
@@ -225,6 +260,20 @@ export default function ApplicationsAdminPage() {
                   <td className="border-b border-r border-slate-200 px-4 py-3 font-mono text-[12px]">{item.ip_address || "—"}</td>
                   <td className="border-b border-r border-slate-200 px-4 py-3">{item.promo_code || "—"}</td>
                   <td className="border-b border-r border-slate-200 px-3 py-2">
+                    {item.attachment_path ? (
+                      <button
+                        type="button"
+                        onClick={() => void openAttachment(item)}
+                        disabled={openingId === item.id}
+                        title={item.attachment_name || "Biriktirilgan fayl"}
+                        className="max-w-48 rounded-lg bg-[#eef4ff] px-3 py-2 text-left text-xs font-bold text-[#0043a4] transition hover:bg-[#dfeaff] disabled:opacity-50"
+                      >
+                        <span className="block truncate">📎 {item.attachment_name || "Faylni ochish"}</span>
+                        {item.attachment_size ? <span className="mt-0.5 block text-[10px] text-slate-400">{formatBytes(item.attachment_size)}</span> : null}
+                      </button>
+                    ) : "—"}
+                  </td>
+                  <td className="border-b border-r border-slate-200 px-3 py-2">
                     <select
                       value={item.status}
                       onChange={(event) => updateStatus(item.id, event.target.value as Application["status"])}
@@ -244,7 +293,7 @@ export default function ApplicationsAdminPage() {
                 </tr>
               ))}
               {filtered.length === 0 && (
-                <tr><td colSpan={11} className="p-12 text-center text-sm font-semibold text-slate-400">Bu bo‘limda ariza yo‘q.</td></tr>
+                <tr><td colSpan={12} className="p-12 text-center text-sm font-semibold text-slate-400">Bu bo‘limda ariza yo‘q.</td></tr>
               )}
             </tbody>
           </table>
@@ -275,6 +324,20 @@ export default function ApplicationsAdminPage() {
                   <div><p className="text-[10px] font-black uppercase text-slate-400">IP manzil</p><p className="mt-1 break-all font-mono text-xs">{item.ip_address || "—"}</p></div>
                   <div><p className="text-[10px] font-black uppercase text-slate-400">Promokod</p><p className="mt-1 font-bold">{item.promo_code || "—"}</p></div>
                   {item.contacted && <div><p className="text-[10px] font-black uppercase text-slate-400">Bog‘langan vaqt</p><p className="mt-1 font-bold">{formatDate(item.contacted_at)}</p></div>}
+                  {item.attachment_path && (
+                    <div className="col-span-2">
+                      <p className="text-[10px] font-black uppercase text-slate-400">Biriktirma</p>
+                      <button
+                        type="button"
+                        onClick={() => void openAttachment(item)}
+                        disabled={openingId === item.id}
+                        className="mt-1 flex w-full items-center justify-between gap-3 rounded-xl bg-[#eef4ff] px-3 py-3 text-left text-sm font-bold text-[#0043a4] disabled:opacity-50"
+                      >
+                        <span className="min-w-0 truncate">📎 {item.attachment_name || "Faylni ochish"}</span>
+                        <span className="shrink-0 text-xs text-slate-400">{formatBytes(item.attachment_size)}</span>
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 <div className="mt-4 grid gap-2">
