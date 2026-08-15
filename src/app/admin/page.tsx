@@ -175,9 +175,14 @@ export default function AdminPage() {
             <button onClick={logout} className="rounded-full bg-white/10 px-4 py-2.5 text-sm font-extrabold text-white transition hover:bg-white/20">Chiqish</button>
           </div>
 
-          <Link href="/admin/articles/new" className="mt-6 flex min-h-14 w-full items-center justify-center rounded-2xl bg-[#0f68ff] px-5 py-4 text-base font-black text-white shadow-lg shadow-blue-950/20 sm:w-auto sm:min-w-52">
-            + Yangi maqola
-          </Link>
+          <div className="mt-6 flex flex-col gap-2 sm:flex-row">
+            <Link href="/admin/articles/new" className="flex min-h-14 w-full items-center justify-center rounded-2xl bg-[#0f68ff] px-5 py-4 text-base font-black text-white shadow-lg shadow-blue-950/20 sm:w-auto sm:min-w-52">
+              + Yangi maqola
+            </Link>
+            <Link href="/admin/biographies" className="flex min-h-14 w-full items-center justify-center rounded-2xl bg-white/10 px-5 py-4 text-base font-black text-white transition hover:bg-white/20 sm:w-auto sm:min-w-52">
+              📝 Biografik anketalar
+            </Link>
+          </div>
 
           <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
             <div className="rounded-2xl bg-white/8 p-3 sm:p-4">
