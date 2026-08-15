@@ -178,7 +178,10 @@ export default function ApplicationsAdminPage() {
             <p className="text-xs font-black uppercase tracking-[0.16em] text-[#0043a4]">O‘zBYE boshqaruv</p>
             <h1 className="mt-1 text-2xl font-black tracking-[-0.03em] sm:text-3xl">Arizalar</h1>
           </div>
-          <Link href="/admin" className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-extrabold shadow-sm">← Admin panel</Link>
+          <div className="flex flex-wrap gap-2">
+            <Link href="/admin/biographies" className="rounded-xl bg-[#0043a4] px-4 py-2.5 text-sm font-extrabold text-white shadow-sm">📝 Biografik anketalar</Link>
+            <Link href="/admin" className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-extrabold shadow-sm">← Admin panel</Link>
+          </div>
         </div>
 
         {message && <div className="mb-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-bold text-amber-800">{message}</div>}
