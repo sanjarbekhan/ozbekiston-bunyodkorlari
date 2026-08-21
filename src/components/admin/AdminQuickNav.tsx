@@ -11,6 +11,7 @@ export default function AdminQuickNav() {
     { href: "/admin/applications", label: "Arizalar", icon: "📥" },
     { href: "/admin/biographies", label: "Anketalar", icon: "📝" },
     { href: "/admin/comments", label: "Kommentlar", icon: "💬" },
+    { href: "/admin/rankings", label: "Reyting", icon: "🏆" },
   ].filter((link) => !pathname.startsWith(link.href));
 
   if (links.length === 0) return null;
