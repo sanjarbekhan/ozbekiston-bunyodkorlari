@@ -16,6 +16,12 @@ function authedClient(token: string) {
   );
 }
 
+function publicSummary(value: string) {
+  return value
+    .replace(/liderlik/gi, "tashabbuskorlik")
+    .replace(/yetakchilik/gi, "tashabbuskorlik");
+}
+
 export async function POST(request: NextRequest) {
   try {
     const authHeader = request.headers.get("authorization") || "";
@@ -36,10 +42,11 @@ export async function POST(request: NextRequest) {
       .from("articles")
       .select("*")
       .eq("id", articleId)
+      .eq("status", "published")
       .maybeSingle();
 
     if (articleError || !article) {
-      return NextResponse.json({ error: articleError?.message || "Maqola topilmadi." }, { status: 404 });
+      return NextResponse.json({ error: articleError?.message || "E’lon qilingan maqola topilmadi." }, { status: 404 });
     }
 
     const analysis = await analyzeArticleRanking(article as ArticleRecord);
@@ -53,14 +60,14 @@ export async function POST(request: NextRequest) {
       leadership_score: analysis.leadershipScore,
       evidence_score: analysis.evidenceScore,
       achievements: analysis.achievements,
-      ai_summary: analysis.summary,
+      ai_summary: publicSummary(analysis.summary),
       ai_confidence: analysis.confidence,
       scoring_source: analysis.source,
-      scoring_version: "v1",
-      status: "pending",
+      scoring_version: "v2-ai",
+      status: "approved",
       computed_at: now.toISOString(),
-      approved_at: null,
-      approved_by: null,
+      approved_at: now.toISOString(),
+      approved_by: userData.user.id,
       updated_at: now.toISOString(),
     };
 
