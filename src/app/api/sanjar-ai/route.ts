@@ -23,15 +23,29 @@ type Source = {
 const STOP_WORDS = new Set([
   "bilan", "uchun", "haqida", "qanday", "qaysi", "nima", "kim", "nega", "yoki", "ham", "bor", "edi",
   "shu", "menga", "bizga", "ular", "uning", "bo'yicha", "bo‘yicha", "ko'rsat", "ko‘rsat", "ayt", "ber",
+  "yo'nalishidagi", "yo‘nalishidagi", "yo'nalishi", "yo‘nalishi", "bunyodkor", "bunyodkorlar", "bunyodkorlarni",
+  "profil", "profillar", "top", "topib", "chiqar", "ko'rsatib", "ko‘rsatib",
 ]);
 
+const SHORT_KEYWORDS = new Set(["it", "ai", "ui", "ux"]);
+
 function tokenize(value: string) {
-  return value
+  const tokens = value
     .toLocaleLowerCase("uz")
     .replace(/[^a-z0-9а-яёўқғҳ‘’'\s-]+/gi, " ")
     .split(/\s+/)
     .map((item) => item.trim())
-    .filter((item) => item.length >= 3 && !STOP_WORDS.has(item));
+    .filter((item) => (item.length >= 3 || SHORT_KEYWORDS.has(item)) && !STOP_WORDS.has(item));
+
+  const normalized = new Set(tokens);
+  const lower = value.toLocaleLowerCase("uz");
+  if (/dasturlash|programming|developer|software|axborot texnolog/.test(lower)) normalized.add("it");
+  if (/sun['’‘]?iy intellekt|artificial intelligence/.test(lower)) normalized.add("ai");
+  if (/huquq|yuridik|legal/.test(lower)) normalized.add("huquq");
+  if (/ta['’‘]?lim|pedagog/.test(lower)) normalized.add("ta'lim");
+  if (/san['’‘]?at|ijod|she['’‘]?r|adabiyot/.test(lower)) normalized.add("san'at");
+
+  return Array.from(normalized);
 }
 
 function scoreArticle(article: SearchArticle, tokens: string[]) {
