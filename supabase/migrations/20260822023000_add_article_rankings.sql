@@ -33,6 +33,9 @@ create index if not exists article_rankings_public_idx
 create index if not exists article_rankings_article_idx
   on public.article_rankings (article_id, status);
 
+create index if not exists article_rankings_approved_by_idx
+  on public.article_rankings (approved_by);
+
 alter table public.article_rankings enable row level security;
 alter table public.admin_users enable row level security;
 
