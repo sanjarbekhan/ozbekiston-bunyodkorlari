@@ -68,6 +68,10 @@ export default function LegacyApplicationFrame() {
 
     legacyForm.replaceWith(form);
 
+    const telegramGroup = findFieldGroup(form, "Telegram profili ochiq telefon raqam yoki Telegram username");
+    const telegramTitle = telegramGroup?.querySelector<HTMLElement>(".t-input-title");
+    if (telegramTitle) telegramTitle.textContent = "Telegram username";
+
     const submitButton = form.querySelector("button[type='submit'], button.t-submit, .t-submit") as HTMLButtonElement | null;
     if (submitButton) {
       submitButton.type = "button";
