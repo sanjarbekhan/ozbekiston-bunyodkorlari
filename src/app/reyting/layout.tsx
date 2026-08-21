@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Bunyodkorlar reytingi | O‘zbekiston Bunyodkor Yoshlari",
+  title: "Bunyodkorlar reytingi",
   description: "O‘zbekiston Bunyodkor Yoshlari Ensiklopediyasining ochiq metodologiyaga asoslangan yutuqlar, faollik va liderlik reytingi.",
   alternates: { canonical: "https://www.bunyodkor.com/reyting" },
   openGraph: {
