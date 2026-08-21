@@ -6,7 +6,12 @@ import SiteFooter from "@/components/SiteFooter";
 import SiteMenu from "@/components/SiteMenu";
 
 type Source = { title: string; url: string; category: string | null };
-type Message = { role: "user" | "assistant"; text: string; sources?: Source[] };
+type Message = {
+  role: "user" | "assistant";
+  text: string;
+  sources?: Source[];
+  mode?: "ai" | "encyclopedia" | "grounded";
+};
 
 const suggestions = [
   "Ensiklopediya haqida aytib ber",
@@ -29,6 +34,12 @@ export default function SanjarAIPage() {
   async function ask(text: string) {
     const value = text.trim();
     if (!value || loading) return;
+
+    const history = messages.slice(-8).map((message) => ({
+      role: message.role,
+      text: message.text,
+    }));
+
     setMessages((current) => [...current, { role: "user", text: value }]);
     setQuestion("");
     setLoading(true);
@@ -36,7 +47,7 @@ export default function SanjarAIPage() {
       const response = await fetch("/api/sanjar-ai", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question: value }),
+        body: JSON.stringify({ question: value, history }),
       });
       const data = await response.json();
       setMessages((current) => [
@@ -45,6 +56,7 @@ export default function SanjarAIPage() {
           role: "assistant",
           text: data.answer || data.error || "Javobni tayyorlab bo‘lmadi.",
           sources: Array.isArray(data.sources) ? data.sources : [],
+          mode: data.mode,
         },
       ]);
     } catch {
@@ -125,11 +137,11 @@ export default function SanjarAIPage() {
 
               {loading && (
                 <div className="mr-auto max-w-[80%] rounded-[22px_22px_22px_6px] border border-[#cae8f1] bg-[#f4fbfe] px-4 py-3 text-sm font-bold text-slate-400">
-                  Javob tayyorlanmoqda…
+                  Sanjar AI javob tayyorlamoqda…
                 </div>
               )}
 
-              {messages.length <= 1 && (
+              {!loading && (
                 <div className="flex flex-wrap gap-2 pt-2">
                   {suggestions.map((item) => (
                     <button key={item} type="button" onClick={() => void ask(item)} className="rounded-full bg-[#e8f8fd] px-4 py-2.5 text-xs font-extrabold text-[#087ca5] transition hover:bg-[#d8f3fb]">
