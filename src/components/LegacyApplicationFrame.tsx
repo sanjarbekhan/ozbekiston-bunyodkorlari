@@ -1,17 +1,6 @@
 "use client";
 
 import { useCallback, useRef } from "react";
-import { supabase } from "@/lib/supabase";
-
-const MAX_ATTACHMENT_BYTES = 10 * 1024 * 1024;
-const ALLOWED_ATTACHMENT_TYPES = new Set([
-  "application/pdf",
-  "application/msword",
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-  "image/jpeg",
-  "image/png",
-  "image/webp",
-]);
 
 function findFieldGroup(form: HTMLFormElement, fieldName: string) {
   return Array.from(form.querySelectorAll<HTMLElement>(".t-input-group")).find(
@@ -53,21 +42,6 @@ function getFieldValue(form: HTMLFormElement, fieldName: string) {
   return "";
 }
 
-function safeExtension(file: File) {
-  const fromName = file.name.split(".").pop()?.toLowerCase().replace(/[^a-z0-9]/g, "");
-  if (fromName && fromName.length <= 8) return fromName;
-
-  const byType: Record<string, string> = {
-    "application/pdf": "pdf",
-    "application/msword": "doc",
-    "application/vnd.openxmlformats-officedocument.wordprocessingml.document": "docx",
-    "image/jpeg": "jpg",
-    "image/png": "png",
-    "image/webp": "webp",
-  };
-  return byType[file.type] || "bin";
-}
-
 export default function LegacyApplicationFrame() {
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
@@ -104,45 +78,6 @@ export default function LegacyApplicationFrame() {
     }
 
     const submitWrap = submitButton?.closest(".t-form__submit") || submitButton?.parentElement;
-
-    let attachmentInput = form.querySelector<HTMLInputElement>("[data-ozbye-attachment-input]");
-    let attachmentMeta = form.querySelector<HTMLElement>("[data-ozbye-attachment-meta]");
-
-    if (!attachmentInput) {
-      const attachmentWrap = doc.createElement("div");
-      attachmentWrap.setAttribute("data-ozbye-attachment", "1");
-      attachmentWrap.style.margin = "24px 0 4px";
-      attachmentWrap.innerHTML = `
-        <label style="display:block;margin-bottom:8px;font-family:'PT Sans',Arial,sans-serif;font-size:18px;font-weight:600;color:#000">
-          Fayl biriktirish <span style="font-size:14px;font-weight:400;color:#667085">(ixtiyoriy)</span>
-        </label>
-        <label style="display:flex;min-height:56px;align-items:center;justify-content:center;gap:10px;border:1px dashed #0043a4;border-radius:10px;background:#f7faff;padding:12px 16px;cursor:pointer;font-family:'PT Sans',Arial,sans-serif;font-size:15px;font-weight:700;color:#0043a4;text-align:center">
-          <span>📎 Fayl tanlash</span>
-          <input data-ozbye-attachment-input="1" type="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/jpeg,image/png,image/webp" style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden" />
-        </label>
-        <div data-ozbye-attachment-meta="1" style="margin-top:8px;font-family:'PT Sans',Arial,sans-serif;font-size:13px;line-height:1.45;color:#667085">
-          PDF, DOC, DOCX, JPG, PNG yoki WEBP · maksimal 10 MB
-        </div>
-      `;
-      if (submitWrap) submitWrap.before(attachmentWrap);
-      else form.appendChild(attachmentWrap);
-
-      attachmentInput = attachmentWrap.querySelector<HTMLInputElement>("[data-ozbye-attachment-input]");
-      attachmentMeta = attachmentWrap.querySelector<HTMLElement>("[data-ozbye-attachment-meta]");
-
-      attachmentInput?.addEventListener("change", () => {
-        const file = attachmentInput?.files?.[0];
-        if (!attachmentMeta) return;
-        if (!file) {
-          attachmentMeta.textContent = "PDF, DOC, DOCX, JPG, PNG yoki WEBP · maksimal 10 MB";
-          return;
-        }
-        const mb = (file.size / 1024 / 1024).toFixed(file.size >= 1024 * 1024 ? 1 : 2);
-        attachmentMeta.textContent = `${file.name} · ${mb} MB`;
-        attachmentMeta.style.color = "#0043a4";
-        attachmentMeta.style.fontWeight = "700";
-      });
-    }
 
     const removeCaptcha = () => {
       doc.querySelectorAll(
@@ -203,7 +138,6 @@ export default function LegacyApplicationFrame() {
       const gender = getFieldValue(form, "Jinsingiz?");
       const ageGroup = getFieldValue(form, "yosh guruhi");
       const promoCode = getFieldValue(form, "PROMOKOD (Agar bo'lsa)");
-      const attachment = attachmentInput?.files?.[0] || null;
 
       if (fullName.length < 2) {
         showError("Ism va familiyangizni kiriting.");
@@ -221,14 +155,6 @@ export default function LegacyApplicationFrame() {
         showError("Yosh guruhingizni belgilang.");
         return;
       }
-      if (attachment && !ALLOWED_ATTACHMENT_TYPES.has(attachment.type)) {
-        showError("Biriktiriladigan fayl PDF, DOC, DOCX, JPG, PNG yoki WEBP formatida bo‘lishi kerak.");
-        return;
-      }
-      if (attachment && attachment.size > MAX_ATTACHMENT_BYTES) {
-        showError("Biriktiriladigan fayl hajmi 10 MB dan oshmasligi kerak.");
-        return;
-      }
 
       const button = form.querySelector("button.t-submit, button[type='button']") as HTMLButtonElement | null;
       const buttonText = button?.querySelector(".t-btnflex__text") as HTMLElement | null;
@@ -236,28 +162,10 @@ export default function LegacyApplicationFrame() {
 
       sending = true;
       if (button) button.disabled = true;
-      if (buttonText) buttonText.textContent = attachment ? "Fayl yuklanmoqda..." : "Yuborilmoqda...";
-      else if (button) button.textContent = attachment ? "Fayl yuklanmoqda..." : "Yuborilmoqda...";
-
-      let attachmentPath = "";
+      if (buttonText) buttonText.textContent = "Yuborilmoqda...";
+      else if (button) button.textContent = "Yuborilmoqda...";
 
       try {
-        if (attachment) {
-          const path = `applications/${new Date().getUTCFullYear()}/${crypto.randomUUID()}.${safeExtension(attachment)}`;
-          const { error: uploadError } = await supabase.storage
-            .from("application-files")
-            .upload(path, attachment, {
-              cacheControl: "3600",
-              upsert: false,
-              contentType: attachment.type,
-            });
-
-          if (uploadError) throw new Error("Faylni biriktirib bo‘lmadi: " + uploadError.message);
-          attachmentPath = path;
-          if (buttonText) buttonText.textContent = "Ariza yuborilmoqda...";
-          else if (button) button.textContent = "Ariza yuborilmoqda...";
-        }
-
         const response = await fetch("/api/applications", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -269,10 +177,6 @@ export default function LegacyApplicationFrame() {
             age_group: ageGroup,
             promo_code: promoCode,
             website: "",
-            attachment_path: attachmentPath,
-            attachment_name: attachment?.name || "",
-            attachment_mime: attachment?.type || "",
-            attachment_size: attachment?.size || 0,
           }),
         });
 
@@ -291,11 +195,6 @@ export default function LegacyApplicationFrame() {
           frameWindow.alert("Rahmat! Ma’lumotlaringiz qabul qilindi.");
         }
         form.reset();
-        if (attachmentMeta) {
-          attachmentMeta.textContent = "PDF, DOC, DOCX, JPG, PNG yoki WEBP · maksimal 10 MB";
-          attachmentMeta.style.color = "#667085";
-          attachmentMeta.style.fontWeight = "400";
-        }
       } catch (error) {
         showError(error instanceof Error ? error.message : "Arizani yuborishda xatolik yuz berdi.");
       } finally {
