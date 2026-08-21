@@ -22,6 +22,11 @@ create table if not exists public.article_rankings (
   unique (article_id, period_type, period_key)
 );
 
+create table if not exists public.admin_users (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  created_at timestamptz not null default now()
+);
+
 create index if not exists article_rankings_public_idx
   on public.article_rankings (period_type, period_key, status, total_score desc);
 
@@ -29,32 +34,76 @@ create index if not exists article_rankings_article_idx
   on public.article_rankings (article_id, status);
 
 alter table public.article_rankings enable row level security;
+alter table public.admin_users enable row level security;
+
+drop policy if exists "Admin users can read own membership" on public.admin_users;
+create policy "Admin users can read own membership"
+  on public.admin_users
+  for select
+  to authenticated
+  using (user_id = (select auth.uid()));
 
 drop policy if exists "Public read approved rankings" on public.article_rankings;
 create policy "Public read approved rankings"
   on public.article_rankings
   for select
   to anon, authenticated
-  using (status = 'approved' or (select auth.uid()) = '988b7d1f-4028-42a6-9a8f-be869224be6e'::uuid);
+  using (
+    status = 'approved'
+    or exists (
+      select 1 from public.admin_users
+      where admin_users.user_id = (select auth.uid())
+    )
+  );
 
-drop policy if exists "Admin insert rankings" on public.article_rankings;
-create policy "Admin insert rankings"
+drop policy if exists "Registered admin insert rankings" on public.article_rankings;
+create policy "Registered admin insert rankings"
   on public.article_rankings
   for insert
   to authenticated
-  with check ((select auth.uid()) = '988b7d1f-4028-42a6-9a8f-be869224be6e'::uuid);
+  with check (
+    exists (
+      select 1 from public.admin_users
+      where admin_users.user_id = (select auth.uid())
+    )
+  );
 
-drop policy if exists "Admin update rankings" on public.article_rankings;
-create policy "Admin update rankings"
+drop policy if exists "Registered admin update rankings" on public.article_rankings;
+create policy "Registered admin update rankings"
   on public.article_rankings
   for update
   to authenticated
-  using ((select auth.uid()) = '988b7d1f-4028-42a6-9a8f-be869224be6e'::uuid)
-  with check ((select auth.uid()) = '988b7d1f-4028-42a6-9a8f-be869224be6e'::uuid);
+  using (
+    exists (
+      select 1 from public.admin_users
+      where admin_users.user_id = (select auth.uid())
+    )
+  )
+  with check (
+    exists (
+      select 1 from public.admin_users
+      where admin_users.user_id = (select auth.uid())
+    )
+  );
 
-drop policy if exists "Admin delete rankings" on public.article_rankings;
-create policy "Admin delete rankings"
+drop policy if exists "Registered admin delete rankings" on public.article_rankings;
+create policy "Registered admin delete rankings"
   on public.article_rankings
   for delete
   to authenticated
-  using ((select auth.uid()) = '988b7d1f-4028-42a6-9a8f-be869224be6e'::uuid);
+  using (
+    exists (
+      select 1 from public.admin_users
+      where admin_users.user_id = (select auth.uid())
+    )
+  );
+
+-- Existing project admins can be bootstrapped from article ownership without
+-- hardcoding generated user IDs into the migration.
+insert into public.admin_users (user_id)
+select created_by
+from public.articles
+where created_by is not null
+group by created_by
+having count(*) >= 10
+on conflict (user_id) do nothing;
