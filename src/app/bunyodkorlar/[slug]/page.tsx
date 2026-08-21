@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import ArticleContent from "@/components/ArticleContent";
+import ArticleSharePanel from "@/components/ArticleSharePanel";
+import CommentSection from "@/components/CommentSection";
+import PublicArticleCard from "@/components/PublicArticleCard";
 import SiteFooter from "@/components/SiteFooter";
 import SiteMenu from "@/components/SiteMenu";
 import type { ArticleRecord } from "@/lib/article-types";
@@ -9,6 +12,24 @@ import { supabase } from "@/lib/supabase";
 
 export const revalidate = 60;
 const SITE_URL = "https://www.bunyodkor.com";
+
+type RelatedArticle = {
+  id: string;
+  title: string;
+  slug: string;
+  category: string | null;
+  image_url: string | null;
+  description: string | null;
+  published_at: string | null;
+  created_at: string;
+};
+
+type PublicComment = {
+  id: string;
+  author_name: string;
+  body: string;
+  created_at: string;
+};
 
 function plain(value?: string | null) {
   return (value || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
@@ -37,6 +58,47 @@ async function getArticle(slug: string) {
     .eq("slug", decodeURIComponent(slug))
     .maybeSingle();
   return data as ArticleRecord | null;
+}
+
+async function getRelatedArticles(article: ArticleRecord) {
+  const fields = "id, title, slug, category, image_url, description, published_at, created_at";
+  const related: RelatedArticle[] = [];
+  const seen = new Set<string>();
+
+  if (article.category) {
+    const { data } = await supabase
+      .from("articles")
+      .select(fields)
+      .eq("status", "published")
+      .eq("category", article.category)
+      .neq("id", article.id)
+      .order("published_at", { ascending: false })
+      .limit(4);
+
+    for (const item of (data || []) as RelatedArticle[]) {
+      related.push(item);
+      seen.add(item.id);
+    }
+  }
+
+  if (related.length < 4) {
+    const { data } = await supabase
+      .from("articles")
+      .select(fields)
+      .eq("status", "published")
+      .neq("id", article.id)
+      .order("published_at", { ascending: false })
+      .limit(8);
+
+    for (const item of (data || []) as RelatedArticle[]) {
+      if (seen.has(item.id)) continue;
+      related.push(item);
+      seen.add(item.id);
+      if (related.length >= 4) break;
+    }
+  }
+
+  return related.slice(0, 4);
 }
 
 export async function generateMetadata({
@@ -108,6 +170,19 @@ export default async function ArticlePage({
   const canonical = canonicalFor(article.slug);
   const intro = plain(article.description);
   const published = formatDate(article.published_at || article.created_at);
+
+  const [relatedArticles, commentsResult] = await Promise.all([
+    getRelatedArticles(article),
+    supabase
+      .from("article_comments")
+      .select("id, author_name, body, created_at")
+      .eq("article_id", article.id)
+      .eq("status", "approved")
+      .order("created_at", { ascending: false })
+      .limit(50),
+  ]);
+
+  const comments = (commentsResult.data || []) as PublicComment[];
   const schema = {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -189,6 +264,9 @@ export default async function ArticlePage({
                 <span className="rounded-full border border-slate-200 bg-[#f8fafc] px-4 py-2.5">
                   Ensiklopediya profili
                 </span>
+                <span className="rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-emerald-700">
+                  ✓ Tahririyat ko‘rib chiqqan
+                </span>
                 {article.video_url && (
                   <a
                     href={article.video_url}
@@ -225,24 +303,64 @@ export default async function ArticlePage({
                 </div>
               )}
               <div>
+                <dt className="font-semibold text-slate-400">Profil ID</dt>
+                <dd className="mt-1 break-all font-mono text-[11px] font-bold text-slate-500">{article.id}</dd>
+              </div>
+              <div>
                 <dt className="font-semibold text-slate-400">Manba</dt>
                 <dd className="mt-1 font-extrabold leading-5 text-[#111827]">
                   O‘zbekiston Bunyodkor Yoshlari Ensiklopediyasi
                 </dd>
               </div>
             </dl>
+
+            <ArticleSharePanel url={canonical} title={article.title} />
           </aside>
 
-          <article className="min-w-0 rounded-[28px] border border-slate-200 bg-white p-6 shadow-[0_12px_40px_rgba(15,23,42,.05)] sm:p-8 md:p-11">
-            <ArticleContent
-              blocks={article.content_blocks}
-              legacyHtml={article.content}
-              articleTitle={article.title}
-              articleDescription={article.description}
-            />
-          </article>
+          <div className="min-w-0 space-y-7">
+            <article className="min-w-0 rounded-[28px] border border-slate-200 bg-white p-6 shadow-[0_12px_40px_rgba(15,23,42,.05)] sm:p-8 md:p-11">
+              <ArticleContent
+                blocks={article.content_blocks}
+                legacyHtml={article.content}
+                articleTitle={article.title}
+                articleDescription={article.description}
+              />
+            </article>
+
+            <CommentSection articleId={article.id} initialComments={comments} />
+          </div>
         </div>
       </section>
+
+      {relatedArticles.length > 0 && (
+        <section className="border-t border-slate-200 bg-white px-4 py-14 md:px-8 md:py-20">
+          <div className="mx-auto max-w-7xl">
+            <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#0043a4]">Davom eting</p>
+                <h2 className="mt-2 text-3xl font-extrabold tracking-[-0.04em] text-[#111827] sm:text-4xl">
+                  O‘xshash bunyodkorlar
+                </h2>
+              </div>
+              <Link href="/bunyodkorlar" className="text-sm font-extrabold text-[#0043a4]">Barcha profillar →</Link>
+            </div>
+
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+              {relatedArticles.map((item) => (
+                <PublicArticleCard
+                  key={item.id}
+                  title={item.title}
+                  slug={item.slug}
+                  imageUrl={item.image_url}
+                  category={item.category}
+                  description={item.description}
+                  date={item.published_at || item.created_at}
+                />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       <SiteFooter />
     </main>

@@ -10,6 +10,7 @@ export default function AdminQuickNav() {
   const links = [
     { href: "/admin/applications", label: "Arizalar", icon: "📥" },
     { href: "/admin/biographies", label: "Anketalar", icon: "📝" },
+    { href: "/admin/comments", label: "Kommentlar", icon: "💬" },
   ].filter((link) => !pathname.startsWith(link.href));
 
   if (links.length === 0) return null;
