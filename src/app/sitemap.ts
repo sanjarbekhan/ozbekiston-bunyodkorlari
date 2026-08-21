@@ -36,6 +36,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: url("/bunyodkorlar"),
       ...(latestArticleDate ? { lastModified: latestArticleDate } : {}),
     },
+    { url: url("/reyting"), changeFrequency: "daily", priority: 0.8 },
+    { url: url("/sanjar-ai"), changeFrequency: "weekly", priority: 0.7 },
     { url: url("/haqida") },
     { url: url("/tavsiyalari") },
     { url: url("/sahifasi") },
