@@ -68,6 +68,11 @@ export default function LegacyApplicationFrame() {
 
     legacyForm.replaceWith(form);
 
+    const coverFilter = doc.querySelector<HTMLElement>("#rec2119410563 .t-cover__filter");
+    if (coverFilter) {
+      coverFilter.style.backgroundImage = "linear-gradient(to bottom, rgba(0,0,0,0.50), rgba(0,0,0,0.50))";
+    }
+
     const telegramGroup = findFieldGroup(form, "Telegram profili ochiq telefon raqam yoki Telegram username");
     const telegramTitle = telegramGroup?.querySelector<HTMLElement>(".t-input-title");
     if (telegramTitle) telegramTitle.textContent = "Telegram username";
