@@ -2,6 +2,8 @@ import Link from "next/link";
 
 const links = [
   ["/bunyodkorlar", "Bunyodkorlar"],
+  ["/reyting", "Reyting"],
+  ["/sanjar-ai", "Sanjar AI"],
   ["/haqida", "Biz haqimizda"],
   ["/tavsiyalari", "Tavsiyalar"],
   ["/sahifasi", "Iqtiboslar"],

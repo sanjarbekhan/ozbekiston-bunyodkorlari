@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 const menuItems = [
   ["/", "Bosh sahifa"],
   ["/bunyodkorlar", "Bunyodkorlar katalogi"],
+  ["/reyting", "Reyting"],
+  ["/sanjar-ai", "Sanjar AI"],
   ["/haqida", "Biz haqimizda"],
   ["/tavsiyalari", "Tavsiyalar"],
   ["/sahifasi", "Iqtiboslar"],
