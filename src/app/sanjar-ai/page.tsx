@@ -9,6 +9,8 @@ type Source = { title: string; url: string; category: string | null };
 type Message = { role: "user" | "assistant"; text: string; sources?: Source[] };
 
 const suggestions = [
+  "Ensiklopediya haqida aytib ber",
+  "Nima qila olasan?",
   "Reyting qanday hisoblanadi?",
   "IT yo‘nalishidagi bunyodkorlarni ko‘rsat",
   "Ariza qanday topshiraman?",
@@ -18,7 +20,7 @@ export default function SanjarAIPage() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      text: "Salom! Men Sanjar AI — O‘zbekiston Bunyodkor Yoshlari Ensiklopediyasi bo‘yicha yordamchiman. Tasdiqlangan ochiq ma’lumotlar asosida profil, reyting va ariza bo‘yicha savollaringizga javob beraman.",
+      text: "Salom! Men Sanjar AI — O‘zbekiston Bunyodkor Yoshlari Ensiklopediyasining raqamli yordamchisiman. Ensiklopediya, profillar, yutuqlar, reyting va ariza topshirish bo‘yicha savollaringizga javob beraman.",
     },
   ]);
   const [question, setQuestion] = useState("");
@@ -66,18 +68,18 @@ export default function SanjarAIPage() {
       <section className="px-4 pb-16 pt-24 md:px-8 md:pb-24 md:pt-28">
         <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.78fr_1.22fr] lg:items-start">
           <div className="lg:sticky lg:top-8">
-            <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-[#0c9ed0]">Sun’iy intellekt</p>
+            <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-[#0c9ed0]">Ensiklopediya yordamchisi</p>
             <h1 className="mt-4 text-[44px] font-black leading-[0.98] tracking-[-0.05em] text-[#08233d] sm:text-[58px]">Sanjar AI</h1>
             <p className="mt-5 max-w-xl text-base font-medium leading-7 text-slate-600 md:text-lg">
-              Bunyodkorlar, reyting va platformadagi tasdiqlangan ma’lumotlarni tez topish uchun yaratilgan raqamli yordamchi.
+              O‘zbekiston Bunyodkor Yoshlari Ensiklopediyasi bo‘yicha ma’lumotlarni topish, tushuntirish va kerakli profilga yo‘naltirish uchun yaratilgan raqamli yordamchi.
             </p>
 
             <div className="mt-8 grid gap-3">
               {[
+                ["◎", "Ensiklopediya va loyiha haqida tushuntiradi"],
                 ["⌕", "Ism, yo‘nalish yoki kalit so‘z bo‘yicha profil topadi"],
                 ["↗", "Reyting formulasini va ball sababini tushuntiradi"],
-                ["✓", "Faqat ommaga ochiq, tasdiqlangan ma’lumotlarga tayanadi"],
-                ["◎", "Jins, millat, din va boshqa sensitiv belgilarni reytingda ishlatmaydi"],
+                ["✓", "Ariza topshirish va ensiklopediyaga qo‘shilish yo‘lini ko‘rsatadi"],
               ].map(([icon, text]) => (
                 <div key={text} className="flex items-center gap-4 rounded-[22px] border border-[#b9e3f2] bg-white/85 p-4 shadow-[0_14px_35px_rgba(23,112,148,.06)] backdrop-blur">
                   <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#0aa9d8] text-lg font-black text-white">{icon}</span>
@@ -98,7 +100,7 @@ export default function SanjarAIPage() {
                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/18 text-lg font-black backdrop-blur">SA</div>
                 <div>
                   <h2 className="text-lg font-black">Sanjar AI</h2>
-                  <p className="text-xs font-semibold text-white/80">Bunyodkorlar raqamli yordamchisi</p>
+                  <p className="text-xs font-semibold text-white/80">Ensiklopediya raqamli yordamchisi</p>
                 </div>
               </div>
             </header>
@@ -144,14 +146,14 @@ export default function SanjarAIPage() {
                   value={question}
                   onChange={(event) => setQuestion(event.target.value)}
                   maxLength={700}
-                  placeholder="Savolingizni yozing…"
+                  placeholder="Ensiklopediya haqida savol yozing…"
                   className="min-w-0 flex-1 rounded-full border border-[#bfdfe8] bg-white px-5 py-3.5 text-sm font-semibold outline-none transition focus:border-[#0aa9d8] focus:ring-4 focus:ring-[#0aa9d8]/10"
                 />
                 <button disabled={loading || question.trim().length < 2} className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#13b9d7] text-lg font-black text-white transition hover:bg-[#08a9cb] disabled:opacity-40" type="submit" aria-label="Savolni yuborish">
                   →
                 </button>
               </div>
-              <p className="mt-2 px-2 text-[11px] font-semibold text-slate-400">Sanjar AI javoblari ma’lumotnoma xarakterida. Profil va reyting bo‘yicha yakuniy qaror tahririyatga tegishli.</p>
+              <p className="mt-2 px-2 text-[11px] font-semibold text-slate-400">Sanjar AI ensiklopediya bazasidagi ochiq ma’lumotlarga tayanadi; bazada bo‘lmagan biografik faktni o‘ylab topmaydi.</p>
             </form>
           </section>
         </div>
