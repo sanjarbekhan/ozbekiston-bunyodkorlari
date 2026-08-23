@@ -121,14 +121,33 @@ function fallbackAnswer(question: string, matches: SearchArticle[], profileCount
 }
 
 function parseResponseText(payload: unknown) {
-  const data = payload as { output_text?: string; output?: Array<{ content?: Array<{ text?: string }> }> };
-  if (data.output_text) return data.output_text;
+  const data = payload as {
+    output_text?: string;
+    output?: Array<{
+      type?: string;
+      role?: string;
+      content?: Array<{ type?: string; text?: string }>;
+    }>;
+  };
+
+  if (typeof data.output_text === "string" && data.output_text.trim()) {
+    return data.output_text;
+  }
+
+  const finalParts: string[] = [];
   for (const item of data.output || []) {
+    if (item.type && item.type !== "message") continue;
+    if (item.role && item.role !== "assistant") continue;
+
     for (const content of item.content || []) {
-      if (content.text) return content.text;
+      if (content.type && content.type !== "output_text") continue;
+      if (typeof content.text === "string" && content.text.trim()) {
+        finalParts.push(content.text.trim());
+      }
     }
   }
-  return "";
+
+  return finalParts.join("\n").trim();
 }
 
 function normalizeHistory(value: unknown): ChatTurn[] {
