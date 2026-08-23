@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import ArticleContent from "@/components/ArticleContent";
 import ArticleSharePanel from "@/components/ArticleSharePanel";
 import CommentSection from "@/components/CommentSection";
-import PublicArticleCard from "@/components/PublicArticleCard";
 import SiteFooter from "@/components/SiteFooter";
 import SiteMenu from "@/components/SiteMenu";
 import type { ArticleRecord } from "@/lib/article-types";
@@ -12,17 +11,6 @@ import { supabase } from "@/lib/supabase";
 
 export const revalidate = 60;
 const SITE_URL = "https://www.bunyodkor.com";
-
-type RelatedArticle = {
-  id: string;
-  title: string;
-  slug: string;
-  category: string | null;
-  image_url: string | null;
-  description: string | null;
-  published_at: string | null;
-  created_at: string;
-};
 
 type PublicComment = {
   id: string;
@@ -58,47 +46,6 @@ async function getArticle(slug: string) {
     .eq("slug", decodeURIComponent(slug))
     .maybeSingle();
   return data as ArticleRecord | null;
-}
-
-async function getRelatedArticles(article: ArticleRecord) {
-  const fields = "id, title, slug, category, image_url, description, published_at, created_at";
-  const related: RelatedArticle[] = [];
-  const seen = new Set<string>();
-
-  if (article.category) {
-    const { data } = await supabase
-      .from("articles")
-      .select(fields)
-      .eq("status", "published")
-      .eq("category", article.category)
-      .neq("id", article.id)
-      .order("published_at", { ascending: false })
-      .limit(4);
-
-    for (const item of (data || []) as RelatedArticle[]) {
-      related.push(item);
-      seen.add(item.id);
-    }
-  }
-
-  if (related.length < 4) {
-    const { data } = await supabase
-      .from("articles")
-      .select(fields)
-      .eq("status", "published")
-      .neq("id", article.id)
-      .order("published_at", { ascending: false })
-      .limit(8);
-
-    for (const item of (data || []) as RelatedArticle[]) {
-      if (seen.has(item.id)) continue;
-      related.push(item);
-      seen.add(item.id);
-      if (related.length >= 4) break;
-    }
-  }
-
-  return related.slice(0, 4);
 }
 
 export async function generateMetadata({
@@ -171,16 +118,13 @@ export default async function ArticlePage({
   const intro = plain(article.description);
   const published = formatDate(article.published_at || article.created_at);
 
-  const [relatedArticles, commentsResult] = await Promise.all([
-    getRelatedArticles(article),
-    supabase
-      .from("article_comments")
-      .select("id, author_name, body, created_at")
-      .eq("article_id", article.id)
-      .eq("status", "approved")
-      .order("created_at", { ascending: false })
-      .limit(50),
-  ]);
+  const commentsResult = await supabase
+    .from("article_comments")
+    .select("id, author_name, body, created_at")
+    .eq("article_id", article.id)
+    .eq("status", "approved")
+    .order("created_at", { ascending: false })
+    .limit(50);
 
   const comments = (commentsResult.data || []) as PublicComment[];
   const schema = {
@@ -331,36 +275,6 @@ export default async function ArticlePage({
           </div>
         </div>
       </section>
-
-      {relatedArticles.length > 0 && (
-        <section className="border-t border-slate-200 bg-white px-4 py-14 md:px-8 md:py-20">
-          <div className="mx-auto max-w-7xl">
-            <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-              <div>
-                <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#0043a4]">Davom eting</p>
-                <h2 className="mt-2 text-3xl font-extrabold tracking-[-0.04em] text-[#111827] sm:text-4xl">
-                  O‘xshash bunyodkorlar
-                </h2>
-              </div>
-              <Link href="/bunyodkorlar" className="text-sm font-extrabold text-[#0043a4]">Barcha profillar →</Link>
-            </div>
-
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-              {relatedArticles.map((item) => (
-                <PublicArticleCard
-                  key={item.id}
-                  title={item.title}
-                  slug={item.slug}
-                  imageUrl={item.image_url}
-                  category={item.category}
-                  description={item.description}
-                  date={item.published_at || item.created_at}
-                />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
 
       <SiteFooter />
     </main>
