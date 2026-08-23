@@ -1,0 +1,1 @@
+Trigger production deployment after configuring GROQ_API_KEY and GROQ_SANJAR_MODEL in Vercel.
