@@ -8,7 +8,7 @@ const desktopItems = [
   ["/", "Bosh sahifa"],
   ["/bunyodkorlar", "Ensiklopediya"],
   ["/reyting", "Reyting"],
-  ["/sanjar-ai", "Asnjar AI"],
+  ["/sanjar-ai", "Bunyodkor AI"],
   ["/haqida", "Loyiha haqida"],
 ] as const;
 
@@ -44,8 +44,35 @@ export default function SiteMenu() {
 
   return (
     <>
-      <header className="fixed inset-x-0 top-0 z-[90] border-b border-slate-200/70 bg-white/92 shadow-[0_8px_30px_rgba(15,23,42,.06)] backdrop-blur-xl">
-        <div className="mx-auto flex h-[78px] max-w-7xl items-center justify-between gap-5 px-4 md:px-8">
+      <header className="fixed inset-x-0 top-0 z-[90] overflow-hidden border-b border-slate-200/70 bg-white shadow-[0_8px_30px_rgba(15,23,42,.08)] lg:hidden">
+        <div className="relative w-full bg-white">
+          <Link href="/" className="block w-full" aria-label="Bosh sahifa">
+            <img
+              src="/images/bunyodkorlar-online-header.svg"
+              alt="Bunyodkorlar Online jurnali"
+              className="block h-auto w-full select-none"
+              draggable={false}
+            />
+          </Link>
+
+          <button
+            type="button"
+            aria-label={open ? "Menyuni yopish" : "Menyuni ochish"}
+            aria-expanded={open}
+            onClick={() => setOpen((value) => !value)}
+            className="absolute right-3 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-2xl border border-slate-200/80 bg-white/95 text-[#10263f] shadow-[0_8px_24px_rgba(15,23,42,.16)] backdrop-blur-md transition active:scale-95 sm:right-5 sm:h-14 sm:w-14 sm:rounded-[20px]"
+          >
+            <span className="relative block h-5 w-6">
+              <span className={`absolute left-0 top-[2px] h-[2px] w-6 rounded-full bg-current transition duration-300 ${open ? "translate-y-[8px] rotate-45" : ""}`} />
+              <span className={`absolute left-0 top-[10px] h-[2px] w-6 rounded-full bg-current transition duration-300 ${open ? "opacity-0" : "opacity-100"}`} />
+              <span className={`absolute left-0 top-[18px] h-[2px] w-6 rounded-full bg-current transition duration-300 ${open ? "-translate-y-[8px] -rotate-45" : ""}`} />
+            </span>
+          </button>
+        </div>
+      </header>
+
+      <header className="fixed inset-x-0 top-0 z-[90] hidden border-b border-slate-200/70 bg-white/92 shadow-[0_8px_30px_rgba(15,23,42,.06)] backdrop-blur-xl lg:block">
+        <div className="mx-auto flex h-[78px] max-w-7xl items-center justify-between gap-5 px-8">
           <Link href="/" className="flex min-w-0 items-center gap-3">
             <img
               src="/tilda/images/ozbye-new-logo.svg"
@@ -54,7 +81,7 @@ export default function SiteMenu() {
             />
           </Link>
 
-          <nav className="hidden items-center gap-1 lg:flex">
+          <nav className="flex items-center gap-1">
             {desktopItems.map(([href, label]) => (
               <Link
                 key={href}
@@ -72,24 +99,10 @@ export default function SiteMenu() {
 
           <Link
             href="/ariza-qoldrish"
-            className="hidden items-center gap-2 rounded-full bg-gradient-to-r from-[#126cf3] to-[#4b5dff] px-6 py-3.5 text-sm font-black text-white shadow-[0_10px_28px_rgba(22,108,243,.28)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_34px_rgba(22,108,243,.34)] lg:inline-flex"
+            className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#126cf3] to-[#4b5dff] px-6 py-3.5 text-sm font-black text-white shadow-[0_10px_28px_rgba(22,108,243,.28)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_34px_rgba(22,108,243,.34)]"
           >
             Ariza qoldirish <span aria-hidden="true">→</span>
           </Link>
-
-          <button
-            type="button"
-            aria-label={open ? "Menyuni yopish" : "Menyuni ochish"}
-            aria-expanded={open}
-            onClick={() => setOpen((value) => !value)}
-            className="flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-[#10263f] shadow-sm lg:hidden"
-          >
-            <span className="relative block h-5 w-6">
-              <span className={`absolute left-0 top-[2px] h-[2px] w-6 rounded-full bg-current transition duration-300 ${open ? "translate-y-[8px] rotate-45" : ""}`} />
-              <span className={`absolute left-0 top-[10px] h-[2px] w-6 rounded-full bg-current transition duration-300 ${open ? "opacity-0" : "opacity-100"}`} />
-              <span className={`absolute left-0 top-[18px] h-[2px] w-6 rounded-full bg-current transition duration-300 ${open ? "-translate-y-[8px] -rotate-45" : ""}`} />
-            </span>
-          </button>
         </div>
       </header>
 
@@ -102,7 +115,7 @@ export default function SiteMenu() {
             className="fixed inset-0 z-[70] bg-[#071426]/55 backdrop-blur-sm lg:hidden"
           />
 
-          <nav className="fixed right-3 top-[90px] z-[80] w-[calc(100%-24px)] max-w-sm overflow-hidden rounded-[28px] border border-slate-200 bg-white p-4 shadow-[0_30px_80px_rgba(15,23,42,.22)] lg:hidden">
+          <nav className="fixed right-3 top-[clamp(76px,15.625vw,124px)] z-[80] w-[calc(100%-24px)] max-w-sm overflow-hidden rounded-[28px] border border-slate-200 bg-white p-4 shadow-[0_30px_80px_rgba(15,23,42,.22)] lg:hidden">
             <div className="space-y-1.5">
               {mobileItems.map(([href, label]) => (
                 <Link

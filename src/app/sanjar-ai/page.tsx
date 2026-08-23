@@ -15,7 +15,7 @@ type Message = {
 
 const firstMessage: Message = {
   role: "assistant",
-  text: "Salom! Men Asnjar AI — O‘zbekiston Bunyodkor Yoshlari Ensiklopediyasining raqamli yordamchisiman. Profil, yutuq, reyting, yo‘nalish yoki ariza bo‘yicha savolingizni yozing.",
+  text: "Salom! Men Bunyodkor AI — O‘zbekiston Bunyodkor Yoshlari Ensiklopediyasining raqamli yordamchisiman. Profil, yutuq, reyting, yo‘nalish yoki ariza bo‘yicha savolingizni yozing.",
 };
 
 const quickActions = [
@@ -147,8 +147,8 @@ export default function SanjarAIPage() {
             <div className="flex items-center gap-3 border-b border-[#edf2f5] pb-4">
               <SanjarMark />
               <div className="min-w-0">
-                <p className="text-[11px] font-black uppercase tracking-[0.18em] text-[#21aeca]">Bunyodkor AI</p>
-                <h1 className="mt-0.5 text-xl font-black tracking-[-0.03em] text-[#0b2944]">Asnjar AI</h1>
+                <p className="text-[11px] font-black uppercase tracking-[0.18em] text-[#21aeca]">Ensiklopediya AI</p>
+                <h1 className="mt-0.5 text-xl font-black tracking-[-0.03em] text-[#0b2944]">Bunyodkor AI</h1>
               </div>
             </div>
 
@@ -194,7 +194,7 @@ export default function SanjarAIPage() {
                 <SanjarMark compact />
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
-                    <h2 className="truncate text-base font-black text-[#0b2944]">Asnjar AI</h2>
+                    <h2 className="truncate text-base font-black text-[#0b2944]">Bunyodkor AI</h2>
                     <span className="hidden rounded-full bg-[#eaf9f1] px-2 py-1 text-[10px] font-black text-[#198754] sm:inline">● Online</span>
                   </div>
                   <p className="truncate text-xs font-semibold text-slate-400">O‘zbekiston Bunyodkor Yoshlari Ensiklopediyasi yordamchisi</p>
@@ -223,7 +223,7 @@ export default function SanjarAIPage() {
                       <SanjarMark compact />
                       <div className="min-w-0 flex-1 pt-0.5">
                         <div className="mb-2 flex flex-wrap items-center gap-2">
-                          <span className="text-xs font-black text-[#0b2944]">Asnjar AI</span>
+                          <span className="text-xs font-black text-[#0b2944]">Bunyodkor AI</span>
                           <span className="rounded-full bg-[#edf8fb] px-2.5 py-1 text-[10px] font-extrabold text-[#168fa8]">✓ {modeLabel(message.mode)}</span>
                         </div>
 
@@ -290,7 +290,7 @@ export default function SanjarAIPage() {
                   <div className="flex gap-3">
                     <SanjarMark compact />
                     <div className="pt-1">
-                      <p className="text-xs font-black text-[#0b2944]">Asnjar AI</p>
+                      <p className="text-xs font-black text-[#0b2944]">Bunyodkor AI</p>
                       <div className="mt-2 flex items-center gap-1.5 rounded-2xl border border-[#e0eaf0] bg-[#f8fbfc] px-4 py-3">
                         {[0, 1, 2].map((dot) => (
                           <span key={dot} className="h-2 w-2 animate-pulse rounded-full bg-[#25b9d4]" style={{ animationDelay: `${dot * 180}ms` }} />
@@ -332,7 +332,7 @@ export default function SanjarAIPage() {
                       }}
                       rows={1}
                       maxLength={700}
-                      placeholder="Asnjar AI’dan so‘rang..."
+                      placeholder="Bunyodkor AI’dan so‘rang..."
                       className="max-h-32 min-h-11 min-w-0 flex-1 resize-none bg-transparent px-3 py-2.5 text-sm font-semibold leading-6 text-[#263b4d] outline-none placeholder:text-slate-400"
                     />
                     <button
@@ -347,7 +347,7 @@ export default function SanjarAIPage() {
                 </form>
 
                 <p className="mt-2.5 px-2 text-center text-[10px] font-semibold leading-4 text-slate-400">
-                  Asnjar AI ochiq ensiklopediya ma’lumotlariga tayanadi. Muhim faktlarni ko‘rsatilgan manbalar orqali tekshirishingiz mumkin.
+                  Bunyodkor AI ochiq ensiklopediya ma’lumotlariga tayanadi. Muhim faktlarni ko‘rsatilgan manbalar orqali tekshirishingiz mumkin.
                 </p>
               </div>
             </div>
