@@ -26,6 +26,7 @@ export default function CommentSection({
   articleId: string;
   initialComments: PublicComment[];
 }) {
+  const [comments, setComments] = useState<PublicComment[]>(initialComments);
   const [authorName, setAuthorName] = useState("");
   const [body, setBody] = useState("");
   const [website, setWebsite] = useState("");
@@ -63,10 +64,13 @@ export default function CommentSection({
       const result = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(result?.error || "Kommentariyani yuborib bo‘lmadi.");
 
+      if (result?.comment?.id) {
+        setComments((current) => [result.comment as PublicComment, ...current]);
+      }
       setAuthorName("");
       setBody("");
       setWebsite("");
-      setMessage("Kommentariyangiz tekshiruvga yuborildi. Tasdiqlangach maqola ostida ko‘rinadi.");
+      setMessage("Kommentariyangiz AI nazoratidan o‘tdi va e’lon qilindi.");
     } catch (submitError) {
       setError(submitError instanceof Error ? submitError.message : "Kommentariyani yuborishda xatolik yuz berdi.");
     } finally {
@@ -83,12 +87,12 @@ export default function CommentSection({
             Kommentariyalar
           </h2>
         </div>
-        <span className="text-sm font-bold text-slate-400">{initialComments.length} ta tasdiqlangan fikr</span>
+        <span className="text-sm font-bold text-slate-400">{comments.length} ta fikr</span>
       </div>
 
-      {initialComments.length > 0 ? (
+      {comments.length > 0 ? (
         <div className="mt-7 divide-y divide-slate-100 border-y border-slate-100">
-          {initialComments.map((comment) => (
+          {comments.map((comment) => (
             <article key={comment.id} className="py-5">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <p className="font-extrabold text-[#111827]">{comment.author_name}</p>
@@ -102,14 +106,14 @@ export default function CommentSection({
         </div>
       ) : (
         <div className="mt-7 rounded-2xl bg-[#f7f9fc] px-5 py-6 text-sm font-semibold leading-6 text-slate-500">
-          Hozircha tasdiqlangan kommentariya yo‘q. Birinchi bo‘lib fikr qoldirishingiz mumkin.
+          Hozircha kommentariya yo‘q. Birinchi bo‘lib fikr qoldirishingiz mumkin.
         </div>
       )}
 
       <form onSubmit={submit} className="mt-8 rounded-[22px] bg-[#f7f9fc] p-4 sm:p-6">
         <h3 className="text-lg font-extrabold text-[#111827]">Fikringizni qoldiring</h3>
         <p className="mt-1 text-xs font-semibold leading-5 text-slate-400">
-          Kommentariya avval tahririyat tekshiruvidan o‘tadi.
+          Kommentariya Bunyodkor AI tomonidan avtomatik tekshiriladi. Haqorat, so‘kinish, tahdid va spam e’lon qilinmaydi.
         </p>
 
         <div className="mt-5 grid gap-4">
@@ -150,7 +154,7 @@ export default function CommentSection({
           disabled={busy}
           className="mt-5 rounded-full bg-[#0043a4] px-6 py-3.5 text-sm font-extrabold text-white transition hover:bg-[#003681] disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {busy ? "Yuborilmoqda..." : "Kommentariyani yuborish"}
+          {busy ? "Tekshirilmoqda..." : "Kommentariyani yuborish"}
         </button>
       </form>
     </section>
