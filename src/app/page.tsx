@@ -103,22 +103,14 @@ export default async function Home() {
               Siz ham bunyodkorlar safidan joy olishingiz mumkin.
             </p>
 
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row md:mt-10">
+            <div className="mt-8 flex md:mt-10">
               <Link
                 href="/ariza-qoldrish"
-                className="rounded-full bg-[#0b63ce] px-7 py-4 text-center text-sm font-extrabold text-white shadow-[0_10px_30px_rgba(0,67,164,.24)] transition hover:bg-[#0043a4]"
+                className="inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-full bg-[#0b63ce] px-9 py-4 text-center text-[15px] font-extrabold text-white shadow-[0_12px_34px_rgba(0,67,164,.30)] transition duration-200 hover:-translate-y-0.5 hover:bg-[#0043a4] hover:shadow-[0_16px_38px_rgba(0,67,164,.36)] sm:w-auto sm:min-w-[210px]"
               >
-                Ariza qoldirish
+                <span>Ariza qoldirish</span>
+                <span aria-hidden="true" className="text-lg leading-none">→</span>
               </Link>
-
-              <a
-                href="https://t.me/UzBYE_bot"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-full border border-white/55 bg-white/10 px-7 py-4 text-center text-sm font-extrabold text-white backdrop-blur transition hover:bg-white hover:text-[#071426]"
-              >
-                Telegram bot orqali
-              </a>
             </div>
           </div>
 
@@ -214,7 +206,7 @@ export default async function Home() {
 
             <div className="mt-10 divide-y divide-slate-200 border-y border-slate-200">
               {[
-                ["01", "Ariza qoldirish", "Sayt yoki Telegram bot orqali ariza yuborasiz."],
+                ["01", "Ariza qoldirish", "Sayt orqali ariza yuborasiz."],
                 ["02", "Siz bilan bog‘lanamiz", "Tahririyat kerakli ma’lumotlarni aniqlashtirish uchun siz bilan bog‘lanadi."],
                 ["03", "Ma’lumotlarni taqdim etish", "Ma’lumotlar ensiklopedik ahamiyat va tahrir mezonlari asosida ko‘rib chiqiladi."],
               ].map(([number, title, text]) => (
