@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Sanjar AI",
+  title: "Asnjar AI",
   description: "Bunyodkorlar, reyting va platformadagi tasdiqlangan ma’lumotlar bo‘yicha raqamli yordamchi.",
   alternates: { canonical: "https://www.bunyodkor.com/sanjar-ai" },
   openGraph: {
-    title: "Sanjar AI",
+    title: "Asnjar AI",
     description: "O‘zbekiston Bunyodkor Yoshlari Ensiklopediyasining raqamli yordamchisi.",
     url: "https://www.bunyodkor.com/sanjar-ai",
     type: "website",

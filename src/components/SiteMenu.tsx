@@ -8,7 +8,7 @@ const desktopItems = [
   ["/", "Bosh sahifa"],
   ["/bunyodkorlar", "Ensiklopediya"],
   ["/reyting", "Reyting"],
-  ["/sanjar-ai", "Sanjar AI"],
+  ["/sanjar-ai", "Asnjar AI"],
   ["/haqida", "Loyiha haqida"],
 ] as const;
 
