@@ -44,13 +44,13 @@ export default function SiteMenu() {
 
   return (
     <>
-      <header className="fixed inset-x-0 top-0 z-[90] border-b border-white/10 bg-white/92 shadow-[0_8px_30px_rgba(15,23,42,.06)] backdrop-blur-xl">
-        <div className="mx-auto flex h-[74px] max-w-7xl items-center justify-between gap-5 px-4 md:px-8">
+      <header className="fixed inset-x-0 top-0 z-[90] border-b border-slate-200/70 bg-white/92 shadow-[0_8px_30px_rgba(15,23,42,.06)] backdrop-blur-xl">
+        <div className="mx-auto flex h-[78px] max-w-7xl items-center justify-between gap-5 px-4 md:px-8">
           <Link href="/" className="flex min-w-0 items-center gap-3">
             <img
               src="/tilda/images/ozbye-new-logo.svg"
               alt="O‘zbekiston Bunyodkor Yoshlari"
-              className="h-10 w-auto max-w-[210px] object-contain object-left"
+              className="h-11 w-auto max-w-[220px] object-contain object-left"
             />
           </Link>
 
@@ -70,14 +70,12 @@ export default function SiteMenu() {
             ))}
           </nav>
 
-          <div className="hidden items-center gap-3 lg:flex">
-            <Link
-              href="/ariza-qoldrish"
-              className="inline-flex items-center gap-2 rounded-full bg-[#0b63ce] px-5 py-3 text-sm font-black text-white shadow-[0_10px_25px_rgba(11,99,206,.23)] transition hover:-translate-y-0.5 hover:bg-[#0043a4]"
-            >
-              Ariza qoldirish <span aria-hidden="true">→</span>
-            </Link>
-          </div>
+          <Link
+            href="/ariza-qoldrish"
+            className="hidden items-center gap-2 rounded-full bg-gradient-to-r from-[#126cf3] to-[#4b5dff] px-6 py-3.5 text-sm font-black text-white shadow-[0_10px_28px_rgba(22,108,243,.28)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_34px_rgba(22,108,243,.34)] lg:inline-flex"
+          >
+            Ariza qoldirish <span aria-hidden="true">→</span>
+          </Link>
 
           <button
             type="button"
@@ -104,7 +102,7 @@ export default function SiteMenu() {
             className="fixed inset-0 z-[70] bg-[#071426]/55 backdrop-blur-sm lg:hidden"
           />
 
-          <nav className="fixed right-3 top-[86px] z-[80] w-[calc(100%-24px)] max-w-sm overflow-hidden rounded-[28px] border border-slate-200 bg-white p-4 shadow-[0_30px_80px_rgba(15,23,42,.22)] lg:hidden">
+          <nav className="fixed right-3 top-[90px] z-[80] w-[calc(100%-24px)] max-w-sm overflow-hidden rounded-[28px] border border-slate-200 bg-white p-4 shadow-[0_30px_80px_rgba(15,23,42,.22)] lg:hidden">
             <div className="space-y-1.5">
               {mobileItems.map(([href, label]) => (
                 <Link
@@ -125,7 +123,7 @@ export default function SiteMenu() {
             <Link
               href="/ariza-qoldrish"
               onClick={() => setOpen(false)}
-              className="mt-4 flex items-center justify-center gap-2 rounded-2xl bg-[#0b63ce] px-5 py-4 text-sm font-black text-white shadow-[0_10px_25px_rgba(11,99,206,.2)]"
+              className="mt-4 flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#126cf3] to-[#4b5dff] px-5 py-4 text-sm font-black text-white shadow-[0_10px_25px_rgba(11,99,206,.2)]"
             >
               Ariza qoldirish <span aria-hidden="true">→</span>
             </Link>
