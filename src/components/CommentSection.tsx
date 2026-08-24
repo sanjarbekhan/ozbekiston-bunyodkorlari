@@ -70,7 +70,11 @@ export default function CommentSection({
       setAuthorName("");
       setBody("");
       setWebsite("");
-      setMessage("Kommentariyangiz AI nazoratidan o‘tdi va e’lon qilindi.");
+      setMessage(
+        result?.moderationMode === "fallback"
+          ? "Kommentariyangiz tekshirildi va e’lon qilindi. AI tekshiruvi vaqtincha cheklangan."
+          : "Kommentariyangiz tekshirildi va e’lon qilindi.",
+      );
     } catch (submitError) {
       setError(submitError instanceof Error ? submitError.message : "Kommentariyani yuborishda xatolik yuz berdi.");
     } finally {
