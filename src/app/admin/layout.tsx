@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import AdminQuickNav from "@/components/admin/AdminQuickNav";
+import AdminRankingAutoProcessor from "@/components/admin/AdminRankingAutoProcessor";
 
 export const metadata: Metadata = {
   title: "Admin panel",
@@ -22,6 +23,7 @@ export default function AdminLayout({
 }>) {
   return (
     <>
+      <AdminRankingAutoProcessor />
       {children}
       <AdminQuickNav />
     </>
