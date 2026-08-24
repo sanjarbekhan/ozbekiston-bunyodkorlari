@@ -62,8 +62,8 @@ export async function POST(request: NextRequest) {
       achievements: analysis.achievements,
       ai_summary: publicSummary(analysis.summary),
       ai_confidence: analysis.confidence,
-      scoring_source: analysis.source,
-      scoring_version: "v2-ai",
+      scoring_source: "ai",
+      scoring_version: "v3-bunyodkor-ai",
       status: "approved",
       computed_at: now.toISOString(),
       approved_at: now.toISOString(),
@@ -82,7 +82,8 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({ ok: true, ranking });
-  } catch {
-    return NextResponse.json({ error: "Reyting tahlilida kutilmagan xatolik yuz berdi." }, { status: 500 });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Bunyodkor AI reyting tahlilida xatolik yuz berdi.";
+    return NextResponse.json({ error: message }, { status: 503 });
   }
 }
