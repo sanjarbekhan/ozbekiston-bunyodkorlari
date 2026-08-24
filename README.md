@@ -40,3 +40,20 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 CRM orqali kelishilgan nomzodlarga `https://www.bunyodkor.com/anketa` havolasi yuboriladi. Telegram username’ni oldindan to‘ldirish uchun `?telegram=username` query parametridan foydalanish mumkin.
 
 Forma ishga tushishidan oldin `supabase/migrations/202608161200_create_biography_submissions.sql` migratsiyasini saytning Supabase loyihasiga qo‘llang. Forma matnli qoralamani brauzerda 30 kun saqlaydi; foto va hujjatlar xavfsizlik sabab qoralamaga saqlanmaydi.
+
+## Bunyodkor mobil ilovasi
+
+`mobile/` — Expo Go (SDK 54) bilan ishlaydigan Android/iOS ilova. U veb-sayt bilan bir xil Supabase loyihasidan foydalanadi va e’lon qilingan barcha nomzodlarni `articles` jadvalidan avtomatik ko‘rsatadi.
+
+```bash
+cd mobile
+npm install
+npx expo start --clear
+```
+
+Mobil profil, qoralama, networking, guruh, chat, referal va bildirishnoma jadvallari quyidagi migratsiyalarda saqlanadi:
+
+- `20260825000000_bunyodkor_mobile_core.sql`
+- `20260825001000_harden_mobile_and_trigger_functions.sql`
+
+Mobil ilovada faqat Supabase publishable key mavjud. Secret yoki service-role kalitlarni mobil paketga kiritmang.

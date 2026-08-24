@@ -1,0 +1,33 @@
+{
+  "expo": {
+    "name": "Bunyodkor",
+    "slug": "bunyodkor",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "scheme": "bunyodkor",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "uz.smartcombinator.bunyodkor"
+    },
+    "android": {
+      "package": "uz.smartcombinator.bunyodkor",
+      "adaptiveIcon": {
+        "backgroundColor": "#F4F7F5"
+      },
+      "edgeToEdgeEnabled": true
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
