@@ -105,7 +105,8 @@ export default function MobileArticleEditor({ initial }: { initial?: Partial<Art
   });
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
-  const [mainDrag, setMainDrag] = useState(false);\n  const [slugManuallyEdited, setSlugManuallyEdited] = useState(Boolean(initial?.slug));
+  const [mainDrag, setMainDrag] = useState(false);
+  const [slugManuallyEdited, setSlugManuallyEdited] = useState(Boolean(initial?.slug));
 
   const publicUrl = useMemo(
     () => `/bunyodkorlar/${form.slug || slugify(form.title)}`,
@@ -146,13 +147,7 @@ export default function MobileArticleEditor({ initial }: { initial?: Partial<Art
       .upload(path, file, { cacheControl: "31536000" });
 
     if (error) {
-      const duplicateSlug =
-        error.code === "23505" && error.message.toLowerCase().includes("slug");
-      setMessage(
-        duplicateSlug
-          ? "Bu URL (slug) allaqachon band. Slug maydonini boshqacha qilib qayta urinib ko‘ring."
-          : `Maqolani saqlashda xato: ${error.message}`
-      );
+      setMessage(`Fayl yuklashda xato: ${error.message}`);
       setBusy(false);
       return;
     }
@@ -230,7 +225,13 @@ export default function MobileArticleEditor({ initial }: { initial?: Partial<Art
 
     const { error } = await query;
     if (error) {
-      setMessage(error.message);
+      const duplicateSlug =
+        error.code === "23505" && error.message.toLowerCase().includes("slug");
+      setMessage(
+        duplicateSlug
+          ? "Bu URL (slug) allaqachon band. Slug maydonini boshqacha qilib qayta urinib ko‘ring."
+          : `Maqolani saqlashda xato: ${error.message}`
+      );
       setBusy(false);
       return;
     }
