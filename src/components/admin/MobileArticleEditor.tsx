@@ -7,7 +7,7 @@ import type { ContentBlock } from "@/lib/article-types";
 import CategoryPicker from "@/components/admin/CategoryPicker";
 import RichTextEditor from "@/components/admin/RichTextEditor";
 
-const ADMIN_EMAIL = "sanjarhasanov465@gmail.com";
+const ADMIN_USER_ID = "988b7d1f-4028-42a6-9a8f-be869224be6e";
 
 type ArticleDraft = {
   id?: string;
@@ -106,6 +106,7 @@ export default function MobileArticleEditor({ initial }: { initial?: Partial<Art
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
   const [mainDrag, setMainDrag] = useState(false);
+  const [slugManuallyEdited, setSlugManuallyEdited] = useState(Boolean(initial?.slug));
 
   const publicUrl = useMemo(
     () => `/bunyodkorlar/${form.slug || slugify(form.title)}`,
@@ -146,7 +147,7 @@ export default function MobileArticleEditor({ initial }: { initial?: Partial<Art
       .upload(path, file, { cacheControl: "31536000" });
 
     if (error) {
-      setMessage(error.message);
+      setMessage(`Fayl yuklashda xato: ${error.message}`);
       setBusy(false);
       return;
     }
@@ -180,9 +181,9 @@ export default function MobileArticleEditor({ initial }: { initial?: Partial<Art
     setBusy(true);
     setMessage("");
 
-    const { data: auth } = await supabase.auth.getUser();
-    if (auth.user?.email?.toLowerCase() !== ADMIN_EMAIL) {
-      setMessage("Bu hisobga admin ruxsati berilmagan.");
+    const { data: auth, error: authError } = await supabase.auth.getUser();
+    if (authError || !auth.user || auth.user.id !== ADMIN_USER_ID) {
+      setMessage("Admin sessiyasi tugagan yoki bu hisobga admin ruxsati berilmagan. Qayta kiring.");
       setBusy(false);
       return;
     }
@@ -224,7 +225,13 @@ export default function MobileArticleEditor({ initial }: { initial?: Partial<Art
 
     const { error } = await query;
     if (error) {
-      setMessage(error.message);
+      const duplicateSlug =
+        error.code === "23505" && error.message.toLowerCase().includes("slug");
+      setMessage(
+        duplicateSlug
+          ? "Bu URL (slug) allaqachon band. Slug maydonini boshqacha qilib qayta urinib ko‘ring."
+          : `Maqolani saqlashda xato: ${error.message}`
+      );
       setBusy(false);
       return;
     }
@@ -277,12 +284,13 @@ export default function MobileArticleEditor({ initial }: { initial?: Partial<Art
             <label className="block text-sm font-extrabold">Ism va familiya</label>
             <input
               value={form.title}
-              onChange={(event) =>
+              onChange={(event) => {
+                const title = event.target.value;
                 patch({
-                  title: event.target.value,
-                  slug: form.slug || slugify(event.target.value),
-                })
-              }
+                  title,
+                  slug: slugManuallyEdited ? form.slug : slugify(title),
+                });
+              }}
               placeholder="Masalan: Rustamov Shaxriyor"
               className="mt-2 w-full rounded-2xl border border-slate-200 bg-[#f8fafc] px-4 py-4 text-base font-bold outline-none transition focus:border-[#0043a4] focus:bg-white"
             />
@@ -494,7 +502,15 @@ export default function MobileArticleEditor({ initial }: { initial?: Partial<Art
             <div className="mt-5 grid gap-4 sm:grid-cols-2">
               <label className="text-sm font-extrabold">
                 Slug
-                <input value={form.slug} onChange={(event) => patch({ slug: slugify(event.target.value) })} className="mt-2 w-full rounded-xl border border-slate-200 p-3.5 font-medium" />
+                <input
+                  value={form.slug}
+                  onChange={(event) => {
+                    const slug = slugify(event.target.value);
+                    setSlugManuallyEdited(Boolean(slug));
+                    patch({ slug: slug || slugify(form.title) });
+                  }}
+                  className="mt-2 w-full rounded-xl border border-slate-200 p-3.5 font-medium"
+                />
               </label>
               <label className="text-sm font-extrabold">
                 Status
