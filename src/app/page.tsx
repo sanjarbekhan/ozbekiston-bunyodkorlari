@@ -232,7 +232,7 @@ export default async function Home() {
 
       <section className="px-4 pb-16 md:px-8 md:pb-24">
         <div className="relative mx-auto max-w-7xl overflow-hidden rounded-[34px] bg-[#0a2a4c] px-6 py-10 text-white shadow-[0_24px_70px_rgba(10,42,76,.20)] sm:px-10 md:px-14 md:py-14">
-          <div className="absolute inset-y-0 right-0 hidden w-[45%] bg-[url('/tilda/images/tild6130-3635-4939-b332-343333356531__yangi_uzb.png')] bg-cover bg-center opacity-20 md:block" />
+          <div className="absolute inset-y-0 right-0 hidden w-[45%] bg-[url('/images/bunyodkor-hero.webp')] bg-cover bg-center opacity-20 md:block" />
           <div className="relative max-w-2xl">
             <p className="text-[11px] font-black uppercase tracking-[0.2em] text-[#7fb0ff]">Siz ham bunyodkor bo‘lishingiz mumkin</p>
             <h2 className="mt-3 text-[34px] font-black leading-[1.04] tracking-[-0.04em] sm:text-[44px]">
