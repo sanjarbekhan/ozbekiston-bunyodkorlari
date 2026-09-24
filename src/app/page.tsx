@@ -84,7 +84,7 @@ export default async function Home() {
       <section className="relative isolate overflow-hidden bg-[#06182d] pt-[74px] text-white">
         <div
           className="absolute inset-0 -z-30 bg-cover bg-[position:68%_center] sm:bg-[position:65%_center] lg:bg-[position:72%_center]"
-          style={{ backgroundImage: "url('/images/hero.png')" }}
+          style={{ backgroundImage: "url('/images/bunyodkor-hero.webp?v=2')" }}
         />
         <div className="absolute inset-0 -z-20 bg-[linear-gradient(90deg,rgba(3,17,34,.96)_0%,rgba(4,24,45,.91)_35%,rgba(4,28,53,.68)_57%,rgba(4,25,47,.26)_78%,rgba(3,18,34,.10)_100%)]" />
         <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_76%_24%,rgba(62,144,255,.18),transparent_34%)]" />
