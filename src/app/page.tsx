@@ -81,51 +81,71 @@ export default async function Home() {
     <main className="min-h-screen overflow-x-hidden bg-[#f5f8fc] text-[#111827]">
       <SiteMenu />
 
-      <section className="relative isolate overflow-hidden bg-[#071b33] pt-[74px] text-white">
+      <section className="relative isolate overflow-hidden bg-[#06182d] pt-[74px] text-white">
         <div
-          className="absolute inset-0 -z-20 bg-cover bg-center"
-          style={{ backgroundImage: "url('/tilda/images/tild6130-3635-4939-b332-343333356531__yangi_uzb.png')" }}
+          className="absolute inset-0 -z-30 bg-cover bg-[position:68%_center] sm:bg-[position:65%_center] lg:bg-[position:72%_center]"
+          style={{ backgroundImage: "url('/images/hero.png')" }}
         />
-        <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(4,23,45,.94)_0%,rgba(5,33,63,.84)_43%,rgba(5,31,59,.40)_72%,rgba(4,20,38,.22)_100%)]" />
-        <div className="absolute inset-x-0 bottom-0 -z-10 h-40 bg-gradient-to-t from-[#07182d]/80 to-transparent" />
+        <div className="absolute inset-0 -z-20 bg-[linear-gradient(90deg,rgba(3,17,34,.96)_0%,rgba(4,24,45,.91)_35%,rgba(4,28,53,.68)_57%,rgba(4,25,47,.26)_78%,rgba(3,18,34,.10)_100%)]" />
+        <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_76%_24%,rgba(62,144,255,.18),transparent_34%)]" />
+        <div className="absolute inset-x-0 bottom-0 -z-10 h-44 bg-gradient-to-t from-[#06182d] via-[#06182d]/55 to-transparent" />
 
-        <div className="mx-auto max-w-7xl px-4 pb-10 pt-16 sm:pt-20 md:px-8 md:pb-12 md:pt-24">
-          <div className="max-w-[850px]">
-            <p className="mb-5 text-[11px] font-black uppercase tracking-[0.24em] text-white/70 sm:text-xs">
-              O‘zbekiston Bunyodkor Yoshlari Ensiklopediyasi
-            </p>
-            <h1 className="max-w-4xl text-[40px] font-black leading-[1.03] tracking-[-0.045em] sm:text-[52px] md:text-[68px] lg:text-[76px]">
-              O‘zbekiston rivojiga munosib hissa qo‘shayotgan{" "}
-              <span className="text-[#4d8dff]">bunyodkor yoshlar</span>
+        <div className="mx-auto flex min-h-[650px] max-w-7xl flex-col justify-end px-4 pb-8 pt-16 sm:min-h-[690px] sm:justify-center sm:pb-10 sm:pt-20 md:px-8 lg:min-h-[720px] lg:pb-12">
+          <div className="max-w-[800px]">
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.08] px-3.5 py-2 shadow-[0_10px_35px_rgba(0,0,0,.12)] backdrop-blur-md">
+              <span className="h-2 w-2 rounded-full bg-[#55a8ff] shadow-[0_0_14px_rgba(85,168,255,.9)]" />
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/78 sm:text-[11px]">
+                O‘zbekiston Bunyodkor Yoshlari Ensiklopediyasi
+              </p>
+            </div>
+
+            <h1 className="max-w-4xl text-[42px] font-black leading-[.98] tracking-[-0.05em] text-white sm:text-[56px] md:text-[68px] lg:text-[78px]">
+              Kelajakni bunyod etayotgan{" "}
+              <span className="bg-gradient-to-r from-[#70b7ff] via-[#4f91ff] to-[#7b7dff] bg-clip-text text-transparent">
+                yoshlar tarixi
+              </span>
             </h1>
 
-            <p className="mt-6 max-w-2xl text-base font-medium leading-7 text-white/82 sm:text-lg md:text-xl md:leading-8">
-              Ularning faoliyati, yutuqlari va hayot yo‘li bir joyda jamlanadi. Siz ham bunyodkorlar safidan joy olishingiz mumkin.
+            <p className="mt-6 max-w-2xl text-[15px] font-medium leading-7 text-white/78 sm:text-lg md:text-[20px] md:leading-8">
+              O‘zbekiston rivojiga munosib hissa qo‘shayotgan yoshlarning faoliyati, yutuqlari va hayot yo‘li yagona raqamli ensiklopediyada jamlanadi.
             </p>
 
-            <div className="mt-8 md:mt-10">
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center md:mt-10">
               <Link
                 href="/ariza-qoldrish"
-                className="inline-flex min-h-14 w-full items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-[#1976ff] to-[#3357f4] px-10 py-4 text-[15px] font-black text-white shadow-[0_14px_38px_rgba(37,99,235,.34)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_18px_44px_rgba(37,99,235,.42)] sm:w-auto sm:min-w-[235px]"
+                className="inline-flex min-h-14 items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-[#1677ff] to-[#4457f4] px-8 py-4 text-[14px] font-black text-white shadow-[0_16px_40px_rgba(31,111,255,.34)] ring-1 ring-white/10 transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_20px_48px_rgba(31,111,255,.44)] sm:min-w-[215px]"
               >
                 Ariza qoldirish
                 <span className="text-lg" aria-hidden="true">→</span>
               </Link>
+
+              <Link
+                href="/bunyodkorlar"
+                className="inline-flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-white/18 bg-white/[0.08] px-7 py-4 text-[14px] font-black text-white shadow-[0_12px_30px_rgba(0,0,0,.12)] backdrop-blur-md transition duration-200 hover:-translate-y-0.5 hover:bg-white/[0.14]"
+              >
+                Ensiklopediyani ko‘rish
+                <span aria-hidden="true">↗</span>
+              </Link>
             </div>
           </div>
 
-          <div className="mt-12 rounded-[26px] border border-white/14 bg-white/[0.09] p-2 shadow-[0_24px_80px_rgba(0,0,0,.16)] backdrop-blur-md md:mt-16">
+          <div className="mt-10 rounded-[28px] border border-white/14 bg-[#071b33]/45 p-2 shadow-[0_26px_80px_rgba(0,0,0,.20)] backdrop-blur-xl sm:mt-14 lg:mt-16">
             <div className="grid gap-1 sm:grid-cols-3">
               {stats.map(([value, label, icon]) => (
-                <div key={label} className="flex items-center gap-4 rounded-[20px] px-5 py-5 md:px-7 md:py-6">
-                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/12 text-xl text-[#7ba7ff] ring-1 ring-white/10">
+                <div
+                  key={label}
+                  className="group flex items-center gap-4 rounded-[22px] px-5 py-4 transition hover:bg-white/[0.07] md:px-7 md:py-5"
+                >
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.08] text-lg text-[#83b8ff] shadow-inner">
                     {icon}
                   </span>
                   <div>
-                    <p className="text-3xl font-black tracking-[-0.04em] text-white md:text-4xl">
+                    <p className="text-[28px] font-black leading-none tracking-[-0.04em] text-white md:text-[34px]">
                       {Number(value).toLocaleString("uz-UZ")}
                     </p>
-                    <p className="mt-1 text-[10px] font-black uppercase tracking-[0.11em] text-white/60">{label}</p>
+                    <p className="mt-1.5 text-[9px] font-black uppercase tracking-[0.12em] text-white/55 sm:text-[10px]">
+                      {label}
+                    </p>
                   </div>
                 </div>
               ))}
