@@ -33,6 +33,64 @@ type HomeArticle = {
   created_at: string;
 };
 
+function profileCategory(article: HomeArticle) {
+  return publicCategories(article.category)[0] || "Bunyodkor";
+}
+
+function HeroProfileCard({
+  article,
+  className,
+  large = false,
+}: {
+  article: HomeArticle;
+  className: string;
+  large?: boolean;
+}) {
+  return (
+    <Link
+      href={"/bunyodkorlar/" + article.slug}
+      className={
+        "absolute z-20 overflow-hidden border border-white/90 bg-white/88 shadow-[0_24px_65px_rgba(31,74,150,.16)] backdrop-blur-xl transition duration-300 hover:-translate-y-1 hover:shadow-[0_30px_80px_rgba(31,74,150,.22)] " +
+        (large ? "w-[250px] rounded-[28px] p-2.5 sm:w-[280px]" : "w-[148px] rounded-[20px] p-2 sm:w-[166px]") +
+        " " +
+        className
+      }
+    >
+      <div className={"relative overflow-hidden bg-[#eef4fb] " + (large ? "h-[270px] rounded-[21px] sm:h-[300px]" : "h-[118px] rounded-[15px] sm:h-[132px]")}>
+        {article.image_url ? (
+          <img
+            src={article.image_url}
+            alt={article.title}
+            className="h-full w-full object-cover object-top"
+            loading="eager"
+          />
+        ) : (
+          <div className="flex h-full items-center justify-center text-xs font-extrabold text-slate-400">
+            Rasm mavjud emas
+          </div>
+        )}
+        <span className="absolute right-2.5 top-2.5 flex h-7 w-7 items-center justify-center rounded-full bg-[#2563ff] text-[12px] font-black text-white shadow-[0_6px_18px_rgba(37,99,255,.34)]">
+          ✓
+        </span>
+      </div>
+      <div className={large ? "px-2 pb-2 pt-3" : "px-1.5 pb-1 pt-2.5"}>
+        <p className={(large ? "text-[18px] " : "text-[12px] ") + "line-clamp-1 font-black tracking-[-0.035em] text-[#10182c]"}>
+          {article.title}
+        </p>
+        <div className={"mt-1 flex items-center gap-1.5 font-extrabold text-[#687893] " + (large ? "text-[11px]" : "text-[9px]")}>
+          <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#edf4ff] text-[#2866ff]">✦</span>
+          <span className="line-clamp-1">{profileCategory(article)}</span>
+        </div>
+        {large && (
+          <p className="mt-2 line-clamp-2 text-[11px] font-semibold leading-5 text-slate-500">
+            Faoliyati, yutuqlari va muhim natijalari ensiklopediyada jamlangan.
+          </p>
+        )}
+      </div>
+    </Link>
+  );
+}
+
 export default async function Home() {
   const now = new Date();
   const monthStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1)).toISOString();
@@ -74,13 +132,13 @@ export default async function Home() {
   ).size;
 
   const stats = [
-    [publishedResult.count ?? articles.length, "Nashr qilingan profil", "◉"],
-    [categoryCount, "Faoliyat yo‘nalishi", "✦"],
-    [monthResult.count ?? 0, "Shu oy qo‘shildi", "◇"],
+    [publishedResult.count ?? articles.length, "Nashr qilingan profil", "◎"],
+    [categoryCount, "Faoliyat yo‘nalishi", "▦"],
+    [monthResult.count ?? 0, "Shu oy qo‘shildi", "✦"],
   ] as const;
 
   const benefits = [
-    ["Profilingizni yarating", "O‘z faoliyatingiz, ta’limingiz va yutuqlaringizni yagona ensiklopedik sahifada jamlang."],
+    ["Profilingizni yarating", "Faoliyatingiz, ta’limingiz va yutuqlaringizni yagona ensiklopedik sahifada jamlang."],
     ["Keng auditoriyaga chiqing", "Profilingiz qidiruv tizimlari, ulashiladigan havolalar va QR orqali oson topiladi."],
     ["E’tirof va e’tibor", "Faoliyatingiz hamda yutuqlaringiz tartibli, rasmiy va tushunarli formatda namoyon bo‘ladi."],
     ["Tarmoq va imkoniyatlar", "Boshqa bunyodkor yoshlar, sohalar va yangi imkoniyatlar bilan tanishish osonlashadi."],
@@ -93,93 +151,180 @@ export default async function Home() {
     ["04", "Nashr qilish", "Profilingiz ensiklopediyada rasmiy ravishda e’lon qilinadi."],
   ] as const;
 
+  const directions = ["Ta’lim", "Fan", "Texnologiya", "Tadbirkorlik", "Ijod", "Sport", "Volontyorlik"];
+
   return (
-    <main className="min-h-screen overflow-x-hidden bg-[#f5f8fc] text-[#111827]">
+    <main className="min-h-screen overflow-x-hidden bg-white text-[#111827]">
       <SiteMenu />
 
-      <section className="relative isolate overflow-hidden bg-[#06182d] pt-[74px] text-white">
+      <section className="relative isolate overflow-hidden bg-white pt-[86px] sm:pt-[92px]">
+        <div className="pointer-events-none absolute inset-0 -z-30 bg-[radial-gradient(circle_at_82%_20%,rgba(111,162,255,.20),transparent_23%),radial-gradient(circle_at_5%_84%,rgba(104,199,255,.16),transparent_22%),radial-gradient(circle_at_95%_84%,rgba(172,126,255,.10),transparent_20%)]" />
+        <div className="hero-blueprint pointer-events-none absolute inset-0 -z-20 opacity-70" />
         <div
-          className="absolute inset-0 -z-30 bg-cover bg-[position:68%_center] sm:bg-[position:65%_center] lg:bg-[position:72%_center]"
+          className="pointer-events-none absolute -bottom-20 right-[-4%] -z-20 hidden h-[76%] w-[58%] bg-contain bg-right-bottom bg-no-repeat opacity-[0.075] grayscale lg:block"
           style={{ backgroundImage: "url('/images/bunyodkor-hero.webp?v=2')" }}
         />
-        <div className="absolute inset-0 -z-20 bg-[linear-gradient(90deg,rgba(3,17,34,.96)_0%,rgba(4,24,45,.91)_35%,rgba(4,28,53,.68)_57%,rgba(4,25,47,.26)_78%,rgba(3,18,34,.10)_100%)]" />
-        <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_76%_24%,rgba(62,144,255,.18),transparent_34%)]" />
-        <div className="absolute inset-x-0 bottom-0 -z-10 h-44 bg-gradient-to-t from-[#06182d] via-[#06182d]/55 to-transparent" />
 
-        <div className="mx-auto flex min-h-[650px] max-w-7xl flex-col justify-end px-4 pb-8 pt-16 sm:min-h-[690px] sm:justify-center sm:pb-10 sm:pt-20 md:px-8 lg:min-h-[720px] lg:pb-12">
-          <div className="max-w-[800px]">
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.08] px-3.5 py-2 shadow-[0_10px_35px_rgba(0,0,0,.12)] backdrop-blur-md">
-              <span className="h-2 w-2 rounded-full bg-[#55a8ff] shadow-[0_0_14px_rgba(85,168,255,.9)]" />
-              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/78 sm:text-[11px]">
-                O‘zbekiston Bunyodkor Yoshlari Ensiklopediyasi
-              </p>
+        <div className="mx-auto grid min-h-[790px] max-w-[1480px] items-center gap-12 px-4 pb-8 pt-10 sm:px-6 md:px-8 lg:grid-cols-[0.92fr_1.08fr] lg:gap-0 lg:pb-2 lg:pt-8 xl:min-h-[825px]">
+          <div className="relative z-30 max-w-[690px] pb-6 lg:pb-16">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#dce8ff] bg-[#f3f7ff]/90 px-4 py-2 text-[11px] font-extrabold text-[#3368d7] shadow-[0_8px_30px_rgba(40,92,190,.06)] backdrop-blur-md sm:text-[12px]">
+              <span className="text-[15px]" aria-hidden="true">▣</span>
+              O‘zbekiston Bunyodkor Yoshlari Ensiklopediyasi
             </div>
 
-            <h1 className="max-w-4xl text-[42px] font-black leading-[.98] tracking-[-0.05em] text-white sm:text-[56px] md:text-[68px] lg:text-[78px]">
+            <h1 className="mt-7 max-w-[760px] text-[48px] font-black leading-[.96] tracking-[-0.058em] text-[#07132d] sm:text-[64px] md:text-[76px] lg:text-[66px] xl:text-[78px]">
               Kelajakni bunyod etayotgan{" "}
-              <span className="bg-gradient-to-r from-[#70b7ff] via-[#4f91ff] to-[#7b7dff] bg-clip-text text-transparent">
+              <span className="relative inline-block bg-gradient-to-r from-[#1766ff] via-[#4275ff] to-[#6357ff] bg-clip-text text-transparent">
                 yoshlar tarixi
+                <span className="absolute -bottom-2 left-[8%] h-[5px] w-[88%] rotate-[-1deg] rounded-full bg-gradient-to-r from-[#1665ff] via-[#5a75ff] to-[#6d55ff] opacity-90" />
               </span>
             </h1>
 
-            <p className="mt-6 max-w-2xl text-[15px] font-medium leading-7 text-white/78 sm:text-lg md:text-[20px] md:leading-8">
-              O‘zbekiston rivojiga munosib hissa qo‘shayotgan yoshlarning faoliyati, yutuqlari va hayot yo‘li yagona raqamli ensiklopediyada jamlanadi.
+            <p className="mt-8 max-w-[650px] text-[16px] font-semibold leading-7 text-[#66738b] sm:text-[18px] sm:leading-8">
+              O‘zbekistonning faol, iqtidorli va tashabbuskor yoshlarining faoliyati, yutuqlari va hayot yo‘li bir raqamli ensiklopediyada.
             </p>
 
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center md:mt-10">
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link
                 href="/ariza-qoldirish"
-                className="inline-flex min-h-14 items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-[#1677ff] to-[#4457f4] px-8 py-4 text-[14px] font-black text-white shadow-[0_16px_40px_rgba(31,111,255,.34)] ring-1 ring-white/10 transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_20px_48px_rgba(31,111,255,.44)] sm:min-w-[215px]"
+                className="inline-flex min-h-14 items-center justify-center gap-3 rounded-[17px] bg-gradient-to-r from-[#1265ff] to-[#3459ff] px-7 py-4 text-[14px] font-black text-white shadow-[0_14px_36px_rgba(37,92,255,.24)] transition hover:-translate-y-0.5 hover:shadow-[0_18px_44px_rgba(37,92,255,.32)]"
               >
-                Ariza qoldirish
-                <span className="text-lg" aria-hidden="true">→</span>
+                Ariza qoldirish <span className="text-lg" aria-hidden="true">→</span>
               </Link>
-
               <Link
                 href="/bunyodkorlar"
-                className="inline-flex min-h-14 items-center justify-center gap-3 rounded-2xl border border-white/18 bg-white/[0.08] px-7 py-4 text-[14px] font-black text-white shadow-[0_12px_30px_rgba(0,0,0,.12)] backdrop-blur-md transition duration-200 hover:-translate-y-0.5 hover:bg-white/[0.14]"
+                className="inline-flex min-h-14 items-center justify-center gap-3 rounded-[17px] border border-[#e4eaf3] bg-white/88 px-7 py-4 text-[14px] font-black text-[#111a2c] shadow-[0_12px_34px_rgba(26,54,100,.07)] backdrop-blur transition hover:-translate-y-0.5 hover:border-[#cbd9f3]"
               >
+                <span className="text-[#2866ff]" aria-hidden="true">▣</span>
                 Ensiklopediyani ko‘rish
-                <span aria-hidden="true">↗</span>
               </Link>
             </div>
-          </div>
 
-          <div className="mt-10 rounded-[28px] border border-white/14 bg-[#071b33]/45 p-2 shadow-[0_26px_80px_rgba(0,0,0,.20)] backdrop-blur-xl sm:mt-14 lg:mt-16">
-            <div className="grid gap-1 sm:grid-cols-3">
+            <div className="mt-9 flex flex-wrap gap-x-8 gap-y-5 sm:gap-x-10">
               {stats.map(([value, label, icon]) => (
-                <div
-                  key={label}
-                  className="group flex items-center gap-4 rounded-[22px] px-5 py-4 transition hover:bg-white/[0.07] md:px-7 md:py-5"
-                >
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.08] text-lg text-[#83b8ff] shadow-inner">
+                <div key={label} className="flex min-w-[150px] items-center gap-3">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#f0f5ff] text-[19px] font-black text-[#2866ff]">
                     {icon}
                   </span>
                   <div>
-                    <p className="text-[28px] font-black leading-none tracking-[-0.04em] text-white md:text-[34px]">
+                    <p className="text-[24px] font-black leading-none tracking-[-0.04em] text-[#0b1630]">
                       {Number(value).toLocaleString("uz-UZ")}
                     </p>
-                    <p className="mt-1.5 text-[9px] font-black uppercase tracking-[0.12em] text-white/55 sm:text-[10px]">
-                      {label}
-                    </p>
+                    <p className="mt-1 text-[10px] font-bold text-[#8792a6]">{label}</p>
                   </div>
                 </div>
+              ))}
+            </div>
+
+            <div className="mt-8 flex max-w-[670px] flex-wrap gap-2">
+              {directions.map((direction) => (
+                <Link
+                  key={direction}
+                  href="/bunyodkorlar"
+                  className="rounded-full border border-[#e8edf5] bg-white/90 px-3.5 py-2 text-[10px] font-extrabold text-[#728099] shadow-[0_6px_20px_rgba(18,44,90,.035)] transition hover:border-[#bfd2ff] hover:text-[#2563ff]"
+                >
+                  {direction}
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          <div className="relative mx-auto hidden h-[690px] w-full max-w-[760px] lg:block">
+            <div className="hero-scene-glow absolute left-[13%] top-[8%] h-[570px] w-[570px] rounded-full bg-[radial-gradient(circle,rgba(79,128,255,.17),rgba(97,191,255,.06)_44%,transparent_72%)] blur-[2px]" />
+
+            <svg
+              className="absolute inset-0 z-0 h-full w-full overflow-visible"
+              viewBox="0 0 760 690"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path className="hero-orbit hero-orbit-a" d="M72 378C62 194 208 54 402 82C585 108 714 239 688 418C665 582 498 645 332 596C174 550 91 467 72 378Z" stroke="#8DB0FF" strokeWidth="1.5" strokeDasharray="7 8" />
+              <path className="hero-orbit hero-orbit-b" d="M101 241C215 129 421 115 583 192C686 241 725 338 646 414C535 520 312 545 151 465C35 407 18 321 101 241Z" stroke="#B0C7FF" strokeWidth="1.2" strokeDasharray="5 8" />
+              <path className="hero-orbit hero-orbit-c" d="M218 66C346 146 405 280 386 431C375 520 326 597 245 638" stroke="#D3DFFF" strokeWidth="1" strokeDasharray="4 10" />
+              <circle cx="89" cy="376" r="5" fill="#2F82FF" />
+              <circle cx="688" cy="418" r="5" fill="#2F82FF" />
+              <circle cx="583" cy="192" r="4.5" fill="#38A8FF" />
+              <circle cx="332" cy="596" r="4.5" fill="#38A8FF" />
+            </svg>
+
+            <div className="hero-float-c absolute left-[5%] top-[8%] z-10 h-12 w-12 rotate-12 rounded-[15px] border border-white/80 bg-gradient-to-br from-[#92c9ff] to-[#7568ff] shadow-[0_18px_40px_rgba(66,109,238,.22)]" />
+            <div className="hero-float-b absolute right-[2%] top-[2%] z-10 h-24 w-24 rotate-[28deg] rounded-[30px] border border-white/90 bg-gradient-to-br from-[#e2efff] via-[#b5c6ff] to-[#8879ff] opacity-80 shadow-[0_20px_45px_rgba(87,103,220,.18)]" />
+            <div className="hero-float-a absolute bottom-[4%] left-[18%] z-10 h-11 w-11 rounded-full border-[13px] border-[#b9c9ff]/70 bg-white shadow-[0_14px_36px_rgba(72,98,195,.14)]" />
+
+            <Link
+              href="/reyting"
+              className="hero-float-b absolute right-[13%] top-[6%] z-30 flex w-[190px] items-center gap-3 rounded-[22px] border border-white/90 bg-white/90 px-4 py-3.5 shadow-[0_20px_55px_rgba(35,80,157,.12)] backdrop-blur-xl"
+            >
+              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#fff3d9] text-xl">🏆</span>
+              <div>
+                <p className="text-[15px] font-black text-[#121a2e]">Reyting</p>
+                <div className="mt-1 flex items-end gap-1">
+                  {[10, 15, 21, 27].map((height) => (
+                    <span key={height} className="w-2 rounded-t bg-[#8ba8ff]" style={{ height }} />
+                  ))}
+                </div>
+              </div>
+            </Link>
+
+            <Link
+              href="/bunyodkor-ai"
+              className="hero-float-a absolute left-[2%] top-[48%] z-30 inline-flex items-center gap-2 rounded-full border border-white/90 bg-white/92 px-5 py-3 text-[13px] font-black text-[#17213a] shadow-[0_18px_48px_rgba(36,78,150,.12)] backdrop-blur-xl"
+            >
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-[#3575ff] to-[#765cff] text-white">✦</span>
+              Bunyodkor AI
+            </Link>
+
+            <div className="hero-float-c absolute right-[0%] top-[53%] z-30 rounded-[20px] border border-white/90 bg-white/90 px-4 py-3 shadow-[0_18px_48px_rgba(36,78,150,.11)] backdrop-blur-xl">
+              <p className="text-[11px] font-extrabold leading-4 text-[#44516b]">💡 G‘oyadan<br />amaliy natijaga</p>
+            </div>
+
+            <div className="hero-float-b absolute bottom-[5%] left-[48%] z-30 flex items-center gap-2 rounded-[18px] border border-white/90 bg-white/92 px-4 py-3 shadow-[0_16px_45px_rgba(36,78,150,.11)] backdrop-blur-xl">
+              <span className="text-xl">🇺🇿</span>
+              <p className="text-[10px] font-black leading-4 text-[#34415a]">Yangi avlod<br />Yangi O‘zbekiston</p>
+            </div>
+
+            {articles[0] && <HeroProfileCard article={articles[0]} large className="hero-float-a left-[38%] top-[26%]" />}
+            {articles[1] && <HeroProfileCard article={articles[1]} className="hero-float-b left-[17%] top-[16%] rotate-[-4deg]" />}
+            {articles[2] && <HeroProfileCard article={articles[2]} className="hero-float-c right-[1%] top-[23%] rotate-[3deg]" />}
+            {articles[3] && <HeroProfileCard article={articles[3]} className="hero-float-b right-[9%] bottom-[2%] rotate-[4deg]" />}
+
+            <div className="hero-float-c absolute bottom-[20%] left-[12%] z-30 flex h-14 w-14 items-center justify-center rounded-[20px] border border-white/90 bg-white/90 text-2xl text-[#3372ff] shadow-[0_16px_44px_rgba(31,75,155,.11)]">
+              ▤
+            </div>
+          </div>
+
+          <div className="relative mx-auto mt-2 w-full max-w-[560px] lg:hidden">
+            <div className="grid grid-cols-2 gap-3">
+              {articles.slice(0, 4).map((article) => (
+                <Link
+                  href={"/bunyodkorlar/" + article.slug}
+                  key={article.id}
+                  className="rounded-[22px] border border-[#e7edf6] bg-white p-2 shadow-[0_16px_45px_rgba(33,71,132,.08)]"
+                >
+                  <div className="relative aspect-[4/3] overflow-hidden rounded-[16px] bg-[#eef4fb]">
+                    {article.image_url && <img src={article.image_url} alt={article.title} className="h-full w-full object-cover object-top" />}
+                    <span className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-[#2563ff] text-[10px] font-black text-white">✓</span>
+                  </div>
+                  <p className="mt-2 line-clamp-1 px-1 text-[12px] font-black text-[#131d32]">{article.title}</p>
+                  <p className="mb-1 mt-1 line-clamp-1 px-1 text-[9px] font-bold text-slate-400">{profileCategory(article)}</p>
+                </Link>
               ))}
             </div>
           </div>
         </div>
       </section>
 
-      <section id="bunyodkorlar" className="px-4 py-16 md:px-8 md:py-24">
-        <div className="mx-auto max-w-7xl">
+      <section id="bunyodkorlar" className="relative bg-[#f8fbff] px-4 py-16 md:px-8 md:py-24">
+        <div className="pointer-events-none absolute left-1/2 top-0 h-56 w-[70%] -translate-x-1/2 bg-[radial-gradient(circle,rgba(82,132,255,.09),transparent_65%)]" />
+        <div className="relative mx-auto max-w-7xl">
           <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
             <div>
-              <p className="text-[11px] font-black uppercase tracking-[0.2em] text-[#2166e8]">Ensiklopediya</p>
-              <h2 className="mt-3 max-w-3xl text-[38px] font-black leading-[1.02] tracking-[-0.045em] text-[#10233d] sm:text-[50px] md:text-[58px]">
+              <p className="text-[11px] font-black uppercase tracking-[0.2em] text-[#2866ff]">Ensiklopediya</p>
+              <h2 className="mt-3 max-w-3xl text-[38px] font-black leading-[1.02] tracking-[-0.05em] text-[#0c1830] sm:text-[50px] md:text-[58px]">
                 Bunyodkor yoshlar bilan tanishing
               </h2>
             </div>
-            <Link href="/bunyodkorlar" className="inline-flex items-center gap-2 text-sm font-black text-[#2166e8] hover:text-[#1248aa]">
+            <Link href="/bunyodkorlar" className="inline-flex items-center gap-2 text-sm font-black text-[#2866ff] hover:text-[#1745b4]">
               Barchasini ko‘rish <span aria-hidden="true">→</span>
             </Link>
           </div>
@@ -204,61 +349,61 @@ export default async function Home() {
       <section className="bg-white px-4 py-16 md:px-8 md:py-24">
         <div className="mx-auto max-w-7xl">
           <div className="mx-auto max-w-3xl text-center">
-            <p className="text-[11px] font-black uppercase tracking-[0.2em] text-[#2166e8]">Nima uchun qo‘shilish kerak?</p>
-            <h2 className="mt-3 text-[38px] font-black leading-[1.03] tracking-[-0.045em] text-[#10233d] sm:text-[50px] md:text-[58px]">
+            <p className="text-[11px] font-black uppercase tracking-[0.2em] text-[#2866ff]">Nima uchun qo‘shilish kerak?</p>
+            <h2 className="mt-3 text-[38px] font-black leading-[1.03] tracking-[-0.05em] text-[#0c1830] sm:text-[50px] md:text-[58px]">
               Yutuqlaringizni namoyon eting, kelajakka ilhom bering
             </h2>
           </div>
 
           <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {benefits.map(([title, text], index) => (
-              <article key={title} className="rounded-[26px] border border-[#e4ebf4] bg-[#fbfdff] p-6 shadow-[0_10px_35px_rgba(15,35,65,.04)] transition hover:-translate-y-1 hover:border-[#b9cff5] hover:shadow-[0_18px_45px_rgba(15,35,65,.08)]">
-                <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#edf4ff] text-lg font-black text-[#2166e8]">
+              <article key={title} className="rounded-[28px] border border-[#e6edf7] bg-white p-6 shadow-[0_12px_38px_rgba(25,54,105,.055)] transition hover:-translate-y-1 hover:border-[#c4d5f5] hover:shadow-[0_20px_48px_rgba(25,54,105,.09)]">
+                <span className="flex h-12 w-12 items-center justify-center rounded-[17px] bg-gradient-to-br from-[#eef5ff] to-[#f3efff] text-sm font-black text-[#2866ff]">
                   {String(index + 1).padStart(2, "0")}
                 </span>
-                <h3 className="mt-5 text-xl font-black tracking-tight text-[#10233d]">{title}</h3>
-                <p className="mt-3 text-sm font-medium leading-6 text-slate-600">{text}</p>
+                <h3 className="mt-5 text-xl font-black tracking-tight text-[#10203b]">{title}</h3>
+                <p className="mt-3 text-sm font-semibold leading-6 text-slate-500">{text}</p>
               </article>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="px-4 py-16 md:px-8 md:py-24">
-        <div className="mx-auto max-w-7xl rounded-[34px] border border-[#dfe8f3] bg-white p-6 shadow-[0_18px_60px_rgba(20,48,82,.06)] sm:p-8 md:p-10">
+      <section className="bg-[#f8fbff] px-4 py-16 md:px-8 md:py-24">
+        <div className="mx-auto max-w-7xl rounded-[34px] border border-[#e3ebf6] bg-white p-6 shadow-[0_20px_65px_rgba(30,62,112,.06)] sm:p-8 md:p-10">
           <div className="mx-auto max-w-3xl text-center">
-            <p className="text-[11px] font-black uppercase tracking-[0.2em] text-[#2166e8]">Jarayon qanday?</p>
-            <h2 className="mt-3 text-[36px] font-black leading-[1.04] tracking-[-0.045em] text-[#10233d] sm:text-[48px] md:text-[56px]">
+            <p className="text-[11px] font-black uppercase tracking-[0.2em] text-[#2866ff]">Jarayon qanday?</p>
+            <h2 className="mt-3 text-[36px] font-black leading-[1.04] tracking-[-0.05em] text-[#0c1830] sm:text-[48px] md:text-[56px]">
               Ariza topshirish juda oson
             </h2>
           </div>
 
           <div className="mt-12 grid gap-5 md:grid-cols-4">
             {process.map(([number, title, text]) => (
-              <article key={number} className="relative rounded-[24px] border border-[#e6edf5] bg-[#f9fbfe] p-6 text-center">
-                <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-white text-sm font-black text-[#2166e8] shadow-[0_10px_30px_rgba(32,86,170,.12)] ring-1 ring-[#dce8f8]">
+              <article key={number} className="relative rounded-[24px] border border-[#e8edf5] bg-[#fbfdff] p-6 text-center">
+                <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#f1f6ff] text-sm font-black text-[#2866ff] shadow-[0_10px_28px_rgba(50,92,166,.10)]">
                   {number}
                 </span>
-                <h3 className="mt-5 text-lg font-black text-[#10233d]">{title}</h3>
-                <p className="mt-2 text-sm font-medium leading-6 text-slate-600">{text}</p>
+                <h3 className="mt-5 text-lg font-black text-[#10203b]">{title}</h3>
+                <p className="mt-2 text-sm font-semibold leading-6 text-slate-500">{text}</p>
               </article>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="px-4 pb-16 md:px-8 md:pb-24">
-        <div className="relative mx-auto max-w-7xl overflow-hidden rounded-[34px] bg-[#0a2a4c] px-6 py-10 text-white shadow-[0_24px_70px_rgba(10,42,76,.20)] sm:px-10 md:px-14 md:py-14">
-          <div className="absolute inset-y-0 right-0 hidden w-[45%] bg-[url('/images/bunyodkor-hero.webp')] bg-cover bg-center opacity-20 md:block" />
+      <section className="bg-white px-4 py-16 md:px-8 md:py-24">
+        <div className="relative mx-auto max-w-7xl overflow-hidden rounded-[36px] border border-[#dfe9fa] bg-[linear-gradient(135deg,#f7fbff_0%,#eef5ff_55%,#f5f1ff_100%)] px-6 py-10 shadow-[0_24px_70px_rgba(38,73,145,.10)] sm:px-10 md:px-14 md:py-14">
+          <div className="absolute -right-16 -top-20 h-72 w-72 rounded-full bg-[#5f87ff]/15 blur-3xl" />
           <div className="relative max-w-2xl">
-            <p className="text-[11px] font-black uppercase tracking-[0.2em] text-[#7fb0ff]">Siz ham bunyodkor bo‘lishingiz mumkin</p>
-            <h2 className="mt-3 text-[34px] font-black leading-[1.04] tracking-[-0.04em] sm:text-[44px]">
+            <p className="text-[11px] font-black uppercase tracking-[0.2em] text-[#2866ff]">Siz ham bunyodkor bo‘lishingiz mumkin</p>
+            <h2 className="mt-3 text-[34px] font-black leading-[1.04] tracking-[-0.045em] text-[#0c1830] sm:text-[44px]">
               O‘z hikoyangizni ensiklopediyada qoldiring
             </h2>
-            <p className="mt-4 max-w-xl text-base font-medium leading-7 text-white/72">
+            <p className="mt-4 max-w-xl text-base font-semibold leading-7 text-[#65738c]">
               Faoliyatingiz, yutuqlaringiz va hayot yo‘lingizni tartibli raqamli profilda jamlang.
             </p>
-            <Link href="/ariza-qoldirish" className="mt-7 inline-flex min-h-13 items-center gap-3 rounded-2xl bg-[#1976ff] px-7 py-3.5 text-sm font-black text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-[#0f63df]">
+            <Link href="/ariza-qoldirish" className="mt-7 inline-flex min-h-13 items-center gap-3 rounded-2xl bg-gradient-to-r from-[#1265ff] to-[#4358ff] px-7 py-3.5 text-sm font-black text-white shadow-[0_14px_34px_rgba(37,92,255,.22)] transition hover:-translate-y-0.5">
               Ariza qoldirish <span aria-hidden="true">→</span>
             </Link>
           </div>
