@@ -4,7 +4,7 @@ const links = [
   ["/bunyodkorlar", "Bunyodkorlar"],
   ["/reyting", "Reyting"],
   ["/bunyodkor-ai", "Bunyodkor AI"],
-  ["/haqida", "Biz haqimizda"],
+  ["/haqida", "Loyiha haqida"],
   ["/tavsiyalari", "Tavsiyalar"],
   ["/iqtiboslar", "Iqtiboslar"],
   ["/ariza-qoldirish", "Ariza qoldirish"],
