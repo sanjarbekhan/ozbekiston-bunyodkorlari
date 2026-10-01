@@ -38,6 +38,131 @@ button, a, input, textarea, select { -webkit-tap-highlight-color: transparent; }
   animation: heroGlow 8s ease-in-out infinite alternate;
 }
 
+.hero-landmark-layer {
+  opacity: .105;
+  filter: saturate(.55) hue-rotate(178deg) brightness(1.26) contrast(.82);
+  transform: scale(1.07);
+  transform-origin: center;
+  mix-blend-mode: multiply;
+  mask-image:
+    linear-gradient(to right, transparent 0%, rgba(0,0,0,.14) 10%, rgba(0,0,0,.74) 32%, rgba(0,0,0,.9) 72%, rgba(0,0,0,.46) 100%),
+    linear-gradient(to bottom, transparent 1%, #000 18%, #000 82%, transparent 100%);
+  mask-composite: intersect;
+}
+
+.uz-map-shape {
+  transform-origin: 50% 50%;
+  animation: uzMapBreathe 9s ease-in-out infinite;
+}
+
+.uz-region-lines path {
+  vector-effect: non-scaling-stroke;
+}
+
+.hero-route-network path {
+  animation: heroRouteFlow 18s linear infinite;
+  stroke-linecap: round;
+}
+
+.hero-route-network path:nth-child(2) { animation-delay: -3s; }
+.hero-route-network path:nth-child(3) { animation-delay: -6s; }
+.hero-route-network path:nth-child(4) { animation-delay: -9s; }
+.hero-route-network path:nth-child(5) { animation-delay: -12s; }
+.hero-route-network path:nth-child(6) { animation-delay: -15s; }
+
+.hero-city {
+  position: absolute;
+  z-index: 8;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+  border: 1px solid rgba(255,255,255,.9);
+  border-radius: 999px;
+  background: rgba(255,255,255,.83);
+  padding: 6px 10px 6px 7px;
+  box-shadow: 0 8px 28px rgba(43,91,178,.09);
+  backdrop-filter: blur(12px);
+  color: #16407e;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: -.015em;
+}
+
+.hero-city-featured {
+  z-index: 9;
+  gap: 9px;
+  padding: 8px 14px 8px 9px;
+  border-color: rgba(122,164,255,.35);
+  color: #0a3b8f;
+  font-size: 14px;
+  box-shadow: 0 12px 34px rgba(38,92,190,.13);
+}
+
+.hero-city-dot {
+  position: relative;
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: #2b78ff;
+  box-shadow:
+    0 0 0 4px rgba(43,120,255,.11),
+    0 0 18px rgba(43,120,255,.38);
+}
+
+.hero-city-featured .hero-city-dot {
+  width: 12px;
+  height: 12px;
+  box-shadow:
+    0 0 0 5px rgba(43,120,255,.12),
+    0 0 22px rgba(43,120,255,.42);
+}
+
+.hero-city-dot::after {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  border: 1px solid rgba(43,120,255,.28);
+  border-radius: inherit;
+  animation: heroCityPing 2.8s ease-out infinite;
+}
+
+.map-pulse-dot {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: mapDotPulse 3.4s ease-in-out infinite;
+}
+
+.map-pulse-dot:nth-child(2n) { animation-delay: -1.1s; }
+.map-pulse-dot:nth-child(3n) { animation-delay: -2s; }
+
+.hero-landmark-title {
+  text-shadow: 0 1px 0 rgba(255,255,255,.9);
+}
+
+@keyframes uzMapBreathe {
+  0%, 100% { transform: scale(1); opacity: .84; }
+  50% { transform: scale(1.015); opacity: 1; }
+}
+
+@keyframes heroRouteFlow {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: -180; }
+}
+
+@keyframes heroCityPing {
+  0% { transform: scale(.7); opacity: .8; }
+  80%, 100% { transform: scale(1.8); opacity: 0; }
+}
+
+@keyframes mapDotPulse {
+  0%, 100% { transform: scale(.88); opacity: .72; }
+  50% { transform: scale(1.28); opacity: 1; }
+}
+
 .hero-orbit {
   transform-origin: 380px 345px;
   stroke-linecap: round;
@@ -134,7 +259,11 @@ button, a, input, textarea, select { -webkit-tap-highlight-color: transparent; }
   .hero-orbit-a,
   .hero-orbit-b,
   .hero-orbit-c,
-  .hero-scene-glow {
+  .hero-scene-glow,
+  .uz-map-shape,
+  .hero-route-network path,
+  .hero-city-dot::after,
+  .map-pulse-dot {
     animation: none !important;
   }
 }
