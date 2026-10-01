@@ -3,9 +3,9 @@
 :root {
   --background: #ffffff;
   --foreground: #111827;
-  --brand: #0043a4;
-  --brand-dark: #003681;
-  --surface: #f4f7fb;
+  --brand: #245fff;
+  --brand-dark: #1748c7;
+  --surface: #f7faff;
 }
 
 * { box-sizing: border-box; }
@@ -14,16 +14,72 @@ body {
   margin: 0;
   background: var(--background);
   color: var(--foreground);
-  font-family: Inter, "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, Helvetica, sans-serif;
+  font-family: var(--font-manrope), Manrope, Inter, "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, Helvetica, sans-serif;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
 }
-::selection { background: #dbe9ff; color: #003681; }
+::selection { background: #dce8ff; color: #173f9f; }
 a { text-underline-offset: 3px; }
 img, video, iframe { max-width: 100%; }
 button, input, textarea, select { font: inherit; }
 button, a, input, textarea, select { -webkit-tap-highlight-color: transparent; }
-:focus-visible { outline: 3px solid rgba(0, 67, 164, .28); outline-offset: 3px; }
+:focus-visible { outline: 3px solid rgba(36, 95, 255, .24); outline-offset: 3px; }
+
+.hero-blueprint {
+  background-image:
+    linear-gradient(rgba(77, 115, 202, .045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(77, 115, 202, .045) 1px, transparent 1px),
+    radial-gradient(circle at 72% 46%, rgba(87, 139, 255, .10) 0 1px, transparent 1.8px);
+  background-size: 44px 44px, 44px 44px, 18px 18px;
+  mask-image: radial-gradient(ellipse 72% 70% at 73% 47%, #000 0%, rgba(0,0,0,.84) 45%, transparent 83%);
+}
+
+.hero-scene-glow {
+  animation: heroGlow 8s ease-in-out infinite alternate;
+}
+
+.hero-orbit {
+  transform-origin: 380px 345px;
+  stroke-linecap: round;
+}
+
+.hero-orbit-a { animation: heroOrbit 16s linear infinite; }
+.hero-orbit-b { animation: heroOrbitReverse 22s linear infinite; }
+.hero-orbit-c { animation: heroOrbit 28s linear infinite; }
+
+.hero-float-a { animation: heroFloatA 6.5s ease-in-out infinite; }
+.hero-float-b { animation: heroFloatB 7.8s ease-in-out infinite; }
+.hero-float-c { animation: heroFloatC 8.8s ease-in-out infinite; }
+
+@keyframes heroFloatA {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -11px, 0); }
+}
+
+@keyframes heroFloatB {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(7px, -8px, 0); }
+}
+
+@keyframes heroFloatC {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(-8px, 8px, 0); }
+}
+
+@keyframes heroGlow {
+  from { transform: scale(.96); opacity: .78; }
+  to { transform: scale(1.06); opacity: 1; }
+}
+
+@keyframes heroOrbit {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: -150; }
+}
+
+@keyframes heroOrbitReverse {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: 180; }
+}
 
 .article-rich-text {
   min-width: 0;
@@ -69,4 +125,16 @@ button, a, input, textarea, select { -webkit-tap-highlight-color: transparent; }
 
 @media (max-width: 640px) {
   .article-rich-text { font-size: 16px; line-height: 1.78; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-float-a,
+  .hero-float-b,
+  .hero-float-c,
+  .hero-orbit-a,
+  .hero-orbit-b,
+  .hero-orbit-c,
+  .hero-scene-glow {
+    animation: none !important;
+  }
 }
