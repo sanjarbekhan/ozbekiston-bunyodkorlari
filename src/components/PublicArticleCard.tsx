@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { publicCategories } from "@/lib/public-format";
 
 type PublicArticleCardProps = {
   title: string;
@@ -51,6 +52,7 @@ export default function PublicArticleCard({
 }: PublicArticleCardProps) {
   const desc = cleanText(description);
   const formattedDate = formatDate(date);
+  const categories = publicCategories(category);
 
   return (
     <Link
@@ -63,6 +65,7 @@ export default function PublicArticleCard({
             src={imageUrl}
             alt={title}
             loading="lazy"
+            decoding="async"
             className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.025]"
           />
         ) : (
@@ -73,15 +76,23 @@ export default function PublicArticleCard({
       </div>
 
       <div className="flex flex-1 flex-col p-5 md:p-6">
-        <p className="text-[11px] font-extrabold uppercase tracking-[0.15em] text-[#0043a4]">
-          {category || "Bunyodkor"}
-        </p>
-        <h3 className="mt-2 line-clamp-3 text-[21px] font-extrabold leading-[1.08] tracking-[-0.035em] text-[#101828] md:text-[23px]">
+        <div className="flex flex-wrap gap-1.5">
+          {(categories.length ? categories : ["Bunyodkor"]).slice(0, 3).map((item) => (
+            <span
+              key={item}
+              className="rounded-full bg-[#eef4ff] px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.08em] text-[#0043a4]"
+            >
+              {item}
+            </span>
+          ))}
+        </div>
+
+        <h3 className="mt-3 line-clamp-3 text-[21px] font-extrabold leading-[1.08] tracking-[-0.035em] text-[#101828] md:text-[23px]">
           {title}
         </h3>
 
         {!compact && desc && (
-          <p className="mt-4 line-clamp-3 text-[13px] font-medium leading-6 text-slate-600">
+          <p className="mt-4 line-clamp-2 text-[13px] font-medium leading-6 text-slate-600">
             {desc}
           </p>
         )}
