@@ -1,7 +1,14 @@
 import type { Metadata } from "next";
+import { Manrope } from "next/font/google";
 import "./globals.css";
 
 const SITE_URL = "https://www.bunyodkor.com";
+
+const manrope = Manrope({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-manrope",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -67,19 +74,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="uz">
+    <html lang="uz" className={manrope.variable}>
       <head>
         <link
           rel="alternate"
           type="application/rss+xml"
           title="O‘zbekiston Bunyodkor Yoshlari — RSS"
-          href={`${SITE_URL}/rss.xml`}
+          href={SITE_URL + "/rss.xml"}
         />
         <link
           rel="alternate"
           type="application/atom+xml"
           title="O‘zbekiston Bunyodkor Yoshlari — Atom"
-          href={`${SITE_URL}/atom.xml`}
+          href={SITE_URL + "/atom.xml"}
         />
       </head>
       <body>{children}</body>
