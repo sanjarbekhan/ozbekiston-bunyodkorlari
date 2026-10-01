@@ -3,6 +3,7 @@ import PublicArticleCard from "@/components/PublicArticleCard";
 import SiteFooter from "@/components/SiteFooter";
 import SiteMenu from "@/components/SiteMenu";
 import { supabase } from "@/lib/supabase";
+import { publicCategories } from "@/lib/public-format";
 
 export const revalidate = 60;
 
@@ -52,9 +53,9 @@ export default async function Home() {
 
   const articles = (articlesResult.data || []) as HomeArticle[];
   const categoryCount = new Set(
-    (categoryResult.data || [])
-      .map((item) => item.category?.trim())
-      .filter((value): value is string => Boolean(value)),
+    (categoryResult.data || []).flatMap((item) =>
+      publicCategories(item.category).map((category) => category.toLocaleLowerCase("uz-UZ")),
+    ),
   ).size;
 
   const stats = [
@@ -112,7 +113,7 @@ export default async function Home() {
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center md:mt-10">
               <Link
-                href="/ariza-qoldrish"
+                href="/ariza-qoldirish"
                 className="inline-flex min-h-14 items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-[#1677ff] to-[#4457f4] px-8 py-4 text-[14px] font-black text-white shadow-[0_16px_40px_rgba(31,111,255,.34)] ring-1 ring-white/10 transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_20px_48px_rgba(31,111,255,.44)] sm:min-w-[215px]"
               >
                 Ariza qoldirish
@@ -178,6 +179,7 @@ export default async function Home() {
                 category={article.category}
                 description={article.description}
                 date={article.published_at || article.created_at}
+                compact
               />
             ))}
           </div>
@@ -241,7 +243,7 @@ export default async function Home() {
             <p className="mt-4 max-w-xl text-base font-medium leading-7 text-white/72">
               Faoliyatingiz, yutuqlaringiz va hayot yo‘lingizni tartibli raqamli profilda jamlang.
             </p>
-            <Link href="/ariza-qoldrish" className="mt-7 inline-flex min-h-13 items-center gap-3 rounded-2xl bg-[#1976ff] px-7 py-3.5 text-sm font-black text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-[#0f63df]">
+            <Link href="/ariza-qoldirish" className="mt-7 inline-flex min-h-13 items-center gap-3 rounded-2xl bg-[#1976ff] px-7 py-3.5 text-sm font-black text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-[#0f63df]">
               Ariza qoldirish <span aria-hidden="true">→</span>
             </Link>
           </div>
