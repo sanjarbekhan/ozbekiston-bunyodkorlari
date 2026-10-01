@@ -107,7 +107,7 @@ function minorBirthYear(value: string) {
     if (!Number.isFinite(year)) continue;
 
     const currentYear = new Date().getUTCFullYear();
-    if (year > currentYear - 18 && year <= currentYear) return year;
+    if (year >= currentYear - 18 && year <= currentYear) return year;
   }
 
   return null;
@@ -136,6 +136,13 @@ export function protectMinorPersonalData(
   output = output.replace(
     new RegExp(`(?:\\d{1,2})[./-](?:\\d{1,2})[./-]${escapedYear}`, "g"),
     escapedYear,
+  );
+
+  // Voyaga yetmaganlar uchun qishloq/mahalla/ko‘cha kabi juda aniq lokatsiyani
+  // ochiq profilda viloyat/tuman darajasidan pastga tushirmaymiz.
+  output = output.replace(
+    /,\\s*[^,.;:<>{}\\n]{1,80}\\s+(?:qishlog[ʻʼ’‘']i|mahallasi|mfy|ko[ʻʼ’‘']chasi|shaharchasi)(?:da|dan|ga)?(?=[,.;:<>{}\\n]|\\s|$)/giu,
+    "",
   );
 
   return output;
