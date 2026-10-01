@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { FormEvent, useMemo, useState } from "react";
+import { publicCategoryLabel } from "@/lib/public-format";
 
 export type Period = "week" | "month" | "year";
 export type SortMode = "overall" | "achievements" | "activity" | "initiative";
@@ -77,7 +78,11 @@ export default function RankingClient({ rows: allRows, periodKeys, initialPeriod
 
   const rows = useMemo(() => {
     const result = allRows.filter(
-      (row) => row.period_type === period && row.period_key === periodKeys[period] && row.article,
+      (row) =>
+        row.period_type === period &&
+        row.period_key === periodKeys[period] &&
+        row.article &&
+        scoreFor(row, sort) > 0,
     );
 
     return result.sort((a, b) => {
@@ -192,7 +197,7 @@ export default function RankingClient({ rows: allRows, periodKeys, initialPeriod
                         </div>
                         <div className="min-w-0">
                           <p className="truncate text-lg font-black">{article.title}</p>
-                          <p className="mt-1 text-xs font-bold uppercase tracking-[0.1em] text-[#0c9ac2]">{article.category || "Bunyodkor"}</p>
+                          <p className="mt-1 text-xs font-bold uppercase tracking-[0.1em] text-[#0c9ac2]">{publicCategoryLabel(article.category)}</p>
                         </div>
                       </div>
                       <div className="flex items-center justify-between gap-5 sm:justify-end">
@@ -257,7 +262,7 @@ export default function RankingClient({ rows: allRows, periodKeys, initialPeriod
                     <div className="min-w-0">
                       <p className={`text-[11px] font-black uppercase tracking-[0.14em] ${index === 0 ? "text-[#76ddff]" : "text-[#0d9fca]"}`}>#{index + 1} o‘rin</p>
                       <Link href={`/bunyodkorlar/${article.slug}`} className={`mt-1 block text-lg font-black leading-tight ${index === 0 ? "text-white" : "text-[#10253a] hover:text-[#007da8]"}`}>{article.title}</Link>
-                      <p className={`mt-1 text-xs font-bold ${index === 0 ? "text-white/55" : "text-slate-400"}`}>{article.category || "Bunyodkor"}</p>
+                      <p className={`mt-1 text-xs font-bold ${index === 0 ? "text-white/55" : "text-slate-400"}`}>{publicCategoryLabel(article.category)}</p>
                     </div>
                   </div>
                   <div className={`mt-5 flex items-end justify-between border-t pt-4 ${index === 0 ? "border-white/10" : "border-slate-100"}`}>
@@ -280,7 +285,7 @@ export default function RankingClient({ rows: allRows, periodKeys, initialPeriod
             <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#0d9fca]">{periodName} reyting</p>
             <h2 className="mt-1 text-2xl font-black tracking-[-0.03em]">{rows.length ? `${rows.length} ta profil reytingda` : "Reyting hisoblanmoqda"}</h2>
           </div>
-          <Link href="/sanjar-ai" className="text-sm font-extrabold text-[#087fa8]">Bunyodkor AI’dan so‘rash →</Link>
+          <Link href="/bunyodkor-ai" className="text-sm font-extrabold text-[#087fa8]">Bunyodkor AI’dan so‘rash →</Link>
         </div>
 
         {rows.length > 0 ? (
@@ -296,7 +301,7 @@ export default function RankingClient({ rows: allRows, periodKeys, initialPeriod
                   </div>
                   <div className="min-w-0">
                     <Link href={`/bunyodkorlar/${article.slug}`} className="text-lg font-black tracking-[-0.02em] text-[#10253a] hover:text-[#007da8]">{article.title}</Link>
-                    <p className="mt-1 text-xs font-bold uppercase tracking-[0.1em] text-[#0c9ac2]">{article.category || "Bunyodkor"}</p>
+                    <p className="mt-1 text-xs font-bold uppercase tracking-[0.1em] text-[#0c9ac2]">{publicCategoryLabel(article.category)}</p>
                     <div className="mt-3 grid max-w-2xl grid-cols-2 gap-2 text-[10px] font-extrabold text-slate-400 sm:grid-cols-4">
                       <span>Yutuq {Number(row.achievement_score).toFixed(1)}</span>
                       <span>Faollik {Number(row.activity_score).toFixed(1)}</span>
