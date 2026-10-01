@@ -27,6 +27,7 @@ const nextConfig: NextConfig = {
       {
         source: "/tilda/:path*",
         headers: [
+          { key: "X-Robots-Tag", value: "noindex, nofollow" },
           {
             key: "Content-Security-Policy",
             value: "default-src 'self' https: data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.tildacdn.com https://*.tildacdn.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.tildacdn.com https://*.tildacdn.net; font-src 'self' https://fonts.gstatic.com https://*.tildacdn.com https://*.tildacdn.net data:; img-src 'self' https: data: blob:; media-src 'self' https: data: blob:; connect-src 'self' https:; frame-src 'self' https:; frame-ancestors 'self'; base-uri 'self'; form-action 'self' https:; object-src 'none'",

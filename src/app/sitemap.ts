@@ -1,60 +1,19 @@
 import type { MetadataRoute } from "next";
-import { supabase } from "@/lib/supabase";
-
-export const revalidate = 60;
 
 const SITE_URL = "https://www.bunyodkor.com";
 const url = (path: string) => `${SITE_URL}${path}`;
 
-function toDate(value?: string | null) {
-  if (!value) return null;
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? null : date;
-}
-
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const { data: articles } = await supabase
-    .from("articles")
-    .select("slug,published_at,created_at,updated_at")
-    .eq("status", "published")
-    .order("published_at", { ascending: false })
-    .limit(5000);
-
-  const latestArticleDate = (articles || []).reduce<Date | null>((latest, article) => {
-    const candidate =
-      toDate(article.updated_at) || toDate(article.published_at) || toDate(article.created_at);
-    if (!candidate) return latest;
-    return !latest || candidate.getTime() > latest.getTime() ? candidate : latest;
-  }, null);
-
-  const staticPages: MetadataRoute.Sitemap = [
-    {
-      url: url("/"),
-      ...(latestArticleDate ? { lastModified: latestArticleDate } : {}),
-    },
-    {
-      url: url("/bunyodkorlar"),
-      ...(latestArticleDate ? { lastModified: latestArticleDate } : {}),
-    },
+export default function sitemap(): MetadataRoute.Sitemap {
+  return [
+    { url: url("/"), changeFrequency: "daily", priority: 1 },
+    { url: url("/bunyodkorlar"), changeFrequency: "daily", priority: 0.9 },
     { url: url("/reyting"), changeFrequency: "daily", priority: 0.8 },
     { url: url("/bunyodkor-ai"), changeFrequency: "weekly", priority: 0.7 },
-    { url: url("/haqida") },
-    { url: url("/tavsiyalari") },
-    { url: url("/iqtiboslar") },
-    { url: url("/hamkor-loyihasi") },
-    { url: url("/ariza-qoldirish") },
-    { url: url("/ommaviy_ofertasi") },
+    { url: url("/haqida"), changeFrequency: "monthly", priority: 0.7 },
+    { url: url("/tavsiyalari"), changeFrequency: "monthly", priority: 0.6 },
+    { url: url("/iqtiboslar"), changeFrequency: "weekly", priority: 0.7 },
+    { url: url("/hamkor-loyihasi"), changeFrequency: "monthly", priority: 0.5 },
+    { url: url("/ariza-qoldirish"), changeFrequency: "monthly", priority: 0.6 },
+    { url: url("/ommaviy_ofertasi"), changeFrequency: "yearly", priority: 0.3 },
   ];
-
-  const profilePages: MetadataRoute.Sitemap = (articles || []).map((article) => {
-    const lastModified =
-      toDate(article.updated_at) || toDate(article.published_at) || toDate(article.created_at);
-
-    return {
-      url: url(`/bunyodkorlar/${article.slug}`),
-      ...(lastModified ? { lastModified } : {}),
-    };
-  });
-
-  return staticPages.concat(profilePages);
 }

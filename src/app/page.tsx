@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import PublicArticleCard from "@/components/PublicArticleCard";
 import SiteFooter from "@/components/SiteFooter";
@@ -6,6 +7,20 @@ import { supabase } from "@/lib/supabase";
 import { publicCategories } from "@/lib/public-format";
 
 export const revalidate = 60;
+
+export const metadata: Metadata = {
+  title: "O‘zbekiston Bunyodkor Yoshlari Ensiklopediyasi",
+  description:
+    "O‘zbekiston rivojiga munosib hissa qo‘shayotgan bunyodkor yoshlarning faoliyati, yutuqlari va hayot yo‘li jamlangan raqamli ensiklopediya.",
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    url: "/",
+    title: "O‘zbekiston Bunyodkor Yoshlari Ensiklopediyasi",
+    description:
+      "O‘zbekiston rivojiga munosib hissa qo‘shayotgan bunyodkor yoshlarning faoliyati, yutuqlari va hayot yo‘li jamlangan raqamli ensiklopediya.",
+  },
+};
 
 type HomeArticle = {
   id: string;

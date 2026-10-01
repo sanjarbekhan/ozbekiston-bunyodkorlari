@@ -36,7 +36,6 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "uz_UZ",
-    url: SITE_URL,
     siteName: "O‘zbekiston Bunyodkor Yoshlari",
     title: "O‘zbekiston Bunyodkor Yoshlari Ensiklopediyasi",
     description:
