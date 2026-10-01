@@ -8,6 +8,7 @@ import SiteFooter from "@/components/SiteFooter";
 import SiteMenu from "@/components/SiteMenu";
 import type { ArticleRecord } from "@/lib/article-types";
 import { supabase } from "@/lib/supabase";
+import { protectMinorPersonalData, publicCategories, publicCategoryLabel } from "@/lib/public-format";
 
 export const revalidate = 60;
 const SITE_URL = "https://www.bunyodkor.com";
@@ -60,9 +61,14 @@ export async function generateMetadata({
   }
 
   const title = article.seo_title || article.title;
+  const privacyContext = [
+    article.description || "",
+    article.content || "",
+    JSON.stringify(article.content_blocks || []),
+  ].join("\n");
   const description =
-    article.seo_description ||
-    plain(article.description) ||
+    protectMinorPersonalData(article.seo_description, privacyContext) ||
+    plain(protectMinorPersonalData(article.description, privacyContext)) ||
     `${article.title} haqida ensiklopedik maqola.`;
   const image = article.social_image_url || article.image_url || undefined;
   const canonical = canonicalFor(article.slug);
@@ -79,7 +85,7 @@ export async function generateMetadata({
       type: "article",
       url: canonical,
       title: article.social_title || title,
-      description: article.social_description || description,
+      description: protectMinorPersonalData(article.social_description, privacyContext) || description,
       publishedTime: article.published_at || undefined,
       modifiedTime: article.updated_at || undefined,
       authors: article.author_name ? [article.author_name] : undefined,
@@ -88,7 +94,7 @@ export async function generateMetadata({
     twitter: {
       card: "summary_large_image",
       title: article.social_title || title,
-      description: article.social_description || description,
+      description: protectMinorPersonalData(article.social_description, privacyContext) || description,
       images: image ? [image] : undefined,
     },
     robots: {
@@ -115,7 +121,13 @@ export default async function ArticlePage({
   if (!article) notFound();
 
   const canonical = canonicalFor(article.slug);
-  const intro = plain(article.description);
+  const privacyContext = [
+    article.description || "",
+    article.content || "",
+    JSON.stringify(article.content_blocks || []),
+  ].join("\n");
+  const intro = plain(protectMinorPersonalData(article.description, privacyContext));
+  const categories = publicCategories(article.category);
   const published = formatDate(article.published_at || article.created_at);
 
   const commentsResult = await supabase
@@ -131,7 +143,7 @@ export default async function ArticlePage({
     "@context": "https://schema.org",
     "@type": "Article",
     headline: article.title,
-    description: article.seo_description || intro,
+    description: protectMinorPersonalData(article.seo_description, privacyContext) || intro,
     image: [article.social_image_url || article.image_url].filter(Boolean),
     datePublished: article.published_at || article.created_at,
     dateModified: article.updated_at || article.published_at || article.created_at,
@@ -184,10 +196,17 @@ export default async function ArticlePage({
             </div>
 
             <div>
-              {article.category && (
-                <span className="inline-flex rounded-full bg-[#eaf2ff] px-4 py-2 text-xs font-extrabold uppercase tracking-[0.14em] text-[#0043a4]">
-                  {article.category}
-                </span>
+              {categories.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {categories.map((category) => (
+                    <span
+                      key={category}
+                      className="inline-flex rounded-full bg-[#eaf2ff] px-4 py-2 text-xs font-extrabold uppercase tracking-[0.1em] text-[#0043a4]"
+                    >
+                      {category}
+                    </span>
+                  ))}
+                </div>
               )}
               <h1 className="mt-5 max-w-4xl text-[38px] font-extrabold leading-[1.02] tracking-[-0.048em] text-[#111827] sm:text-[50px] md:text-[62px]">
                 {article.title}
@@ -237,7 +256,7 @@ export default async function ArticlePage({
               {article.category && (
                 <div>
                   <dt className="font-semibold text-slate-400">Yo‘nalish</dt>
-                  <dd className="mt-1 font-extrabold text-[#111827]">{article.category}</dd>
+                  <dd className="mt-1 font-extrabold leading-5 text-[#111827]">{publicCategoryLabel(article.category)}</dd>
                 </div>
               )}
               {published && (
@@ -246,10 +265,6 @@ export default async function ArticlePage({
                   <dd className="mt-1 font-extrabold text-[#111827]">{published}</dd>
                 </div>
               )}
-              <div>
-                <dt className="font-semibold text-slate-400">Profil ID</dt>
-                <dd className="mt-1 break-all font-mono text-[11px] font-bold text-slate-500">{article.id}</dd>
-              </div>
               <div>
                 <dt className="font-semibold text-slate-400">Manba</dt>
                 <dd className="mt-1 font-extrabold leading-5 text-[#111827]">
