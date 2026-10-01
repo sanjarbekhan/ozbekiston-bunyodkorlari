@@ -40,6 +40,7 @@ export async function POST(request: NextRequest) {
     const gender = clean(body.gender, 20);
     const ageGroup = clean(body.age_group, 40);
     const promoCode = clean(body.promo_code, 120);
+    const guardianConsent = body.guardian_consent === true;
     const attachmentPath = clean(body.attachment_path, 500);
     const attachmentName = clean(body.attachment_name, 255);
     const attachmentMime = clean(body.attachment_mime, 160);
@@ -48,12 +49,25 @@ export async function POST(request: NextRequest) {
       ? Math.max(0, Math.floor(rawAttachmentSize))
       : 0;
 
-    if (fullName.length < 2 || phone.length < 5) {
+    const age = Number(ageGroup);
+
+    if (fullName.length < 2 || phone.replace(/\D/g, "").length < 7) {
       return NextResponse.json({ error: "Majburiy maydonlarni to‘ldiring." }, { status: 400 });
     }
 
-    if (gender && gender !== "Erkak" && gender !== "Ayol") {
+    if (gender !== "Erkak" && gender !== "Ayol") {
       return NextResponse.json({ error: "Jins qiymati noto‘g‘ri." }, { status: 400 });
+    }
+
+    if (!Number.isInteger(age) || age < 1 || age > 99) {
+      return NextResponse.json({ error: "Yosh qiymati noto‘g‘ri." }, { status: 400 });
+    }
+
+    if (age < 18 && !guardianConsent) {
+      return NextResponse.json(
+        { error: "18 yoshga to‘lmagan nomzod uchun ota-ona yoki qonuniy vakil roziligi kerak." },
+        { status: 400 },
+      );
     }
 
     if (attachmentPath) {
@@ -81,7 +95,7 @@ export async function POST(request: NextRequest) {
       promo_code: promoCode || null,
       ip_address: getRequestIp(request),
       status: "new",
-      source: "web",
+      source: age < 18 ? "web_guardian_consent" : "web",
       contacted: false,
       contacted_at: null,
       attachment_path: attachmentPath || null,
