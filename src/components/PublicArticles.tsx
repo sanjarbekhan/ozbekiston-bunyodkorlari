@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import PublicArticleCard from "@/components/PublicArticleCard";
+import { normalizeCategory, publicCategories } from "@/lib/public-format";
 
 type Article = {
   id: string;
@@ -20,13 +21,6 @@ function cleanText(text: string | null) {
   return text.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
 }
 
-function splitCategories(category: string | null) {
-  return (category || "")
-    .split(";")
-    .map((item) => item.trim())
-    .filter(Boolean);
-}
-
 export default function PublicArticles({ articles }: { articles: Article[] }) {
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
@@ -35,8 +29,8 @@ export default function PublicArticles({ articles }: { articles: Article[] }) {
     const normalized = new Map<string, string>();
 
     articles.forEach((article) => {
-      splitCategories(article.category).forEach((category) => {
-        const key = category.toLocaleLowerCase("uz");
+      publicCategories(article.category).forEach((category) => {
+        const key = category.toLocaleLowerCase("uz-UZ");
         if (!normalized.has(key)) normalized.set(key, category);
       });
     });
@@ -45,25 +39,27 @@ export default function PublicArticles({ articles }: { articles: Article[] }) {
   }, [articles]);
 
   const filteredArticles = useMemo(() => {
-    const query = search.trim().toLocaleLowerCase("uz");
+    const query = search.trim().toLocaleLowerCase("uz-UZ");
+    const selectedCategory = categoryFilter === "all" ? "all" : normalizeCategory(categoryFilter);
 
     return articles.filter((article) => {
-      const title = article.title.toLocaleLowerCase("uz");
-      const slug = article.slug.toLocaleLowerCase("uz");
-      const category = (article.category || "").toLocaleLowerCase("uz");
-      const description = cleanText(article.description).toLocaleLowerCase("uz");
+      const title = article.title.toLocaleLowerCase("uz-UZ");
+      const slug = article.slug.toLocaleLowerCase("uz-UZ");
+      const normalizedCategories = publicCategories(article.category);
+      const categoryText = normalizedCategories.join(" ").toLocaleLowerCase("uz-UZ");
+      const description = cleanText(article.description).toLocaleLowerCase("uz-UZ");
 
       const matchesSearch =
         !query ||
         title.includes(query) ||
         slug.includes(query) ||
-        category.includes(query) ||
+        categoryText.includes(query) ||
         description.includes(query);
 
       const matchesCategory =
-        categoryFilter === "all" ||
-        splitCategories(article.category).some(
-          (item) => item.toLocaleLowerCase("uz") === categoryFilter.toLocaleLowerCase("uz")
+        selectedCategory === "all" ||
+        normalizedCategories.some(
+          (item) => item.toLocaleLowerCase("uz-UZ") === selectedCategory.toLocaleLowerCase("uz-UZ"),
         );
 
       return matchesSearch && matchesCategory;
