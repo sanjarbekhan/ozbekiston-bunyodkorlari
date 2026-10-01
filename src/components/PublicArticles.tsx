@@ -21,8 +21,14 @@ function cleanText(text: string | null) {
   return text.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
 }
 
-export default function PublicArticles({ articles }: { articles: Article[] }) {
-  const [search, setSearch] = useState("");
+export default function PublicArticles({
+  articles,
+  initialSearch = "",
+}: {
+  articles: Article[];
+  initialSearch?: string;
+}) {
+  const [search, setSearch] = useState(initialSearch);
   const [categoryFilter, setCategoryFilter] = useState("all");
 
   const categories = useMemo(() => {
@@ -80,7 +86,7 @@ export default function PublicArticles({ articles }: { articles: Article[] }) {
           <label className="block">
             <span className="sr-only">Ism yoki kalit so‘z</span>
             <input
-              className="w-full rounded-2xl border border-slate-200 bg-[#f8fafc] px-4 py-3.5 text-sm font-semibold text-[#111827] outline-none transition placeholder:text-slate-400 focus:border-[#0043a4] focus:bg-white md:px-5 md:text-base"
+              className="w-full rounded-2xl border border-slate-200 bg-[#f8fafc] px-4 py-3.5 text-sm font-semibold text-[#111827] outline-none transition placeholder:text-slate-400 focus:border-[#245fff] focus:bg-white md:px-5 md:text-base"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Ism, familiya yoki kalit so‘z..."
@@ -90,7 +96,7 @@ export default function PublicArticles({ articles }: { articles: Article[] }) {
           <label className="block">
             <span className="sr-only">Yo‘nalish</span>
             <select
-              className="w-full rounded-2xl border border-slate-200 bg-[#f8fafc] px-4 py-3.5 text-sm font-semibold text-[#111827] outline-none transition focus:border-[#0043a4] focus:bg-white md:px-5 md:text-base"
+              className="w-full rounded-2xl border border-slate-200 bg-[#f8fafc] px-4 py-3.5 text-sm font-semibold text-[#111827] outline-none transition focus:border-[#245fff] focus:bg-white md:px-5 md:text-base"
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
             >
@@ -107,7 +113,7 @@ export default function PublicArticles({ articles }: { articles: Article[] }) {
             <button
               type="button"
               onClick={resetFilters}
-              className="rounded-2xl border border-slate-200 px-5 py-3.5 text-sm font-extrabold text-slate-600 transition hover:border-[#0043a4]/30 hover:text-[#0043a4]"
+              className="rounded-2xl border border-slate-200 px-5 py-3.5 text-sm font-extrabold text-slate-600 transition hover:border-[#245fff]/30 hover:text-[#245fff]"
             >
               Tozalash
             </button>
@@ -115,7 +121,7 @@ export default function PublicArticles({ articles }: { articles: Article[] }) {
         </div>
 
         <p className="mt-4 text-sm font-semibold text-slate-500">
-          <span className="font-extrabold text-[#0043a4]">{filteredArticles.length}</span> ta profil topildi
+          <span className="font-extrabold text-[#245fff]">{filteredArticles.length}</span> ta profil topildi
         </p>
       </div>
 
@@ -144,7 +150,7 @@ export default function PublicArticles({ articles }: { articles: Article[] }) {
               <button
                 type="button"
                 onClick={resetFilters}
-                className="mt-6 rounded-full bg-[#0043a4] px-6 py-3 text-sm font-extrabold text-white"
+                className="mt-6 rounded-full bg-[#245fff] px-6 py-3 text-sm font-extrabold text-white"
               >
                 Barcha profillarni ko‘rish
               </button>
