@@ -1,4 +1,11 @@
-const cities = [
+type HeroCity = {
+  name: string;
+  left: string;
+  top: string;
+  featured?: boolean;
+};
+
+const cities: HeroCity[] = [
   { name: "Nukus", left: "15%", top: "20%" },
   { name: "Xiva", left: "28%", top: "28%" },
   { name: "Navoiy", left: "47%", top: "40%" },
@@ -12,7 +19,7 @@ const cities = [
   { name: "Namangan", left: "91%", top: "35%" },
   { name: "Andijon", left: "95%", top: "45%" },
   { name: "Farg‘ona", left: "93%", top: "54%" },
-] as const;
+];
 
 export default function UzbekistanHeroMap() {
   return (
