@@ -95,7 +95,7 @@ export async function POST(request: NextRequest) {
       promo_code: promoCode || null,
       ip_address: getRequestIp(request),
       status: "new",
-      source: age < 18 ? "web_guardian_consent" : "web",
+      source: "web",
       contacted: false,
       contacted_at: null,
       attachment_path: attachmentPath || null,
