@@ -3,6 +3,7 @@ import Link from "next/link";
 import PublicArticleCard from "@/components/PublicArticleCard";
 import SiteFooter from "@/components/SiteFooter";
 import SiteMenu from "@/components/SiteMenu";
+import UzbekistanHeroMap from "@/components/UzbekistanHeroMap";
 import { supabase } from "@/lib/supabase";
 import { publicCategories } from "@/lib/public-format";
 
@@ -160,10 +161,6 @@ export default async function Home() {
       <section className="relative isolate overflow-hidden bg-white pt-[86px] sm:pt-[92px]">
         <div className="pointer-events-none absolute inset-0 -z-30 bg-[radial-gradient(circle_at_82%_20%,rgba(111,162,255,.20),transparent_23%),radial-gradient(circle_at_5%_84%,rgba(104,199,255,.16),transparent_22%),radial-gradient(circle_at_95%_84%,rgba(172,126,255,.10),transparent_20%)]" />
         <div className="hero-blueprint pointer-events-none absolute inset-0 -z-20 opacity-70" />
-        <div
-          className="pointer-events-none absolute -bottom-20 right-[-4%] -z-20 hidden h-[76%] w-[58%] bg-contain bg-right-bottom bg-no-repeat opacity-[0.075] grayscale lg:block"
-          style={{ backgroundImage: "url('/images/bunyodkor-hero.webp?v=2')" }}
-        />
 
         <div className="mx-auto grid min-h-[790px] max-w-[1480px] items-center gap-12 px-4 pb-8 pt-10 sm:px-6 md:px-8 lg:grid-cols-[0.92fr_1.08fr] lg:gap-0 lg:pb-2 lg:pt-8 xl:min-h-[825px]">
           <div className="relative z-30 max-w-[690px] pb-6 lg:pb-16">
@@ -229,23 +226,10 @@ export default async function Home() {
             </div>
           </div>
 
-          <div className="relative mx-auto hidden h-[690px] w-full max-w-[760px] lg:block">
+          <div className="relative mx-auto hidden h-[690px] w-full max-w-[820px] lg:block">
             <div className="hero-scene-glow absolute left-[13%] top-[8%] h-[570px] w-[570px] rounded-full bg-[radial-gradient(circle,rgba(79,128,255,.17),rgba(97,191,255,.06)_44%,transparent_72%)] blur-[2px]" />
 
-            <svg
-              className="absolute inset-0 z-0 h-full w-full overflow-visible"
-              viewBox="0 0 760 690"
-              fill="none"
-              aria-hidden="true"
-            >
-              <path className="hero-orbit hero-orbit-a" d="M72 378C62 194 208 54 402 82C585 108 714 239 688 418C665 582 498 645 332 596C174 550 91 467 72 378Z" stroke="#8DB0FF" strokeWidth="1.5" strokeDasharray="7 8" />
-              <path className="hero-orbit hero-orbit-b" d="M101 241C215 129 421 115 583 192C686 241 725 338 646 414C535 520 312 545 151 465C35 407 18 321 101 241Z" stroke="#B0C7FF" strokeWidth="1.2" strokeDasharray="5 8" />
-              <path className="hero-orbit hero-orbit-c" d="M218 66C346 146 405 280 386 431C375 520 326 597 245 638" stroke="#D3DFFF" strokeWidth="1" strokeDasharray="4 10" />
-              <circle cx="89" cy="376" r="5" fill="#2F82FF" />
-              <circle cx="688" cy="418" r="5" fill="#2F82FF" />
-              <circle cx="583" cy="192" r="4.5" fill="#38A8FF" />
-              <circle cx="332" cy="596" r="4.5" fill="#38A8FF" />
-            </svg>
+            <UzbekistanHeroMap />
 
             <div className="hero-float-c absolute left-[5%] top-[8%] z-10 h-12 w-12 rotate-12 rounded-[15px] border border-white/80 bg-gradient-to-br from-[#92c9ff] to-[#7568ff] shadow-[0_18px_40px_rgba(66,109,238,.22)]" />
             <div className="hero-float-b absolute right-[2%] top-[2%] z-10 h-24 w-24 rotate-[28deg] rounded-[30px] border border-white/90 bg-gradient-to-br from-[#e2efff] via-[#b5c6ff] to-[#8879ff] opacity-80 shadow-[0_20px_45px_rgba(87,103,220,.18)]" />
@@ -283,10 +267,10 @@ export default async function Home() {
               <p className="text-[10px] font-black leading-4 text-[#34415a]">Yangi avlod<br />Yangi O‘zbekiston</p>
             </div>
 
-            {articles[0] && <HeroProfileCard article={articles[0]} large className="hero-float-a left-[38%] top-[26%]" />}
-            {articles[1] && <HeroProfileCard article={articles[1]} className="hero-float-b left-[17%] top-[16%] rotate-[-4deg]" />}
-            {articles[2] && <HeroProfileCard article={articles[2]} className="hero-float-c right-[1%] top-[23%] rotate-[3deg]" />}
-            {articles[3] && <HeroProfileCard article={articles[3]} className="hero-float-b right-[9%] bottom-[2%] rotate-[4deg]" />}
+            {articles[0] && <HeroProfileCard article={articles[0]} large className="hero-float-a left-[39%] top-[31%]" />}
+            {articles[1] && <HeroProfileCard article={articles[1]} className="hero-float-b left-[18%] top-[24%] rotate-[-4deg]" />}
+            {articles[2] && <HeroProfileCard article={articles[2]} className="hero-float-c right-[1%] top-[34%] rotate-[3deg]" />}
+            {articles[3] && <HeroProfileCard article={articles[3]} className="hero-float-b right-[11%] bottom-[1%] rotate-[4deg]" />}
 
             <div className="hero-float-c absolute bottom-[20%] left-[12%] z-30 flex h-14 w-14 items-center justify-center rounded-[20px] border border-white/90 bg-white/90 text-2xl text-[#3372ff] shadow-[0_16px_44px_rgba(31,75,155,.11)]">
               ▤
