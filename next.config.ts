@@ -6,7 +6,10 @@ const nextConfig: NextConfig = {
       { source: "/biz_haqimizda", destination: "/haqida", permanent: true },
       { source: "/bunyodkorlar_sahifasi", destination: "/bunyodkorlar", permanent: true },
       { source: "/tavsiyalar", destination: "/tavsiyalari", permanent: true },
-      { source: "/iqtiboslar_sahifasi", destination: "/sahifasi", permanent: true },
+      { source: "/iqtiboslar_sahifasi", destination: "/iqtiboslar", permanent: true },
+      { source: "/sahifasi", destination: "/iqtiboslar", permanent: true },
+      { source: "/sanjar-ai", destination: "/bunyodkor-ai", permanent: true },
+      { source: "/ariza-qoldrish", destination: "/ariza-qoldirish", permanent: true },
       { source: "/rss", destination: "/rss.xml", permanent: true },
     ];
   },

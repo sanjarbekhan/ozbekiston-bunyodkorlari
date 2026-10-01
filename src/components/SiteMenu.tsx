@@ -8,14 +8,14 @@ const desktopItems = [
   ["/", "Bosh sahifa"],
   ["/bunyodkorlar", "Ensiklopediya"],
   ["/reyting", "Reyting"],
-  ["/sanjar-ai", "Bunyodkor AI"],
+  ["/bunyodkor-ai", "Bunyodkor AI"],
   ["/haqida", "Loyiha haqida"],
 ] as const;
 
 const mobileItems = [
   ...desktopItems,
   ["/tavsiyalari", "Tavsiyalar"],
-  ["/sahifasi", "Iqtiboslar"],
+  ["/iqtiboslar", "Iqtiboslar"],
   ["/hamkor-loyihasi", "Hamkorlik"],
 ] as const;
 
@@ -97,7 +97,7 @@ export default function SiteMenu() {
           ))}
 
           <Link
-            href="/ariza-qoldrish"
+            href="/ariza-qoldirish"
             className="ml-1 inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-gradient-to-r from-[#126cf3] to-[#4b5dff] px-4 py-2 text-[12px] font-black text-white shadow-[0_8px_22px_rgba(22,108,243,.25)] transition hover:-translate-y-0.5 hover:shadow-[0_10px_26px_rgba(22,108,243,.32)]"
           >
             Ariza qoldirish <span aria-hidden="true">→</span>
@@ -135,7 +135,7 @@ export default function SiteMenu() {
             </div>
 
             <Link
-              href="/ariza-qoldrish"
+              href="/ariza-qoldirish"
               onClick={() => setOpen(false)}
               className="mt-4 flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#126cf3] to-[#4b5dff] px-5 py-4 text-sm font-black text-white shadow-[0_10px_25px_rgba(11,99,206,.2)]"
             >

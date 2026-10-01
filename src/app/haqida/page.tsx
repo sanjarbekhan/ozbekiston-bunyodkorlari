@@ -4,7 +4,7 @@ import SiteFooter from "@/components/SiteFooter";
 import SiteMenu from "@/components/SiteMenu";
 
 export const metadata: Metadata = {
-  title: "Biz haqimizda",
+  title: "Loyiha haqida",
   description:
     "O‘zbekiston Bunyodkor Yoshlari Ensiklopediyasining maqsadi, tamoyillari va ishlash tartibi haqida.",
   alternates: { canonical: "/haqida" },
@@ -95,7 +95,7 @@ export default function HaqidaPage() {
                 Ensiklopediyani ko‘rish →
               </Link>
               <Link
-                href="/ariza-qoldrish"
+                href="/ariza-qoldirish"
                 className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/15 bg-white/[0.07] px-6 text-sm font-extrabold text-white transition hover:-translate-y-0.5 hover:bg-white/[0.12]"
               >
                 Ariza qoldirish
@@ -233,7 +233,7 @@ export default function HaqidaPage() {
               </p>
             </div>
             <Link
-              href="/ariza-qoldrish"
+              href="/ariza-qoldirish"
               className="inline-flex min-h-12 shrink-0 items-center justify-center rounded-full bg-white px-7 text-sm font-extrabold text-[#071426] transition hover:-translate-y-0.5 hover:bg-[#eef5ff]"
             >
               Ariza qoldirish →

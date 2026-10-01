@@ -81,7 +81,7 @@ export default function TavsiyalariPage() {
               Ma’lumotlaringizni yuboring, keyingi bosqichni tahririyat bilan davom ettiring.
             </h2>
           </div>
-          <Link href="/ariza-qoldrish" className="mt-7 inline-flex shrink-0 rounded-full bg-[#0043a4] px-7 py-4 text-sm font-extrabold text-white md:mt-0">
+          <Link href="/ariza-qoldirish" className="mt-7 inline-flex shrink-0 rounded-full bg-[#0043a4] px-7 py-4 text-sm font-extrabold text-white md:mt-0">
             Ariza qoldirish →
           </Link>
         </div>

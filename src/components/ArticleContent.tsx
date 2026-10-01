@@ -1,5 +1,6 @@
 // Admin text blocks support Markdown while legacy HTML remains compatible.
 import type { ContentBlock } from "@/lib/article-types";
+import { protectMinorPersonalData } from "@/lib/public-format";
 
 function safeLevel(value?: number) {
   if (value === 3) return 3;
@@ -262,13 +263,22 @@ export default function ArticleContent({
   articleDescription?: string | null;
 }) {
   const normalized = Array.isArray(blocks) ? blocks : [];
+  const privacyContext = [
+    articleDescription || "",
+    legacyHtml || "",
+    ...normalized.map((block) => block.te || ""),
+  ].join("\n");
 
   if (normalized.length === 0 && legacyHtml) {
     return (
       <div
         className="article-rich-text"
         dangerouslySetInnerHTML={{
-          __html: cleanLegacyHtml(legacyHtml, articleTitle, articleDescription),
+          __html: cleanLegacyHtml(
+            protectMinorPersonalData(legacyHtml, privacyContext),
+            articleTitle,
+            protectMinorPersonalData(articleDescription, privacyContext),
+          ),
         }}
       />
     );
@@ -283,7 +293,8 @@ export default function ArticleContent({
     <div className="article-rich-text">
       {normalized.map((block, index) => {
         const key = block.id || `${block.ty}-${index}`;
-        const blockPlain = plain(block.te);
+        const publicText = protectMinorPersonalData(block.te, privacyContext);
+        const blockPlain = plain(publicText);
 
         if (
           block.ty === "heading" &&
@@ -307,12 +318,12 @@ export default function ArticleContent({
 
         if (block.ty === "heading") {
           const level = safeLevel(block.le);
-          if (level === 4 || (level === 3 && !isMajorHeading(block.te))) {
+          if (level === 4 || (level === 3 && !isMajorHeading(publicText))) {
             return (
               <h4
                 key={key}
                 className="article-minor-heading"
-                dangerouslySetInnerHTML={{ __html: block.te || "" }}
+                dangerouslySetInnerHTML={{ __html: publicText }}
               />
             );
           }
@@ -320,24 +331,25 @@ export default function ArticleContent({
             return (
               <h3
                 key={key}
-                dangerouslySetInnerHTML={{ __html: block.te || "" }}
+                dangerouslySetInnerHTML={{ __html: publicText }}
               />
             );
           }
           return (
             <h2
               key={key}
-              dangerouslySetInnerHTML={{ __html: block.te || "" }}
+              dangerouslySetInnerHTML={{ __html: publicText }}
             />
           );
         }
 
         if (["text", "preface", "html"].includes(block.ty)) {
-          const value = block.te || "";
+          const value = publicText;
+          const publicDescription = protectMinorPersonalData(articleDescription, privacyContext);
           const html =
             block.ty === "html" || looksLikeHtml(value)
-              ? cleanLegacyHtml(value, articleTitle, articleDescription)
-              : markdownToHtml(value, articleTitle, articleDescription);
+              ? cleanLegacyHtml(value, articleTitle, publicDescription)
+              : markdownToHtml(value, articleTitle, publicDescription);
           return (
             <div
               key={key}
@@ -408,7 +420,7 @@ export default function ArticleContent({
         if (block.ty === "quote") {
           return (
             <blockquote key={key}>
-              <p dangerouslySetInnerHTML={{ __html: block.te || "" }} />
+              <p dangerouslySetInnerHTML={{ __html: publicText }} />
               {block.author && <cite>{block.author}</cite>}
             </blockquote>
           );

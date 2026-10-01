@@ -3,11 +3,11 @@ import Link from "next/link";
 const links = [
   ["/bunyodkorlar", "Bunyodkorlar"],
   ["/reyting", "Reyting"],
-  ["/sanjar-ai", "Bunyodkor AI"],
-  ["/haqida", "Biz haqimizda"],
+  ["/bunyodkor-ai", "Bunyodkor AI"],
+  ["/haqida", "Loyiha haqida"],
   ["/tavsiyalari", "Tavsiyalar"],
-  ["/sahifasi", "Iqtiboslar"],
-  ["/ariza-qoldrish", "Ariza qoldirish"],
+  ["/iqtiboslar", "Iqtiboslar"],
+  ["/ariza-qoldirish", "Ariza qoldirish"],
 ] as const;
 
 export default function SiteFooter() {

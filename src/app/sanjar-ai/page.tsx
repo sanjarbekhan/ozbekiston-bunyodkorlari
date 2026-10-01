@@ -147,7 +147,7 @@ export default function SanjarAIPage() {
             <div className="flex items-center gap-3 border-b border-[#edf2f5] pb-4">
               <SanjarMark />
               <div className="min-w-0">
-                <p className="text-[11px] font-black uppercase tracking-[0.18em] text-[#21aeca]">Ensiklopediya AI</p>
+                <p className="text-[11px] font-black uppercase tracking-[0.18em] text-[#21aeca]">Bunyodkor AI</p>
                 <h1 className="mt-0.5 text-xl font-black tracking-[-0.03em] text-[#0b2944]">Bunyodkor AI</h1>
               </div>
             </div>

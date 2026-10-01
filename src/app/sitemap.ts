@@ -37,12 +37,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       ...(latestArticleDate ? { lastModified: latestArticleDate } : {}),
     },
     { url: url("/reyting"), changeFrequency: "daily", priority: 0.8 },
-    { url: url("/sanjar-ai"), changeFrequency: "weekly", priority: 0.7 },
+    { url: url("/bunyodkor-ai"), changeFrequency: "weekly", priority: 0.7 },
     { url: url("/haqida") },
     { url: url("/tavsiyalari") },
-    { url: url("/sahifasi") },
+    { url: url("/iqtiboslar") },
     { url: url("/hamkor-loyihasi") },
-    { url: url("/ariza-qoldrish") },
+    { url: url("/ariza-qoldirish") },
     { url: url("/ommaviy_ofertasi") },
   ];
 
