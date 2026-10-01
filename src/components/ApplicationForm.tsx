@@ -17,6 +17,7 @@ export default function ApplicationForm() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [done, setDone] = useState(false);
+  const [guardianConsent, setGuardianConsent] = useState(false);
 
   function patch(name: keyof typeof initialForm, value: string) {
     setForm((current) => ({ ...current, [name]: value }));
@@ -50,13 +51,17 @@ export default function ApplicationForm() {
       setError("Yoshingizni to‘g‘ri kiriting.");
       return;
     }
+    if (age < 18 && !guardianConsent) {
+      setError("18 yoshga to‘lmagan nomzod uchun ota-ona yoki qonuniy vakil roziligi kerak.");
+      return;
+    }
 
     setBusy(true);
     try {
       const response = await fetch("/api/applications", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, guardian_consent: guardianConsent }),
       });
 
       if (!response.ok) {
@@ -66,6 +71,7 @@ export default function ApplicationForm() {
       }
 
       setForm(initialForm);
+      setGuardianConsent(false);
       setDone(true);
     } catch {
       setError("Arizani yuborishda xatolik yuz berdi. Iltimos, qayta urinib ko‘ring.");
@@ -155,6 +161,21 @@ export default function ApplicationForm() {
             className="mt-2 w-full rounded-2xl border border-slate-200 bg-[#f8fafc] px-4 py-4 text-base outline-none transition focus:border-[#0043a4] focus:bg-white"
           />
         </label>
+
+        {Number(form.age_group) > 0 && Number(form.age_group) < 18 && (
+          <label className="sm:col-span-2 flex items-start gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4">
+            <input
+              type="checkbox"
+              checked={guardianConsent}
+              onChange={(event) => setGuardianConsent(event.target.checked)}
+              className="mt-1 h-4 w-4 shrink-0 accent-[#0043a4]"
+            />
+            <span className="text-sm font-semibold leading-6 text-amber-950">
+              Ota-onam yoki qonuniy vakilim ushbu arizani yuborishimga va ma’lumotlarim
+              ensiklopediya tahririyati tomonidan ko‘rib chiqilishiga rozilik bildirgan.
+            </span>
+          </label>
+        )}
 
         <label className="sm:col-span-2">
           <span className="text-sm font-extrabold text-[#101828]">Promokod <span className="font-medium text-slate-400">(agar bo‘lsa)</span></span>
