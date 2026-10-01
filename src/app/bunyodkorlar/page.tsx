@@ -19,7 +19,14 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function BunyodkorlarPage() {
+export default async function BunyodkorlarPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
+  const params = await searchParams;
+  const initialSearch = (params.q || "").trim().slice(0, 120);
+
   const { data: articles } = await supabase
     .from("articles")
     .select("id,title,slug,category,image_url,description,published_at,created_at,status")
@@ -28,29 +35,30 @@ export default async function BunyodkorlarPage() {
     .limit(500);
 
   return (
-    <main className="min-h-screen bg-[#f4f7fb] text-[#111827]">
+    <main className="min-h-screen bg-[#f8fbff] text-[#111827]">
       <SiteMenu />
 
-      <header className="relative overflow-hidden bg-[#071426] px-4 pb-14 pt-24 text-white md:px-8 md:pb-18 md:pt-28">
-        <div className="absolute -right-24 -top-24 h-80 w-80 rounded-full bg-[#0043a4]/30 blur-3xl" />
+      <header className="relative overflow-hidden bg-white px-4 pb-14 pt-28 md:px-8 md:pb-18 md:pt-32">
+        <div className="absolute right-[-10%] top-0 h-80 w-80 rounded-full bg-[#5b86ff]/12 blur-3xl" />
+        <div className="hero-blueprint absolute inset-0 opacity-35" />
         <div className="relative mx-auto max-w-7xl">
-          <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-white/55">
+          <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-[#2866ff]">
             Ensiklopediya katalogi
           </p>
-          <h1 className="mt-3 text-[44px] font-extrabold leading-[.98] tracking-[-.05em] sm:text-[58px] md:text-[72px]">
+          <h1 className="mt-3 text-[44px] font-black leading-[.98] tracking-[-.055em] text-[#0b1630] sm:text-[58px] md:text-[72px]">
             Bunyodkorlar
           </h1>
-          <p className="mt-5 max-w-2xl text-base font-medium leading-7 text-white/70 md:text-lg md:leading-8">
+          <p className="mt-5 max-w-2xl text-base font-semibold leading-7 text-[#65738c] md:text-lg md:leading-8">
             Barcha profillarni ism, familiya, faoliyat sohasi yoki kalit so‘z orqali qidiring.
           </p>
-          <div className="mt-8 flex flex-wrap gap-3 text-xs font-bold text-white/65">
-            <span className="rounded-full border border-white/15 bg-white/5 px-4 py-2">
+          <div className="mt-8 flex flex-wrap gap-3 text-xs font-bold text-[#64738d]">
+            <span className="rounded-full border border-[#e4ebf5] bg-white px-4 py-2 shadow-sm">
               {articles?.length || 0} ta profil
             </span>
-            <span className="rounded-full border border-white/15 bg-white/5 px-4 py-2">
+            <span className="rounded-full border border-[#e4ebf5] bg-white px-4 py-2 shadow-sm">
               Barcha hududlar
             </span>
-            <span className="rounded-full border border-white/15 bg-white/5 px-4 py-2">
+            <span className="rounded-full border border-[#e4ebf5] bg-white px-4 py-2 shadow-sm">
               Turli yo‘nalishlar
             </span>
           </div>
@@ -58,7 +66,7 @@ export default async function BunyodkorlarPage() {
       </header>
 
       <section className="mx-auto max-w-7xl px-4 py-10 md:px-8 md:py-14">
-        <PublicArticles articles={articles || []} />
+        <PublicArticles articles={articles || []} initialSearch={initialSearch} />
       </section>
 
       <SiteFooter />
