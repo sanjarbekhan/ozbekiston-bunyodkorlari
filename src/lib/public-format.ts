@@ -113,9 +113,12 @@ function minorBirthYear(value: string) {
   return null;
 }
 
-export function protectMinorPersonalData(value?: string | null) {
+export function protectMinorPersonalData(
+  value?: string | null,
+  context?: string | null,
+) {
   if (!value) return "";
-  const year = minorBirthYear(value);
+  const year = minorBirthYear(context || value);
   if (!year) return value;
 
   let output = value;
