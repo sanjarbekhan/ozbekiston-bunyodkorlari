@@ -36,8 +36,18 @@ export default function ApplicationForm() {
       setError("Ism va familiyangizni kiriting.");
       return;
     }
-    if (form.phone.trim().length < 5) {
-      setError("Telefon raqamingizni kiriting.");
+    if (form.phone.replace(/\D/g, "").length < 7) {
+      setError("Telefon raqamingizni to‘liq kiriting.");
+      return;
+    }
+    if (!form.gender) {
+      setError("Jinsingizni belgilang.");
+      return;
+    }
+
+    const age = Number(form.age_group);
+    if (!Number.isInteger(age) || age < 1 || age > 99) {
+      setError("Yoshingizni to‘g‘ri kiriting.");
       return;
     }
 
@@ -50,7 +60,8 @@ export default function ApplicationForm() {
       });
 
       if (!response.ok) {
-        setError("Arizani yuborishda xatolik yuz berdi. Iltimos, qayta urinib ko‘ring.");
+        const result = await response.json().catch(() => ({}));
+        setError(result?.error || "Arizani yuborishda xatolik yuz berdi. Iltimos, qayta urinib ko‘ring.");
         return;
       }
 
