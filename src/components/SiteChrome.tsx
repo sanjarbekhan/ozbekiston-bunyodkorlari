@@ -34,10 +34,10 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
             <Link href="/tavsiyalari" className="hover:text-[#0043a4]">
               Tavsiyalar
             </Link>
-            <Link href="/sahifasi" className="hover:text-[#0043a4]">
+            <Link href="/iqtiboslar" className="hover:text-[#0043a4]">
               Iqtiboslar
             </Link>
-            <Link href="/ariza-qoldrish" className="hover:text-[#0043a4]">
+            <Link href="/ariza-qoldirish" className="hover:text-[#0043a4]">
               Ariza qoldirish
             </Link>
             <Link href="/hamkor-loyihasi" className="hover:text-[#0043a4]">
@@ -60,10 +60,10 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
               <Link href="/tavsiyalari" className="block border-b px-5 py-4 text-sm font-bold hover:bg-[#0043a4] hover:text-white">
                 Tavsiyalar
               </Link>
-              <Link href="/sahifasi" className="block border-b px-5 py-4 text-sm font-bold hover:bg-[#0043a4] hover:text-white">
+              <Link href="/iqtiboslar" className="block border-b px-5 py-4 text-sm font-bold hover:bg-[#0043a4] hover:text-white">
                 Iqtiboslar
               </Link>
-              <Link href="/ariza-qoldrish" className="block border-b px-5 py-4 text-sm font-bold hover:bg-[#0043a4] hover:text-white">
+              <Link href="/ariza-qoldirish" className="block border-b px-5 py-4 text-sm font-bold hover:bg-[#0043a4] hover:text-white">
                 Ariza qoldirish
               </Link>
               <Link href="/hamkor-loyihasi" className="block px-5 py-4 text-sm font-bold hover:bg-[#0043a4] hover:text-white">
@@ -94,10 +94,10 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
           <div>
             <h3 className="text-lg font-black">Sahifalar</h3>
             <div className="mt-4 grid gap-3 text-sm font-bold text-white/85">
-              <Link href="/haqida" className="hover:text-white">Biz haqimizda</Link>
+              <Link href="/haqida" className="hover:text-white">Loyiha haqida</Link>
               <Link href="/#bunyodkorlar" className="hover:text-white">Bunyodkorlar Sahifasi</Link>
               <Link href="/tavsiyalari" className="hover:text-white">Tavsiyalar</Link>
-              <Link href="/sahifasi" className="hover:text-white">Iqtiboslar</Link>
+              <Link href="/iqtiboslar" className="hover:text-white">Iqtiboslar</Link>
               <Link href="/hamkor-loyihasi" className="hover:text-white">Hamkor loyihasi</Link>
             </div>
           </div>
@@ -108,7 +108,7 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
               <a href="https://t.me/UzBYE_bot" target="_blank" rel="noopener noreferrer" className="hover:text-white">
                 Telegram bot
               </a>
-              <Link href="/ariza-qoldrish" className="hover:text-white">
+              <Link href="/ariza-qoldirish" className="hover:text-white">
                 Ariza qoldirish
               </Link>
             </div>
