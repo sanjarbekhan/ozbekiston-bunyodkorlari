@@ -26,7 +26,7 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
 
           <nav className="hidden items-center gap-7 text-sm font-bold lg:flex">
             <Link href="/haqida" className="hover:text-[#0043a4]">
-              Biz haqimizda
+              Loyiha haqida
             </Link>
             <Link href="/#bunyodkorlar" className="hover:text-[#0043a4]">
               Bunyodkorlar Sahifasi
@@ -52,7 +52,7 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
 
             <div className="absolute right-0 top-14 w-[270px] overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-gray-100">
               <Link href="/haqida" className="block border-b px-5 py-4 text-sm font-bold hover:bg-[#0043a4] hover:text-white">
-                Biz haqimizda
+                Loyiha haqida
               </Link>
               <Link href="/#bunyodkorlar" className="block border-b px-5 py-4 text-sm font-bold hover:bg-[#0043a4] hover:text-white">
                 Bunyodkorlar Sahifasi
