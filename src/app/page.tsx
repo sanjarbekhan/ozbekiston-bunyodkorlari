@@ -278,6 +278,19 @@ export default async function Home() {
           </div>
 
           <div className="relative mx-auto mt-2 w-full max-w-[560px] lg:hidden">
+            <div className="relative mb-5 h-[330px] overflow-hidden rounded-[30px] border border-[#e4ebf7] bg-[radial-gradient(circle_at_70%_20%,rgba(104,154,255,.18),transparent_28%),linear-gradient(145deg,#fbfdff_0%,#f4f8ff_58%,#f7f3ff_100%)] shadow-[0_20px_55px_rgba(32,72,145,.10)]">
+              <div className="hero-scene-glow absolute left-[12%] top-[8%] h-[280px] w-[280px] rounded-full bg-[radial-gradient(circle,rgba(79,128,255,.18),rgba(97,191,255,.06)_45%,transparent_72%)]" />
+              <div className="absolute inset-[-8%] scale-[.86]">
+                <UzbekistanHeroMap />
+              </div>
+              <div className="hero-float-b absolute left-4 top-4 z-20 inline-flex items-center gap-2 rounded-full border border-white/90 bg-white/90 px-3 py-2 text-[10px] font-black text-[#174a98] shadow-[0_10px_28px_rgba(40,88,170,.10)] backdrop-blur-xl">
+                <span>🇺🇿</span>
+                O‘zbekiston bo‘ylab bunyodkorlar
+              </div>
+              <div className="hero-float-a absolute bottom-4 right-4 z-20 rounded-[16px] border border-white/90 bg-white/92 px-3 py-2 text-[10px] font-black leading-4 text-[#34415a] shadow-[0_12px_32px_rgba(36,78,150,.10)] backdrop-blur-xl">
+                Yangi avlod · Yangi O‘zbekiston
+              </div>
+            </div>
             <div className="grid grid-cols-2 gap-3">
               {articles.slice(0, 4).map((article) => (
                 <Link
