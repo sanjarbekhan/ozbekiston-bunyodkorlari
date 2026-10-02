@@ -1,3 +1,4 @@
+// Deploy trigger: retry latest Bunyodkor production build.
 // Bunyodkor 2026 visual system: Manrope typography and white motion UI.\nimport type { Metadata } from "next";
 import { Manrope } from "next/font/google";
 import "./globals.css";
