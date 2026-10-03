@@ -1,4 +1,4 @@
-name: apply-night-theme
+name: apply-night-hero-assets
 
 on:
   push:
@@ -35,78 +35,11 @@ jobs:
           test "$(wc -c < public/images/bunyodkor-hero-mobile-day.png)" -eq 2817634
           test "$(wc -c < public/images/bunyodkor-hero-mobile-night.png)" -eq 3797827
 
-      - name: Install automatic night theme
-        env:
-          THEME_CONTROLLER_B64: 'InVzZSBjbGllbnQiOwoKaW1wb3J0IHsgdXNlRWZmZWN0IH0gZnJvbSAicmVhY3QiOwoKdHlwZSBUaGVtZU1vZGUgPSAiZGF5IiB8ICJuaWdodCI7CgpmdW5jdGlvbiByZXNvbHZlVGhlbWUoKTogVGhlbWVNb2RlIHsKICB0cnkgewogICAgY29uc3Qgc2F2ZWQgPSB3aW5kb3cubG9jYWxTdG9yYWdlLmdldEl0ZW0oImJ1bnlvZGtvci10aGVtZSIpOwogICAgaWYgKHNhdmVkID09PSAiZGF5IiB8fCBzYXZlZCA9PT0gIm5pZ2h0IikgcmV0dXJuIHNhdmVkOwogIH0gY2F0Y2gge30KCiAgY29uc3QgaG91ciA9IG5ldyBEYXRlKCkuZ2V0SG91cnMoKTsKICByZXR1cm4gaG91ciA+PSAxOSB8fCBob3VyIDwgNyA/ICJuaWdodCIgOiAiZGF5IjsKfQoKZnVuY3Rpb24gYXBwbHlUaGVtZSgpIHsKICBkb2N1bWVudC5kb2N1bWVudEVsZW1lbnQuZGF0YXNldC50aGVtZSA9IHJlc29sdmVUaGVtZSgpOwp9CgpleHBvcnQgZGVmYXVsdCBmdW5jdGlvbiBUaGVtZUNvbnRyb2xsZXIoKSB7CiAgdXNlRWZmZWN0KCgpID0+IHsKICAgIGFwcGx5VGhlbWUoKTsKCiAgICBjb25zdCBpbnRlcnZhbCA9IHdpbmRvdy5zZXRJbnRlcnZhbChhcHBseVRoZW1lLCA2MF8wMDApOwogICAgY29uc3QgaGFuZGxlU3RvcmFnZSA9IChldmVudDogU3RvcmFnZUV2ZW50KSA9PiB7CiAgICAgIGlmIChldmVudC5rZXkgPT09ICJidW55b2Rrb3ItdGhlbWUiKSBhcHBseVRoZW1lKCk7CiAgICB9OwogICAgY29uc3QgaGFuZGxlVGhlbWVDaGFuZ2UgPSAoKSA9PiBhcHBseVRoZW1lKCk7CgogICAgd2luZG93LmFkZEV2ZW50TGlzdGVuZXIoInN0b3JhZ2UiLCBoYW5kbGVTdG9yYWdlKTsKICAgIHdpbmRvdy5hZGRFdmVudExpc3RlbmVyKCJidW55b2Rrb3ItdGhlbWUtY2hhbmdlIiwgaGFuZGxlVGhlbWVDaGFuZ2UpOwoKICAgIHJldHVybiAoKSA9PiB7CiAgICAgIHdpbmRvdy5jbGVhckludGVydmFsKGludGVydmFsKTsKICAgICAgd2luZG93LnJlbW92ZUV2ZW50TGlzdGVuZXIoInN0b3JhZ2UiLCBoYW5kbGVTdG9yYWdlKTsKICAgICAgd2luZG93LnJlbW92ZUV2ZW50TGlzdGVuZXIoImJ1bnlvZGtvci10aGVtZS1jaGFuZ2UiLCBoYW5kbGVUaGVtZUNoYW5nZSk7CiAgICB9OwogIH0sIFtdKTsKCiAgcmV0dXJuIG51bGw7Cn0K'
-          NIGHT_CSS_B64: 'CgovKiBBdXRvbWF0aWMgZGF5L25pZ2h0IHRoZW1lLiBOaWdodCBpcyAxOTowMOKAkzA3OjAwIGluIHRoZSB2aXNpdG9yJ3MgbG9jYWwgYnJvd3NlciB0aW1lLiAqLwouaGVyby1hcnQtZGF5IHsgZGlzcGxheTogYmxvY2s7IH0KLmhlcm8tYXJ0LW5pZ2h0IHsgZGlzcGxheTogbm9uZTsgfQoKaHRtbFtkYXRhLXRoZW1lPSJuaWdodCJdIHsKICAtLWJhY2tncm91bmQ6ICMxODAwYWQ7CiAgLS1mb3JlZ3JvdW5kOiAjZmZmZmZmOwogIC0tYnJhbmQ6ICNmZmZmZmY7CiAgLS1icmFuZC1kYXJrOiAjZmZmZmZmOwogIC0tc3VyZmFjZTogIzE4MDBhZDsKICBjb2xvci1zY2hlbWU6IGRhcms7Cn0KCmh0bWxbZGF0YS10aGVtZT0ibmlnaHQiXSBib2R5IHsKICBiYWNrZ3JvdW5kOiAjMTgwMGFkICFpbXBvcnRhbnQ7CiAgY29sb3I6ICNmZmZmZmYgIWltcG9ydGFudDsKfQoKaHRtbFtkYXRhLXRoZW1lPSJuaWdodCJdIC5oZXJvLWFydC1kYXkgeyBkaXNwbGF5OiBub25lICFpbXBvcnRhbnQ7IH0KaHRtbFtkYXRhLXRoZW1lPSJuaWdodCJdIC5oZXJvLWFydC1uaWdodCB7IGRpc3BsYXk6IGJsb2NrICFpbXBvcnRhbnQ7IH0KCmh0bWxbZGF0YS10aGVtZT0ibmlnaHQiXSBbY2xhc3MqPSJiZy13aGl0ZSJdLApodG1sW2RhdGEtdGhlbWU9Im5pZ2h0Il0gW2NsYXNzKj0iYmctWyNmOGZiZmZdIl0sCmh0bWxbZGF0YS10aGVtZT0ibmlnaHQiXSBbY2xhc3MqPSJiZy1bI2Y0ZjdmYl0iXSwKaHRtbFtkYXRhLXRoZW1lPSJuaWdodCJdIFtjbGFzcyo9ImJnLVsjZmJmZGZmXSJdLApodG1sW2RhdGEtdGhlbWU9Im5pZ2h0Il0gW2NsYXNzKj0iYmctWyNmN2ZhZmZdIl0sCmh0bWxbZGF0YS10aGVtZT0ibmlnaHQiXSBbY2xhc3MqPSJiZy1bI2Y4ZmFmY10iXSwKaHRtbFtkYXRhLXRoZW1lPSJuaWdodCJdIFtjbGFzcyo9ImJnLVsjZjdmOWZkXSJdLApodG1sW2RhdGEtdGhlbWU9Im5pZ2h0Il0gW2NsYXNzKj0iYmctWyNlZWY0ZmZdIl0sCmh0bWxbZGF0YS10aGVtZT0ibmlnaHQiXSBbY2xhc3MqPSJiZy1bI2VkZjRmZl0iXSwKaHRtbFtkYXRhLXRoZW1lPSJuaWdodCJdIFtjbGFzcyo9ImJnLVsjZjFmNmZmXSJdLApodG1sW2RhdGEtdGhlbWU9Im5pZ2h0Il0gW2NsYXNzKj0iYmctWyNlZWY1ZmZdIl0sCmh0bWxbZGF0YS10aGVtZT0ibmlnaHQiXSBbY2xhc3MqPSJiZy1bI2VkZjFmNl0iXSwKaHRtbFtkYXRhLXRoZW1lPSJuaWdodCJdIFtjbGFzcyo9ImJnLVsjMDcxNDI2XSJdIHsKICBiYWNrZ3JvdW5kLWNvbG9yOiAjMTgwMGFkICFpbXBvcnRhbnQ7CiAgYmFja2dyb3VuZC1pbWFnZTogbm9uZSAhaW1wb3J0YW50Owp9CgpodG1sW2RhdGEtdGhlbWU9Im5pZ2h0Il0gbWFpbiA6aXMoaDEsaDIsaDMsaDQsaDUsaDYscCxhLHNwYW4sbGksbGFiZWwsc3Ryb25nLHNtYWxsKSwKaHRtbFtkYXRhLXRoZW1lPSJuaWdodCJdIGhlYWRlciA6aXMoYSxzcGFuLGxhYmVsKSwKaHRtbFtkYXRhLXRoZW1lPSJuaWdodCJdIGZvb3RlciA6aXMoYSxwLHNwYW4sc3Ryb25nLHNtYWxsKSB7CiAgY29sb3I6ICNmZmZmZmYgIWltcG9ydGFudDsKfQoKaHRtbFtkYXRhLXRoZW1lPSJuaWdodCJdIDppcygudGV4dC1zbGF0ZS0zMDAsLnRleHQtc2xhdGUtNDAwLC50ZXh0LXNsYXRlLTUwMCwudGV4dC1zbGF0ZS02MDAsLnRleHQtc2xhdGUtNzAwLC50ZXh0LXNsYXRlLTgwMCwudGV4dC1zbGF0ZS05MDApIHsKICBjb2xvcjogI2ZmZmZmZiAhaW1wb3J0YW50Owp9CgpodG1sW2RhdGEtdGhlbWU9Im5pZ2h0Il0gW2NsYXNzKj0iYm9yZGVyLXNsYXRlIl0sCmh0bWxbZGF0YS10aGVtZT0ibmlnaHQiXSBbY2xhc3MqPSJib3JkZXItWyNlIl0sCmh0bWxbZGF0YS10aGVtZT0ibmlnaHQiXSBbY2xhc3MqPSJib3JkZXItWyNkIl0sCmh0bWxbZGF0YS10aGVtZT0ibmlnaHQiXSBbY2xhc3MqPSJib3JkZXItZ3JheSJdIHsKICBib3JkZXItY29sb3I6IHJnYmEoMjU1LDI1NSwyNTUsLjI0KSAhaW1wb3J0YW50Owp9CgpodG1sW2RhdGEtdGhlbWU9Im5pZ2h0Il0gaW5wdXQsCmh0bWxbZGF0YS10aGVtZT0ibmlnaHQiXSB0ZXh0YXJlYSwKaHRtbFtkYXRhLXRoZW1lPSJuaWdodCJdIHNlbGVjdCB7CiAgYmFja2dyb3VuZDogcmdiYSgyNTUsMjU1LDI1NSwuMTApICFpbXBvcnRhbnQ7CiAgY29sb3I6ICNmZmZmZmYgIWltcG9ydGFudDsKICBib3JkZXItY29sb3I6IHJnYmEoMjU1LDI1NSwyNTUsLjMwKSAhaW1wb3J0YW50Owp9CgpodG1sW2RhdGEtdGhlbWU9Im5pZ2h0Il0gaW5wdXQ6OnBsYWNlaG9sZGVyLApodG1sW2RhdGEtdGhlbWU9Im5pZ2h0Il0gdGV4dGFyZWE6OnBsYWNlaG9sZGVyIHsKICBjb2xvcjogcmdiYSgyNTUsMjU1LDI1NSwuNzApICFpbXBvcnRhbnQ7Cn0KCmh0bWxbZGF0YS10aGVtZT0ibmlnaHQiXSBvcHRpb24gewogIGJhY2tncm91bmQ6ICMxODAwYWQ7CiAgY29sb3I6ICNmZmZmZmY7Cn0KCmh0bWxbZGF0YS10aGVtZT0ibmlnaHQiXSAuYXJ0aWNsZS1yaWNoLXRleHQsCmh0bWxbZGF0YS10aGVtZT0ibmlnaHQiXSAuYXJ0aWNsZS1yaWNoLXRleHQgaDIsCmh0bWxbZGF0YS10aGVtZT0ibmlnaHQiXSAuYXJ0aWNsZS1yaWNoLXRleHQgaDMsCmh0bWxbZGF0YS10aGVtZT0ibmlnaHQiXSAuYXJ0aWNsZS1yaWNoLXRleHQgaDQsCmh0bWxbZGF0YS10aGVtZT0ibmlnaHQiXSAuYXJ0aWNsZS1yaWNoLXRleHQgc3Ryb25nLApodG1sW2RhdGEtdGhlbWU9Im5pZ2h0Il0gLmFydGljbGUtcmljaC10ZXh0IGZpZ2NhcHRpb24sCmh0bWxbZGF0YS10aGVtZT0ibmlnaHQiXSAuYXJ0aWNsZS1yaWNoLXRleHQgYmxvY2txdW90ZSBjaXRlLApodG1sW2RhdGEtdGhlbWU9Im5pZ2h0Il0gLmFydGljbGUtZmlsZS1jYXJkIHNtYWxsIHsKICBjb2xvcjogI2ZmZmZmZiAhaW1wb3J0YW50Owp9CgpodG1sW2RhdGEtdGhlbWU9Im5pZ2h0Il0gLmFydGljbGUtcHJlZmFjZSwKaHRtbFtkYXRhLXRoZW1lPSJuaWdodCJdIC5hcnRpY2xlLXJpY2gtdGV4dCBibG9ja3F1b3RlLApodG1sW2RhdGEtdGhlbWU9Im5pZ2h0Il0gLmFydGljbGUtZmlsZS1jYXJkIHsKICBiYWNrZ3JvdW5kOiByZ2JhKDI1NSwyNTUsMjU1LC4wOCkgIWltcG9ydGFudDsKICBib3JkZXItY29sb3I6IHJnYmEoMjU1LDI1NSwyNTUsLjI4KSAhaW1wb3J0YW50Owp9CgpodG1sW2RhdGEtdGhlbWU9Im5pZ2h0Il0gaGVhZGVyIGJ1dHRvblthcmlhLWxhYmVsKj0iTWVueXUiXSB7CiAgYmFja2dyb3VuZDogcmdiYSgyNCwwLDE3MywuODgpICFpbXBvcnRhbnQ7CiAgY29sb3I6ICNmZmZmZmYgIWltcG9ydGFudDsKICBib3JkZXItY29sb3I6IHJnYmEoMjU1LDI1NSwyNTUsLjU1KSAhaW1wb3J0YW50Owp9CgpodG1sW2RhdGEtdGhlbWU9Im5pZ2h0Il0gZm9vdGVyIHsKICBiYWNrZ3JvdW5kOiAjMTgwMGFkICFpbXBvcnRhbnQ7CiAgY29sb3I6ICNmZmZmZmYgIWltcG9ydGFudDsKfQo='
-        run: |
-          set -euo pipefail
-          printf '%s' "$THEME_CONTROLLER_B64" | base64 -d > src/components/ThemeController.tsx
-          printf '%s' "$NIGHT_CSS_B64" | base64 -d >> src/app/globals.css
-
-          python - <<'PY'
-          from pathlib import Path
-
-          layout = Path("src/app/layout.tsx")
-          text = layout.read_text(encoding="utf-8")
-          if 'import ThemeController from "@/components/ThemeController";' not in text:
-              text = text.replace('import "./globals.css";', 'import "./globals.css";\nimport ThemeController from "@/components/ThemeController";')
-          text = text.replace('<html lang="uz" className={manrope.variable}>', '<html lang="uz" className={manrope.variable} suppressHydrationWarning>')
-          text = text.replace('<body>{children}</body>', '<body><ThemeController />{children}</body>')
-          layout.write_text(text, encoding="utf-8")
-
-          page = Path("src/app/page.tsx")
-          text = page.read_text(encoding="utf-8")
-          old = '''        <picture className="block w-full">
-          <source media="(min-width: 1024px)" srcSet="/images/bunyodkor-hero-desktop.png" />
-          <img
-            src="/images/bunyodkor-hero-mobile.png"
-            alt="O‘zbekiston Bunyodkor Yoshlari Ensiklopediyasi"
-            className="block h-auto w-full"
-            width={1080}
-            height={1920}
-            loading="eager"
-            fetchPriority="high"
-          />
-        </picture>'''
-          new = '''        <div className="hero-art-day">
-          <picture className="block w-full">
-            <source media="(min-width: 1024px)" srcSet="/images/bunyodkor-hero-desktop-day.png" />
-            <img
-              src="/images/bunyodkor-hero-mobile-day.png"
-              alt="O‘zbekiston Bunyodkor Yoshlari Ensiklopediyasi"
-              className="block h-auto w-full"
-              width={1080}
-              height={1920}
-              loading="eager"
-              fetchPriority="high"
-            />
-          </picture>
-        </div>
-        <div className="hero-art-night">
-          <picture className="block w-full">
-            <source media="(min-width: 1024px)" srcSet="/images/bunyodkor-hero-desktop-night.png" />
-            <img
-              src="/images/bunyodkor-hero-mobile-night.png"
-              alt="O‘zbekiston Bunyodkor Yoshlari Ensiklopediyasi — kechki ko‘rinish"
-              className="block h-auto w-full"
-              width={1080}
-              height={1920}
-              loading="eager"
-              fetchPriority="high"
-            />
-          </picture>
-        </div>'''
-          if old not in text:
-              raise SystemExit("Current homepage hero picture block was not found")
-          page.write_text(text.replace(old, new, 1), encoding="utf-8")
-          PY
-
-      - name: Commit to master
+      - name: Commit hero assets to master
         run: |
           set -euo pipefail
           git config user.name "Sanjarbekhan automation"
           git config user.email "actions@users.noreply.github.com"
-          git add src/components/ThemeController.tsx src/app/layout.tsx src/app/globals.css src/app/page.tsx public/images/bunyodkor-hero-desktop-day.png public/images/bunyodkor-hero-desktop-night.png public/images/bunyodkor-hero-mobile-day.png public/images/bunyodkor-hero-mobile-night.png
-          git commit -m "Add automatic day and night site theme"
+          git add public/images/bunyodkor-hero-desktop-day.png public/images/bunyodkor-hero-desktop-night.png public/images/bunyodkor-hero-mobile-day.png public/images/bunyodkor-hero-mobile-night.png
+          git commit -m "Add final day and night homepage hero artwork"
           git push origin HEAD:master
