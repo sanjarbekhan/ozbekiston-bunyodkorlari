@@ -158,7 +158,7 @@ export default async function Home() {
     <main className="min-h-screen overflow-x-hidden bg-white text-[#111827]">
       <SiteMenu />
 
-      <section className="bg-white pt-[76px] sm:pt-[82px]">
+      <section className="bg-white">
       <div className="relative w-full overflow-hidden">
         <picture className="block w-full">
           <source media="(min-width: 1024px)" srcSet="/images/bunyodkor-hero-desktop.png" />
