@@ -1,0 +1,180 @@
+name: apply-final-header-artwork
+
+on:
+  push:
+    branches:
+      - 'work/header-artwork-20261003'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+          fetch-depth: 0
+
+      - name: Download exact header artwork
+        env:
+          DESKTOP_URL: 'https://sdmntprnortheu.oaiusercontent.com/files/00000000-b8c0-81f4-8774-6c3be394b66b/raw?se=2026-10-03T07%3A07%3A13Z&sp=r&sv=2026-02-06&sr=b&scid=ab23a2e2-ab56-52b9-b5a5-c5e91bed4ecb&skoid=5bfb38a5-43fb-4c63-80a1-6ae1e97e2e16&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-03T05%3A55%3A17Z&ske=2026-10-04T05%3A55%3A17Z&sks=b&skv=2026-02-06&sig=fiOigbLNZzZCn0CnQZZvtj9F46bdEH8Yq/mgUvOMq68%3D'
+          MOBILE_URL: 'https://sdmntprpolandcentral.oaiusercontent.com/files/00000000-d924-820a-b964-3cad280fe382/raw?se=2026-10-03T07%3A07%3A13Z&sp=r&sv=2026-02-06&sr=b&scid=15c2118c-d0d3-5df4-afdf-a1e039029e8d&skoid=5bfb38a5-43fb-4c63-80a1-6ae1e97e2e16&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-03T04%3A24%3A13Z&ske=2026-10-04T04%3A24%3A13Z&sks=b&skv=2026-02-06&sig=B8eYnyuzS0fOPbQU3rBgUpeb8ucaOPt1a%2BIG9DxBEr8%3D'
+        run: |
+          set -euo pipefail
+          mkdir -p public/images
+          curl -L --fail --retry 3 "$DESKTOP_URL" -o public/images/bunyodkor-header-desktop.png
+          curl -L --fail --retry 3 "$MOBILE_URL" -o public/images/bunyodkor-header-mobile.png
+          test "$(wc -c < public/images/bunyodkor-header-desktop.png)" -eq 120091
+          test "$(wc -c < public/images/bunyodkor-header-mobile.png)" -eq 176586
+          file public/images/bunyodkor-header-desktop.png
+          file public/images/bunyodkor-header-mobile.png
+
+      - name: Install new site header
+        shell: bash
+        run: |
+          cat > src/components/SiteMenu.tsx <<'EOF'
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+
+const mobileItems = [
+  ["/", "Bosh sahifa"],
+  ["/bunyodkorlar", "Ensiklopediya"],
+  ["/reyting", "Reyting"],
+  ["/bunyodkor-ai", "Bunyodkor AI ✦"],
+  ["/haqida", "Loyiha haqida"],
+  ["/tavsiyalari", "Tavsiyalar"],
+  ["/iqtiboslar", "Iqtiboslar"],
+  ["/hamkor-loyihasi", "Hamkorlik"],
+] as const;
+
+export default function SiteMenu() {
+  const pathname = usePathname();
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+
+    if (open) {
+      window.addEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "hidden";
+    }
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
+  const isActive = (href: string) =>
+    href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(href + "/");
+
+  return (
+    <header className="sticky top-0 z-[90] border-b border-[#edf1f6] bg-white shadow-[0_8px_28px_rgba(15,35,75,.06)]">
+      <div className="relative mx-auto w-full max-w-[1200px] bg-white">
+        <Link href="/" aria-label="Bosh sahifa" className="block w-full">
+          <picture className="block w-full">
+            <source media="(min-width: 768px)" srcSet="/images/bunyodkor-header-desktop.png" />
+            <img
+              src="/images/bunyodkor-header-mobile.png"
+              alt="O‘zbekiston Bunyodkor Yoshlari"
+              className="block h-auto w-full"
+              width={1000}
+              height={156}
+              loading="eager"
+            />
+          </picture>
+        </Link>
+
+        <button
+          type="button"
+          aria-label={open ? "Menyuni yopish" : "Menyuni ochish"}
+          aria-expanded={open}
+          onClick={() => setOpen((value) => !value)}
+          className="absolute right-[15%] top-1/2 z-[95] flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-xl border border-white/80 bg-white/88 text-[#173a77] shadow-[0_8px_24px_rgba(15,35,75,.14)] backdrop-blur-md transition active:scale-95 md:h-10 md:w-10 md:rounded-[13px]"
+        >
+          <span className="relative block h-5 w-6">
+            <span className={"absolute left-0 top-[2px] h-[2px] w-6 rounded-full bg-current transition duration-300 " + (open ? "translate-y-[8px] rotate-45" : "")} />
+            <span className={"absolute left-0 top-[10px] h-[2px] w-6 rounded-full bg-current transition duration-300 " + (open ? "opacity-0" : "opacity-100")} />
+            <span className={"absolute left-0 top-[18px] h-[2px] w-6 rounded-full bg-current transition duration-300 " + (open ? "-translate-y-[8px] -rotate-45" : "")} />
+          </span>
+        </button>
+
+        {open && (
+          <nav className="absolute left-3 right-3 top-[calc(100%+8px)] z-[100] mx-auto max-w-md overflow-hidden rounded-[24px] border border-[#e5ebf4] bg-white/98 p-4 shadow-[0_28px_80px_rgba(26,50,93,.20)] backdrop-blur-2xl md:left-auto md:right-4 md:w-[360px]">
+            <form action="/bunyodkorlar" method="get" className="mb-3">
+              <input
+                type="search"
+                name="q"
+                placeholder="Ism, yo‘nalish yoki loyiha..."
+                className="h-12 w-full rounded-[16px] border border-[#e7edf5] bg-[#f7f9fd] px-4 text-sm font-bold outline-none placeholder:text-slate-400 focus:border-[#b9ccfb] focus:bg-white"
+              />
+            </form>
+
+            <div className="space-y-1">
+              {mobileItems.map(([href, label]) => (
+                <Link
+                  key={href}
+                  href={href}
+                  onClick={() => setOpen(false)}
+                  className={
+                    "block rounded-[16px] px-4 py-3.5 text-[14px] font-extrabold transition " +
+                    (isActive(href)
+                      ? "bg-[#eef4ff] text-[#245fff]"
+                      : "text-[#27354d] hover:bg-[#f5f7fb] hover:text-[#245fff]")
+                  }
+                >
+                  {label}
+                </Link>
+              ))}
+            </div>
+
+            <Link
+              href="/ariza-qoldirish"
+              onClick={() => setOpen(false)}
+              className="mt-4 flex items-center justify-center gap-2 rounded-[16px] bg-gradient-to-r from-[#1767ff] to-[#4259ff] px-5 py-4 text-sm font-black text-white shadow-[0_12px_30px_rgba(41,93,255,.20)]"
+            >
+              Ariza qoldirish <span aria-hidden="true">→</span>
+            </Link>
+          </nav>
+        )}
+      </div>
+
+      {open && (
+        <button
+          type="button"
+          aria-label="Menyuni yopish"
+          onClick={() => setOpen(false)}
+          className="fixed inset-0 -z-10 bg-[#10213b]/20 backdrop-blur-sm"
+        />
+      )}
+    </header>
+  );
+}
+EOF
+
+          python - <<'PY'
+          from pathlib import Path
+          path = Path("src/app/page.tsx")
+          text = path.read_text(encoding="utf-8")
+          old = '<section className="bg-white pt-[76px] sm:pt-[82px]">'
+          new = '<section className="bg-white">'
+          if old not in text:
+              raise SystemExit("Homepage hero spacing marker not found")
+          path.write_text(text.replace(old, new, 1), encoding="utf-8")
+          PY
+
+      - name: Commit to master
+        run: |
+          set -euo pipefail
+          git config user.name "Sanjarbekhan automation"
+          git config user.email "actions@users.noreply.github.com"
+          git add src/components/SiteMenu.tsx src/app/page.tsx public/images/bunyodkor-header-desktop.png public/images/bunyodkor-header-mobile.png
+          git commit -m "Use final desktop and mobile header artwork"
+          git push origin HEAD:master
