@@ -1,0 +1,22 @@
+name: test-canva-assets
+on:
+  push:
+    branches:
+      - 'test/canva-asset-fetch-20261003'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test signed Canva media URLs
+        shell: bash
+        run: |
+          set -x
+          U1='https://media.canva.com/v2/image-resize/format:PNG/height:112/quality:100/uri:ifs%3A%2F%2FM%2F36038b00-1f9a-4949-b20f-ceadcca4875a/watermark:F/width:200?csig=AAAAAAAAAAAAAAAAAAAAAFUIUFGUcwVp38XaFbyI4agkBr-EmnvPVj09BAXaqoY5&exp=1791024909&osig=AAAAAAAAAAAAAAAAAAAAABkoxVJx8IrMyQxXrGcsYywX3V_mhOcmsvQnLA_tlnp2&signer=media-rpc&token=AAIAAU0AJDM2MDM4YjAwLTFmOWEtNDk0OS1iMjBmLWNlYWRjY2E0ODc1YQAAAAABoQFnSsiw2JpVN_5Z6H34ztdU_C6h5EGPug5WuJH8IovMDy6ghA&x-canva-quality=thumbnail'
+          U2='https://media.canva.com/v2/image-resize/format:PNG/height:1080/quality:100/uri:ifs%3A%2F%2FM%2F36038b00-1f9a-4949-b20f-ceadcca4875a/watermark:F/width:1920?csig=AAAAAAAAAAAAAAAAAAAAAFUIUFGUcwVp38XaFbyI4agkBr-EmnvPVj09BAXaqoY5&exp=1791024909&osig=AAAAAAAAAAAAAAAAAAAAABkoxVJx8IrMyQxXrGcsYywX3V_mhOcmsvQnLA_tlnp2&signer=media-rpc&token=AAIAAU0AJDM2MDM4YjAwLTFmOWEtNDk0OS1iMjBmLWNlYWRjY2E0ODc1YQAAAAABoQFnSsiw2JpVN_5Z6H34ztdU_C6h5EGPug5WuJH8IovMDy6ghA&x-canva-quality=thumbnail'
+          U3='https://media.canva.com/v2/image-resize/format:PNG/quality:100/uri:ifs%3A%2F%2FM%2F36038b00-1f9a-4949-b20f-ceadcca4875a/watermark:F?csig=AAAAAAAAAAAAAAAAAAAAAFUIUFGUcwVp38XaFbyI4agkBr-EmnvPVj09BAXaqoY5&exp=1791024909&osig=AAAAAAAAAAAAAAAAAAAAABkoxVJx8IrMyQxXrGcsYywX3V_mhOcmsvQnLA_tlnp2&signer=media-rpc&token=AAIAAU0AJDM2MDM4YjAwLTFmOWEtNDk0OS1iMjBmLWNlYWRjY2E0ODc1YQAAAAABoQFnSsiw2JpVN_5Z6H34ztdU_C6h5EGPug5WuJH8IovMDy6ghA&x-canva-quality=thumbnail'
+          for n in 1 2 3; do
+            eval "u=\$U$n"
+            code=$(curl -L -sS -w '%{http_code}' -o "/tmp/u$n" "$u" || true)
+            echo "candidate $n status=$code size=$(wc -c </tmp/u$n 2>/dev/null || echo 0)"
+            file "/tmp/u$n" || true
+          done
