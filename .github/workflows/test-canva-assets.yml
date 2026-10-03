@@ -1,28 +1,91 @@
-name: test-canva-assets
+name: apply-final-homepage-hero
+
 on:
   push:
     branches:
       - 'test/canva-asset-fetch-20261003'
+
+permissions:
+  contents: write
+
 jobs:
-  test:
+  apply:
     runs-on: ubuntu-latest
     steps:
-      - name: Test signed Canva media URLs
-        shell: bash
-        run: |
-          set -e
-          : > /tmp/results.txt
-          U1='https://media.canva.com/v2/image-resize/format:PNG/height:112/quality:100/uri:ifs%3A%2F%2FM%2F36038b00-1f9a-4949-b20f-ceadcca4875a/watermark:F/width:200?csig=AAAAAAAAAAAAAAAAAAAAAFUIUFGUcwVp38XaFbyI4agkBr-EmnvPVj09BAXaqoY5&exp=1791024909&osig=AAAAAAAAAAAAAAAAAAAAABkoxVJx8IrMyQxXrGcsYywX3V_mhOcmsvQnLA_tlnp2&signer=media-rpc&token=AAIAAU0AJDM2MDM4YjAwLTFmOWEtNDk0OS1iMjBmLWNlYWRjY2E0ODc1YQAAAAABoQFnSsiw2JpVN_5Z6H34ztdU_C6h5EGPug5WuJH8IovMDy6ghA&x-canva-quality=thumbnail'
-          U2='https://media.canva.com/v2/image-resize/format:PNG/height:1080/quality:100/uri:ifs%3A%2F%2FM%2F36038b00-1f9a-4949-b20f-ceadcca4875a/watermark:F/width:1920?csig=AAAAAAAAAAAAAAAAAAAAAFUIUFGUcwVp38XaFbyI4agkBr-EmnvPVj09BAXaqoY5&exp=1791024909&osig=AAAAAAAAAAAAAAAAAAAAABkoxVJx8IrMyQxXrGcsYywX3V_mhOcmsvQnLA_tlnp2&signer=media-rpc&token=AAIAAU0AJDM2MDM4YjAwLTFmOWEtNDk0OS1iMjBmLWNlYWRjY2E0ODc1YQAAAAABoQFnSsiw2JpVN_5Z6H34ztdU_C6h5EGPug5WuJH8IovMDy6ghA&x-canva-quality=thumbnail'
-          U3='https://media.canva.com/v2/image-resize/format:PNG/quality:100/uri:ifs%3A%2F%2FM%2F36038b00-1f9a-4949-b20f-ceadcca4875a/watermark:F?csig=AAAAAAAAAAAAAAAAAAAAAFUIUFGUcwVp38XaFbyI4agkBr-EmnvPVj09BAXaqoY5&exp=1791024909&osig=AAAAAAAAAAAAAAAAAAAAABkoxVJx8IrMyQxXrGcsYywX3V_mhOcmsvQnLA_tlnp2&signer=media-rpc&token=AAIAAU0AJDM2MDM4YjAwLTFmOWEtNDk0OS1iMjBmLWNlYWRjY2E0ODc1YQAAAAABoQFnSsiw2JpVN_5Z6H34ztdU_C6h5EGPug5WuJH8IovMDy6ghA&x-canva-quality=thumbnail'
-          for n in 1 2 3; do
-            eval "u=\$U$n"
-            code=$(curl -L -sS -w '%{http_code}' -o "/tmp/u$n" "$u" || true)
-            echo "candidate $n status=$code size=$(wc -c </tmp/u$n 2>/dev/null || echo 0)" >> /tmp/results.txt
-            file "/tmp/u$n" >> /tmp/results.txt 2>&1 || true
-          done
-          cat /tmp/results.txt
-      - uses: actions/upload-artifact@v4
+      - uses: actions/checkout@v4
         with:
-          name: canva-url-test
-          path: /tmp/results.txt
+          ref: master
+          fetch-depth: 0
+
+      - name: Download exact hero artwork
+        env:
+          DESKTOP_URL: 'https://sdmntprukwest.oaiusercontent.com/files/00000000-0af8-8243-8aed-56dd09ab2ee0/raw?se=2026-10-03T06%3A52%3A15Z&sp=r&sv=2026-02-06&sr=b&scid=a083125e-f66d-5db3-9a48-9404992af337&skoid=5bfb38a5-43fb-4c63-80a1-6ae1e97e2e16&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-03T06%3A23%3A53Z&ske=2026-10-04T06%3A23%3A53Z&sks=b&skv=2026-02-06&sig=fNraz0BnJBwwvZcSDkq9JQX2MKFdeMul6z10wT5egsU%3D'
+          MOBILE_URL: 'https://sdmntpritalynorth.oaiusercontent.com/files/00000000-3610-8246-8484-7109d4e3c4f7/raw?se=2026-10-03T06%3A52%3A15Z&sp=r&sv=2026-02-06&sr=b&scid=0ba0fca3-33b8-541e-aa17-01f1d69b8cba&skoid=5bfb38a5-43fb-4c63-80a1-6ae1e97e2e16&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-02T20%3A02%3A01Z&ske=2026-10-03T20%3A02%3A01Z&sks=b&skv=2026-02-06&sig=NrAESZ4FCraiWnLUwE6gBz5O2lwG/wJ%2Btc2Gw91z88Y%3D'
+        run: |
+          set -euo pipefail
+          mkdir -p public/images
+          curl -L --fail --retry 3 "$DESKTOP_URL" -o public/images/bunyodkor-hero-desktop.png
+          curl -L --fail --retry 3 "$MOBILE_URL" -o public/images/bunyodkor-hero-mobile.png
+          test "$(wc -c < public/images/bunyodkor-hero-desktop.png)" -eq 3760054
+          test "$(wc -c < public/images/bunyodkor-hero-mobile.png)" -eq 2817850
+          file public/images/bunyodkor-hero-desktop.png
+          file public/images/bunyodkor-hero-mobile.png
+
+      - name: Replace first-screen hero
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path("src/app/page.tsx")
+          text = path.read_text(encoding="utf-8")
+          start_marker = '      <section className="relative isolate overflow-hidden bg-white pt-[86px] sm:pt-[92px]">'
+          end_marker = '      <section id="bunyodkorlar"'
+          start = text.find(start_marker)
+          end = text.find(end_marker, start)
+          if start < 0 or end < 0:
+              raise SystemExit("Existing homepage hero block was not found")
+
+          hero = r'''      <section className="bg-white pt-[76px] sm:pt-[82px]">
+                <div className="relative w-full overflow-hidden">
+                  <picture className="block w-full">
+                    <source media="(min-width: 1024px)" srcSet="/images/bunyodkor-hero-desktop.png" />
+                    <img
+                      src="/images/bunyodkor-hero-mobile.png"
+                      alt="O‘zbekiston Bunyodkor Yoshlari Ensiklopediyasi"
+                      className="block h-auto w-full"
+                      width={1080}
+                      height={1920}
+                      loading="eager"
+                      fetchPriority="high"
+                    />
+                  </picture>
+
+                  <div className="absolute left-[39%] right-[5%] top-[72%] z-20 flex flex-col gap-2.5 lg:left-[5.5%] lg:right-auto lg:top-[36.5%] lg:flex-row lg:gap-3">
+                    <Link
+                      href="/ariza-qoldirish"
+                      className="inline-flex min-h-11 items-center justify-center rounded-xl bg-[#245bff] px-4 py-2.5 text-center text-[11px] font-black text-white shadow-[0_8px_24px_rgba(36,91,255,.24)] transition hover:-translate-y-0.5 sm:text-xs lg:min-h-12 lg:rounded-2xl lg:px-6 lg:text-sm"
+                    >
+                      Ariza qoldirish
+                    </Link>
+                    <Link
+                      href="/bunyodkorlar"
+                      className="inline-flex min-h-11 items-center justify-center rounded-xl border border-[#245bff]/30 bg-white/95 px-4 py-2.5 text-center text-[11px] font-black text-[#173a9a] shadow-[0_8px_24px_rgba(15,35,75,.10)] backdrop-blur transition hover:-translate-y-0.5 sm:text-xs lg:min-h-12 lg:rounded-2xl lg:px-6 lg:text-sm"
+                    >
+                      Ensiklopediyani ko‘rish
+                    </Link>
+                  </div>
+                </div>
+              </section>
+
+          '''
+          path.write_text(text[:start] + hero + text[end:], encoding="utf-8")
+          PY
+
+      - name: Commit to master
+        run: |
+          set -euo pipefail
+          git config user.name "Sanjarbekhan automation"
+          git config user.email "actions@users.noreply.github.com"
+          git add src/app/page.tsx public/images/bunyodkor-hero-desktop.png public/images/bunyodkor-hero-mobile.png
+          git commit -m "Use final desktop and mobile homepage hero artwork"
+          git push origin HEAD:master
