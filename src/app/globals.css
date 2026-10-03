@@ -267,3 +267,99 @@ button, a, input, textarea, select { -webkit-tap-highlight-color: transparent; }
     animation: none !important;
   }
 }
+
+
+/* Bunyodkor automatic day/night appearance */
+.hero-art-day { display: block; }
+.hero-art-night { display: none; }
+
+html[data-theme="night"] {
+  --background: #1800ad;
+  --foreground: #ffffff;
+  --brand: #ffffff;
+  --brand-dark: #ffffff;
+  --surface: #1800ad;
+  color-scheme: dark;
+}
+
+html[data-theme="night"] body,
+html[data-theme="night"] main {
+  background: #1800ad !important;
+  color: #ffffff !important;
+}
+
+html[data-theme="night"] .hero-art-day { display: none !important; }
+html[data-theme="night"] .hero-art-night { display: block !important; }
+
+html[data-theme="night"] [class*="bg-white"],
+html[data-theme="night"] [class*="bg-[#f8fbff]"],
+html[data-theme="night"] [class*="bg-[#f4f7fb]"],
+html[data-theme="night"] [class*="bg-[#fbfdff]"],
+html[data-theme="night"] [class*="bg-[#f7faff]"],
+html[data-theme="night"] [class*="bg-[#f8fafc]"],
+html[data-theme="night"] [class*="bg-[#f7f9fd]"],
+html[data-theme="night"] [class*="bg-[#eef4ff]"],
+html[data-theme="night"] [class*="bg-[#edf4ff]"],
+html[data-theme="night"] [class*="bg-[#f1f6ff]"],
+html[data-theme="night"] [class*="bg-[#eef5ff]"],
+html[data-theme="night"] [class*="bg-[#edf1f6]"],
+html[data-theme="night"] [class*="bg-[#071426]"],
+html[data-theme="night"] [class*="bg-[linear-gradient"] {
+  background-color: #1800ad !important;
+  background-image: none !important;
+}
+
+html[data-theme="night"] main *,
+html[data-theme="night"] header :is(a,button,input,span,label),
+html[data-theme="night"] footer * {
+  color: #ffffff !important;
+}
+
+html[data-theme="night"] [class*="border-slate"],
+html[data-theme="night"] [class*="border-[#e"],
+html[data-theme="night"] [class*="border-[#d"],
+html[data-theme="night"] [class*="border-gray"] {
+  border-color: rgba(255,255,255,.25) !important;
+}
+
+html[data-theme="night"] input,
+html[data-theme="night"] textarea,
+html[data-theme="night"] select {
+  background: rgba(255,255,255,.10) !important;
+  color: #ffffff !important;
+  border-color: rgba(255,255,255,.30) !important;
+}
+
+html[data-theme="night"] input::placeholder,
+html[data-theme="night"] textarea::placeholder {
+  color: rgba(255,255,255,.72) !important;
+}
+
+html[data-theme="night"] option {
+  background: #1800ad;
+  color: #ffffff;
+}
+
+html[data-theme="night"] .article-rich-text,
+html[data-theme="night"] .article-rich-text *,
+html[data-theme="night"] .article-file-card * {
+  color: #ffffff !important;
+}
+
+html[data-theme="night"] .article-preface,
+html[data-theme="night"] .article-rich-text blockquote,
+html[data-theme="night"] .article-file-card {
+  background: #1800ad !important;
+  border-color: rgba(255,255,255,.28) !important;
+}
+
+html[data-theme="night"] header button[aria-label*="Menyu"] {
+  background: rgba(24,0,173,.90) !important;
+  color: #ffffff !important;
+  border-color: rgba(255,255,255,.55) !important;
+}
+
+html[data-theme="night"] footer {
+  background: #1800ad !important;
+  color: #ffffff !important;
+}

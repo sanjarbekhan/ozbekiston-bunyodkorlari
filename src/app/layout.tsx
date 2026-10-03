@@ -2,6 +2,7 @@
 import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
 import "./globals.css";
+import ThemeController from "@/components/ThemeController";
 
 const SITE_URL = "https://www.bunyodkor.com";
 
@@ -75,8 +76,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="uz" className={manrope.variable}>
+    <html lang="uz" className={manrope.variable} suppressHydrationWarning>
       <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{var t=localStorage.getItem("bunyodkor-theme");var h=new Date().getHours();document.documentElement.dataset.theme=(t==="day"||t==="night")?t:((h>=19||h<7)?"night":"day");}catch(e){}`,
+          }}
+        />
         <link
           rel="alternate"
           type="application/rss+xml"
@@ -90,7 +96,7 @@ export default function RootLayout({
           href={SITE_URL + "/atom.xml"}
         />
       </head>
-      <body>{children}</body>
+      <body><ThemeController />{children}</body>
     </html>
   );
 }

@@ -160,18 +160,34 @@ export default async function Home() {
 
       <section className="bg-white">
       <div className="relative w-full overflow-hidden">
-        <picture className="block w-full">
-          <source media="(min-width: 1024px)" srcSet="/images/bunyodkor-hero-desktop.png" />
-          <img
-            src="/images/bunyodkor-hero-mobile.png"
-            alt="O‘zbekiston Bunyodkor Yoshlari Ensiklopediyasi"
-            className="block h-auto w-full"
-            width={1080}
-            height={1920}
-            loading="eager"
-            fetchPriority="high"
-          />
-        </picture>
+        <div className="hero-art-day">
+          <picture className="block w-full">
+            <source media="(min-width: 1024px)" srcSet="/images/bunyodkor-hero-desktop-day.png" />
+            <img
+              src="/images/bunyodkor-hero-mobile-day.png"
+              alt="O‘zbekiston Bunyodkor Yoshlari Ensiklopediyasi"
+              className="block h-auto w-full"
+              width={1080}
+              height={1920}
+              loading="eager"
+              fetchPriority="high"
+            />
+          </picture>
+        </div>
+        <div className="hero-art-night">
+          <picture className="block w-full">
+            <source media="(min-width: 1024px)" srcSet="/images/bunyodkor-hero-desktop-night.png" />
+            <img
+              src="/images/bunyodkor-hero-mobile-night.png"
+              alt="O‘zbekiston Bunyodkor Yoshlari Ensiklopediyasi — kechki ko‘rinish"
+              className="block h-auto w-full"
+              width={1080}
+              height={1920}
+              loading="eager"
+              fetchPriority="high"
+            />
+          </picture>
+        </div>
 
         <div className="absolute left-[39%] right-[5%] top-[72%] z-20 flex flex-col gap-2.5 lg:left-[5.5%] lg:right-auto lg:top-[36.5%] lg:flex-row lg:gap-3">
           <Link
