@@ -383,8 +383,8 @@ html[data-theme="night"] footer {
   overflow-wrap: anywhere;
 }
 .article-page .article-reading-surface {
-  background: #f0f5fc;
-  border-color: #d8e4f3;
+  background: linear-gradient(100deg, #dde9f8 0%, #e6eafa 58%, #eee3ed 100%);
+  border-color: #cbd9ed;
   box-shadow: 0 12px 40px rgb(36 74 117 / 5%);
 }
 .article-rich-text {
@@ -405,7 +405,7 @@ html[data-theme="night"] footer {
   padding: .7em .85em;
   border-inline-start: 3px solid #7b9ec8;
   border-radius: 0 12px 12px 0;
-  background: #e3edf9;
+  background: #cfdef2;
   font-size: clamp(1.35rem, 2.6vw, 1.8rem);
 }
 .article-rich-text :is(h3, .t-redactor__h3) {
@@ -420,7 +420,7 @@ html[data-theme="night"] footer {
 .article-rich-text a { color: #245991; text-underline-offset: .2em; }
 .article-rich-text a:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
 .article-rich-text :is(blockquote, .article-preface) {
-  background: #e5eef9;
+  background: #d6e3f5;
   border-color: #7b9ec8;
   color: #2d4057;
   font-size: 1em;
@@ -444,3 +444,8 @@ html[data-theme="night"] .article-rich-text :is(h2, .t-redactor__h2) {
   border-color: rgb(255 255 255 / 45%);
 }
 html[data-theme="night"] .article-rich-text hr { border-color: rgb(255 255 255 / 25%); }
+
+/* Imported rich text can carry a white background from the source editor. */
+html:not([data-theme="night"]) .article-reading-surface .article-rich-text :is(p, span, strong, b, em, i, li, ul, ol, div:not(.article-preface)) {
+  background-color: transparent !important;
+}
