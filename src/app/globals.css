@@ -383,7 +383,11 @@ html[data-theme="night"] footer {
   overflow-wrap: anywhere;
 }
 .article-page .article-reading-surface {
-  background: linear-gradient(100deg, #dde9f8 0%, #e6eafa 58%, #eee3ed 100%);
+  background-color: #e6effb;
+  background-image: linear-gradient(rgb(230 239 251 / 38%), rgb(230 239 251 / 38%)), url("/images/article-light-waves.webp");
+  background-size: 100% 100%, 100% auto;
+  background-repeat: no-repeat, repeat-y;
+  background-position: top center;
   border-color: #cbd9ed;
   box-shadow: 0 12px 40px rgb(36 74 117 / 5%);
 }
