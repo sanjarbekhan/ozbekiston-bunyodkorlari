@@ -164,6 +164,11 @@ export default async function ArticlePage({
   return (
     <main className="article-page min-h-screen bg-[#f4f7fb] text-[#111827]">
       <SiteMenu />
+      <div className="article-atmosphere" aria-hidden="true">
+        {Array.from({ length: 12 }, (_, index) => (
+          <span key={index} className="article-floating-leaf" />
+        ))}
+      </div>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

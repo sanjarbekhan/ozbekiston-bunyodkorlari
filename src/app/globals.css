@@ -453,3 +453,60 @@ html[data-theme="night"] .article-rich-text hr { border-color: rgb(255 255 255 /
 html:not([data-theme="night"]) .article-reading-surface .article-rich-text :is(p, span, strong, b, em, i, li, ul, ol, div:not(.article-preface)) {
   background-color: transparent !important;
 }
+
+
+/* Quiet animated foliage in the margins, behind portraits and reading cards. */
+.article-page {
+  position: relative;
+  isolation: isolate;
+  background: linear-gradient(135deg, #dceafa, #dcefeb 55%, #e5e6f7);
+}
+.article-page > section,
+.article-page > footer { position: relative; z-index: 1; }
+html:not([data-theme="night"]) .article-page .article-hero {
+  background: linear-gradient(120deg, rgb(207 228 248 / 42%), rgb(217 238 230 / 30%), rgb(222 225 246 / 42%));
+}
+.article-atmosphere {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+}
+.article-floating-leaf {
+  position: absolute;
+  width: 36px;
+  height: 36px;
+  background: url("/images/floating-leaf.webp") center / contain no-repeat;
+  opacity: 0;
+  animation: articleLeafDrift 16s ease-in-out infinite;
+}
+.article-floating-leaf:nth-child(1) { left: 3%; top: 24%; animation-delay: -3s; }
+.article-floating-leaf:nth-child(2) { left: 93%; top: 35%; animation-delay: -9s; animation-duration: 19s; }
+.article-floating-leaf:nth-child(3) { left: 12%; top: 76%; animation-delay: -6s; width: 26px; height: 26px; }
+.article-floating-leaf:nth-child(4) { left: 82%; top: 82%; animation-delay: -12s; animation-duration: 22s; }
+.article-floating-leaf:nth-child(5) { left: 37%; top: 18%; animation-delay: -14s; width: 24px; height: 24px; }
+.article-floating-leaf:nth-child(6) { left: 66%; top: 61%; animation-delay: -4s; animation-duration: 20s; }
+.article-floating-leaf:nth-child(7) { left: 1%; top: 57%; animation-delay: -11s; width: 28px; height: 28px; }
+.article-floating-leaf:nth-child(8) { left: 96%; top: 95%; animation-delay: -2s; animation-duration: 18s; }
+.article-floating-leaf:nth-child(9) { left: 24%; top: 48%; animation-delay: -7s; width: 22px; height: 22px; }
+.article-floating-leaf:nth-child(10) { left: 75%; top: 22%; animation-delay: -10s; }
+.article-floating-leaf:nth-child(11) { left: 48%; top: 91%; animation-delay: -5s; animation-duration: 21s; }
+.article-floating-leaf:nth-child(12) { left: 88%; top: 53%; animation-delay: -15s; width: 24px; height: 24px; }
+@keyframes articleLeafDrift {
+  0%, 100% { opacity: 0; transform: translate3d(-10px, 36px, 0) rotate(-25deg); }
+  22% { opacity: .38; }
+  50% { opacity: .28; transform: translate3d(12px, -15px, 0) rotate(15deg); }
+  78% { opacity: .34; }
+  96% { opacity: 0; transform: translate3d(-4px, -64px, 0) rotate(40deg); }
+}
+html[data-theme="night"] .article-atmosphere { opacity: .45; }
+@media (max-width: 640px) {
+  .article-floating-leaf { width: 26px; height: 26px; }
+  .article-floating-leaf:nth-child(n+7) { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .article-atmosphere { display: none; }
+  .article-floating-leaf { animation: none; }
+}
