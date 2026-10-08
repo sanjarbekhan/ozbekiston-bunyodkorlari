@@ -531,3 +531,37 @@ html[data-theme="night"] .article-atmosphere { opacity: .45; }
 .intro-note { padding: 10px 12px; margin: 0; color: #47617d; font-size: 12px; text-align: center; }
 .intro-video-loading { aspect-ratio: 4/5; display: grid; place-items: center; background: #e4effc; font-size: 14px; }
 @media (max-width: 640px) { .intro-widget { width: 180px; right: 12px; bottom: max(12px, env(safe-area-inset-bottom)); border-radius: 16px; } .intro-widget-top { padding: 4px 8px; } .intro-widget-top span { font-size: 11px; } .intro-apply { padding: 12px; font-size: 14px; } }
+
+/* Blue editorial cards and a clear invitation to join. */
+.public-profile-card {
+  border-color: #c7dcfa;
+  background: #eaf3ff;
+  box-shadow: 0 14px 40px rgb(42 102 195 / 10%);
+}
+.profile-card-content {
+  background: radial-gradient(ellipse at 100% 0%, #d8f0ff 0%, transparent 65%), linear-gradient(145deg, #f0f7ff, #e3edff);
+  border-top: 3px solid #80b9ff;
+}
+.public-profile-card .profile-card-name { color: #185bc5; font-weight: 800; letter-spacing: -.025em; overflow-wrap: anywhere; }
+.public-profile-card .profile-card-footer { color: #486c9c; flex-wrap: wrap; gap: 12px; }
+.public-profile-card .profile-card-read { color: #1653b8; font-size: 12px; font-weight: 800; display: inline-flex; gap: 8px; align-items: center; }
+.public-profile-card:focus-visible, .home-invitation-button:focus-visible { outline: 3px solid #347cff; outline-offset: 4px; }
+.bunyodkor-home > section:not(:first-of-type) { background: linear-gradient(135deg, #f0f7ff, #e9f2ff 65%, #edfaff); }
+.bunyodkor-home h2 { color: #195dca; letter-spacing: -.035em; line-height: 1.13; }
+.bunyodkor-home section article { background: linear-gradient(140deg, #f5faff, #e4efff); border-color: #cadffd; }
+.bunyodkor-home section article h3 { color: #185bc5; }
+.bunyodkor-home section article p { color: #46658d; }
+.home-invitation { display: flex; align-items: center; justify-content: space-between; gap: 28px; margin-top: 32px; padding: 32px; border-radius: 26px; border: 1px solid #aaccfa; background: linear-gradient(115deg, #daeaff, #e7f6ff); }
+.home-invitation-label { margin: 0 0 10px; font-size: 11px; font-weight: 800; letter-spacing: .12em; color: #2364b5; }
+.home-invitation h3 { margin: 0; color: #1555ba; font-size: clamp(23px, 3vw, 30px); font-weight: 800; line-height: 1.2; letter-spacing: -.025em; }
+.home-invitation p:last-child { margin-top: 12px; max-width: 620px; color: #3e628f; font-size: 15px; line-height: 1.7; }
+.home-invitation-button { display: inline-flex; flex-shrink: 0; align-items: center; justify-content: center; gap: 14px; max-width: 310px; padding: 18px 24px; border-radius: 16px; background: linear-gradient(115deg, #1760d5, #365fe2); color: #fff; font-size: 14px; line-height: 1.5; font-weight: 800; box-shadow: 0 10px 24px rgb(32 95 214 / 20%); transition: transform .2s; }
+.home-invitation-button:hover { transform: translateY(-2px); }
+html[data-theme="night"] .profile-card-content,
+html[data-theme="night"] .home-invitation,
+html[data-theme="night"] .bunyodkor-home section article { background: linear-gradient(135deg, #20249c, #203a9a); }
+html[data-theme="night"] .bunyodkor-home > section:not(:first-of-type) { background: #1800ad; }
+@media (max-width: 767px) {
+  .home-invitation { flex-direction: column; align-items: stretch; padding: 24px; gap: 22px; }
+  .home-invitation-button { max-width: none; }
+}

@@ -141,7 +141,7 @@ export default async function Home() {
 
   const benefits = [
     ["Profilingizni yarating", "Faoliyatingiz, ta’limingiz va yutuqlaringizni yagona ensiklopedik sahifada jamlang."],
-    ["Keng auditoriyaga chiqing", "Profilingiz qidiruv tizimlari, ulashiladigan havolalar va QR orqali oson topiladi."],
+    ["O‘zingizni bir havola bilan tanishtiring", "Tayyor profilingizni do‘stlar, hamkasblar va hamkorlarga havola yoki QR kod orqali ulashing."],
     ["E’tirof va e’tibor", "Faoliyatingiz hamda yutuqlaringiz tartibli, rasmiy va tushunarli formatda namoyon bo‘ladi."],
     ["Tarmoq va imkoniyatlar", "Boshqa bunyodkor yoshlar, sohalar va yangi imkoniyatlar bilan tanishish osonlashadi."],
   ] as const;
@@ -156,7 +156,7 @@ export default async function Home() {
   const directions = ["Ta’lim", "Fan", "Texnologiya", "Tadbirkorlik", "Ijod", "Sport", "Volontyorlik"];
 
   return (
-    <main className="min-h-screen overflow-x-hidden bg-white text-[#111827]">
+    <main className="bunyodkor-home min-h-screen overflow-x-hidden bg-white text-[#111827]">
       <SiteMenu />
       <IntroVideoWidget />
 
@@ -215,7 +215,7 @@ export default async function Home() {
             <div>
               <p className="text-[11px] font-black uppercase tracking-[0.2em] text-[#2866ff]">Ensiklopediya</p>
               <h2 className="mt-3 max-w-3xl text-[38px] font-black leading-[1.02] tracking-[-0.05em] text-[#0c1830] sm:text-[50px] md:text-[58px]">
-                Bunyodkor yoshlar bilan tanishing
+                Har bir yutuq ortida bir hikoya bor
               </h2>
             </div>
             <Link href="/bunyodkorlar" className="inline-flex items-center gap-2 text-sm font-black text-[#2866ff] hover:text-[#1745b4]">
@@ -237,6 +237,14 @@ export default async function Home() {
               />
             ))}
           </div>
+          <div className="home-invitation">
+            <div>
+              <p className="home-invitation-label">BU SAHIFALAR ORASIDA SIZ HAM BO‘LING</p>
+              <h3>Yutuqlaringiz siz haqingizda gapirsin.</h3>
+              <p>Ta’lim, ijod yoki kasbiy faoliyat — o‘z yo‘lingizni biografik maqolada jamlang.</p>
+            </div>
+            <Link href="/ariza-qoldirish" className="home-invitation-button">Men ham maqola chiqarmoqchiman <span aria-hidden="true">↗</span></Link>
+          </div>
         </div>
       </section>
 
@@ -245,7 +253,7 @@ export default async function Home() {
           <div className="mx-auto max-w-3xl text-center">
             <p className="text-[11px] font-black uppercase tracking-[0.2em] text-[#2866ff]">Nima uchun qo‘shilish kerak?</p>
             <h2 className="mt-3 text-[38px] font-black leading-[1.03] tracking-[-0.05em] text-[#0c1830] sm:text-[50px] md:text-[58px]">
-              Yutuqlaringizni namoyon eting, kelajakka ilhom bering
+              Sizni tanishtiradigan maqola. Yutuqlaringizni jamlaydigan sahifa.
             </h2>
           </div>
 
@@ -292,10 +300,10 @@ export default async function Home() {
           <div className="relative max-w-2xl">
             <p className="text-[11px] font-black uppercase tracking-[0.2em] text-[#2866ff]">Siz ham bunyodkor bo‘lishingiz mumkin</p>
             <h2 className="mt-3 text-[34px] font-black leading-[1.04] tracking-[-0.045em] text-[#0c1830] sm:text-[44px]">
-              O‘z hikoyangizni ensiklopediyada qoldiring
+              Keyingi hikoya siz haqingizda bo‘lsin.
             </h2>
             <p className="mt-4 max-w-xl text-base font-semibold leading-7 text-[#65738c]">
-              Faoliyatingiz, yutuqlaringiz va hayot yo‘lingizni tartibli raqamli profilda jamlang.
+              Mehnatingiz va erishgan natijalaringiz haqida so‘zlab bering. Biografik maqolangiz uchun ilk qadamni bugun qo‘ying.
             </p>
             <Link href="/ariza-qoldirish" className="mt-7 inline-flex min-h-13 items-center gap-3 rounded-2xl bg-gradient-to-r from-[#1265ff] to-[#4358ff] px-7 py-3.5 text-sm font-black text-white shadow-[0_14px_34px_rgba(37,92,255,.22)] transition hover:-translate-y-0.5">
               Ariza qoldirish <span aria-hidden="true">→</span>

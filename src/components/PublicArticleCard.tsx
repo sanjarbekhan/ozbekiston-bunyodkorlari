@@ -57,7 +57,7 @@ export default function PublicArticleCard({
   return (
     <Link
       href={`/bunyodkorlar/${slug}`}
-      className="group flex h-full flex-col overflow-hidden rounded-[26px] border border-slate-200/80 bg-white shadow-[0_10px_30px_rgba(15,23,42,0.07)] transition duration-300 hover:-translate-y-1 hover:border-[#0043a4]/25 hover:shadow-[0_18px_44px_rgba(15,23,42,0.12)]"
+      className="public-profile-card group flex h-full flex-col overflow-hidden rounded-[26px] border border-slate-200/80 bg-white shadow-[0_10px_30px_rgba(15,23,42,0.07)] transition duration-300 hover:-translate-y-1 hover:border-[#0043a4]/25 hover:shadow-[0_18px_44px_rgba(15,23,42,0.12)]"
     >
       <div className="aspect-square overflow-hidden bg-[#edf1f6]">
         {imageUrl ? (
@@ -75,7 +75,7 @@ export default function PublicArticleCard({
         )}
       </div>
 
-      <div className="flex flex-1 flex-col p-5 md:p-6">
+      <div className="profile-card-content flex flex-1 flex-col p-5 md:p-6">
         <div className="flex flex-wrap gap-1.5">
           {(categories.length ? categories : ["Bunyodkor"]).slice(0, 3).map((item) => (
             <span
@@ -87,7 +87,7 @@ export default function PublicArticleCard({
           ))}
         </div>
 
-        <h3 className="mt-3 line-clamp-3 text-[21px] font-extrabold leading-[1.08] tracking-[-0.035em] text-[#101828] md:text-[23px]">
+        <h3 className="profile-card-name mt-3 line-clamp-3 text-[21px] font-extrabold leading-[1.22] tracking-[-0.035em] text-[#101828] md:text-[23px]">
           {title}
         </h3>
 
@@ -97,10 +97,10 @@ export default function PublicArticleCard({
           </p>
         )}
 
-        <div className="mt-auto flex items-center justify-between gap-4 pt-5 text-xs font-semibold text-slate-400">
+        <div className="profile-card-footer mt-auto flex items-center justify-between gap-4 pt-5 text-xs font-semibold text-slate-400">
           <span>{formattedDate || "Ensiklopediya profili"}</span>
-          <span className="text-[#0043a4] transition-transform duration-300 group-hover:translate-x-1">
-            →
+          <span className="profile-card-read text-[#0043a4] transition-transform duration-300 group-hover:translate-x-1">
+            Maqolani o‘qish <span aria-hidden="true">↗</span>
           </span>
         </div>
       </div>
