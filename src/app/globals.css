@@ -510,3 +510,24 @@ html[data-theme="night"] .article-atmosphere { opacity: .45; }
   .article-atmosphere { display: none; }
   .article-floating-leaf { animation: none; }
 }
+
+
+/* Homepage introduction: lightweight silent film with an explicit application link. */
+.bunyodkor-intro { font-family: var(--font-manrope), Arial, sans-serif; color: #163e68; }
+.intro-widget { position: fixed; right: 20px; bottom: max(20px, env(safe-area-inset-bottom)); width: 240px; z-index: 60; border: 1px solid #c5d7ed; border-radius: 20px; overflow: hidden; background: #e4effc; box-shadow: 0 16px 60px #173f6b35; }
+.intro-widget-top, .intro-dialog-top { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; gap: 10px; background: #edf5ff; color: #163e68; }
+.intro-widget-top span { font-size: 12px; font-weight: 750; }
+.intro-close { flex-shrink: 0; width: 36px; height: 36px; border: 0; border-radius: 50%; color: #163e68; background: #dce9f8; font-size: 26px; cursor: pointer; }
+.intro-mini-stage { position: relative; }
+.intro-expand { position: absolute; inset: 0; border: 0; background: transparent; cursor: pointer; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 12px; }
+.intro-expand span { background: #163e68; color: white; border-radius: 20px; padding: 7px 12px; font-size: 12px; }
+.intro-apply { display: block; padding: 15px 16px; background: #145ada; color: #fff; text-decoration: none; text-align: center; font-size: 15px; font-weight: 800; }
+.intro-apply:hover { background: #1049b4; }
+.intro-reopen { position: fixed; right: 18px; bottom: max(18px, env(safe-area-inset-bottom)); z-index: 60; padding: 12px 18px; border: 1px solid #c5d7ed; border-radius: 30px; background: #edf5ff; color: #163e68; font-size: 14px; font-weight: 750; box-shadow: 0 8px 25px #173f6b20; cursor: pointer; }
+.intro-dialog { position: fixed; inset: 0; margin: auto; padding: 0; border: 1px solid #c5d7ed; border-radius: 22px; max-height: 94dvh; width: min(480px, calc(100vw - 24px)); max-width: 100%; background: #edf5ff; color: #163e68; overflow: auto; }
+.intro-dialog::backdrop { background: #07192dba; backdrop-filter: blur(5px); }
+.intro-dialog-top h2 { margin: 0; font-size: 16px; font-weight: 800; }
+.intro-full-stage { width: min(100%, calc((94dvh - 160px) * .8)); margin: auto; }
+.intro-note { padding: 10px 12px; margin: 0; color: #47617d; font-size: 12px; text-align: center; }
+.intro-video-loading { aspect-ratio: 4/5; display: grid; place-items: center; background: #e4effc; font-size: 14px; }
+@media (max-width: 640px) { .intro-widget { width: 180px; right: 12px; bottom: max(12px, env(safe-area-inset-bottom)); border-radius: 16px; } .intro-widget-top { padding: 4px 8px; } .intro-widget-top span { font-size: 11px; } .intro-apply { padding: 12px; font-size: 14px; } }

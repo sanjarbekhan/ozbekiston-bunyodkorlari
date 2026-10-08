@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import PublicArticleCard from "@/components/PublicArticleCard";
 import SiteFooter from "@/components/SiteFooter";
+import IntroVideoWidget from "@/components/IntroVideoWidget";
 import SiteMenu from "@/components/SiteMenu";
 import UzbekistanHeroMap from "@/components/UzbekistanHeroMap";
 import { supabase } from "@/lib/supabase";
@@ -157,6 +158,7 @@ export default async function Home() {
   return (
     <main className="min-h-screen overflow-x-hidden bg-white text-[#111827]">
       <SiteMenu />
+      <IntroVideoWidget />
 
       <section className="bg-white">
       <div className="relative w-full overflow-hidden">
