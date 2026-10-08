@@ -162,7 +162,7 @@ export default async function ArticlePage({
   };
 
   return (
-    <main className="min-h-screen bg-[#f4f7fb] text-[#111827]">
+    <main className="article-page min-h-screen bg-[#f4f7fb] text-[#111827]">
       <SiteMenu />
       <script
         type="application/ld+json"
@@ -171,7 +171,7 @@ export default async function ArticlePage({
         }}
       />
 
-      <section className="border-b border-slate-200 bg-white px-4 pb-12 pt-24 md:px-8 md:pb-16 md:pt-28">
+      <section className="article-hero border-b border-slate-200 bg-white px-4 pb-12 pt-24 md:px-8 md:pb-16 md:pt-28">
         <div className="mx-auto max-w-7xl">
           <Link
             href="/bunyodkorlar"
@@ -208,7 +208,7 @@ export default async function ArticlePage({
                   ))}
                 </div>
               )}
-              <h1 className="mt-5 max-w-4xl text-[38px] font-extrabold leading-[1.02] tracking-[-0.048em] text-[#111827] sm:text-[50px] md:text-[62px]">
+              <h1 className="article-title mt-5 max-w-4xl text-[38px] font-extrabold leading-[1.02] tracking-[-0.048em] text-[#111827] sm:text-[50px] md:text-[62px]">
                 {article.title}
               </h1>
 
@@ -277,7 +277,7 @@ export default async function ArticlePage({
           </aside>
 
           <div className="min-w-0 space-y-7">
-            <article className="min-w-0 rounded-[28px] border border-slate-200 bg-white p-6 shadow-[0_12px_40px_rgba(15,23,42,.05)] sm:p-8 md:p-11">
+            <article className="article-reading-surface min-w-0 rounded-[28px] border border-slate-200 bg-white p-6 shadow-[0_12px_40px_rgba(15,23,42,.05)] sm:p-8 md:p-11">
               <ArticleContent
                 blocks={article.content_blocks}
                 legacyHtml={article.content}
