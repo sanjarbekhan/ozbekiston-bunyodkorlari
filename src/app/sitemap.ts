@@ -1,9 +1,13 @@
 import type { MetadataRoute } from "next";
+import { getProfileSitemapRows, profileLastModified } from "@/lib/profile-sitemap";
+
+export const revalidate = 60;
 
 const SITE_URL = "https://www.bunyodkor.com";
 const url = (path: string) => `${SITE_URL}${path}`;
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const profiles = await getProfileSitemapRows();
   return [
     { url: url("/"), changeFrequency: "daily", priority: 1 },
     { url: url("/bunyodkorlar"), changeFrequency: "daily", priority: 0.9 },
@@ -15,5 +19,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: url("/hamkor-loyihasi"), changeFrequency: "monthly", priority: 0.5 },
     { url: url("/ariza-qoldirish"), changeFrequency: "monthly", priority: 0.6 },
     { url: url("/ommaviy_ofertasi"), changeFrequency: "yearly", priority: 0.3 },
+    ...profiles.filter((profile) => Boolean(profile.slug)).map((profile) => ({
+      url: url("/bunyodkorlar/" + encodeURIComponent(profile.slug)),
+      lastModified: profileLastModified(profile),
+    })),
   ];
 }

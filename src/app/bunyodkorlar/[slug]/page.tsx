@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { cache } from "react";
 import { notFound } from "next/navigation";
 import ArticleContent from "@/components/ArticleContent";
 import ArticleSharePanel from "@/components/ArticleSharePanel";
@@ -39,15 +40,17 @@ function canonicalFor(slug: string) {
   return `${SITE_URL}/bunyodkorlar/${slug}`;
 }
 
-async function getArticle(slug: string) {
-  const { data } = await supabase
+const getArticle = cache(async (slug: string) => {
+  const { data, error } = await supabase
     .from("articles")
     .select("*")
     .eq("status", "published")
     .eq("slug", decodeURIComponent(slug))
     .maybeSingle();
+  // A transient database failure is not a missing article.
+  if (error) throw new Error("Unable to load published article");
   return data as ArticleRecord | null;
-}
+});
 
 export async function generateMetadata({
   params,
@@ -143,6 +146,13 @@ export default async function ArticlePage({
     "@context": "https://schema.org",
     "@type": "Article",
     headline: article.title,
+    about: {
+      "@type": "Person",
+      "@id": canonical + "#person",
+      name: article.title,
+      url: canonical,
+      ...(article.image_url ? { image: article.image_url } : {}),
+    },
     description: protectMinorPersonalData(article.seo_description, privacyContext) || intro,
     image: [article.social_image_url || article.image_url].filter(Boolean),
     datePublished: article.published_at || article.created_at,

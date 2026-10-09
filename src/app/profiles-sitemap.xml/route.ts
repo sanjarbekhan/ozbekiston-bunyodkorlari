@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase";
+import { getProfileSitemapRows, profileLastModified } from "@/lib/profile-sitemap";
 
 export const revalidate = 60;
 
@@ -13,32 +13,19 @@ function escapeXml(value: string) {
     .replace(/'/g, "&apos;");
 }
 
-function validIsoDate(value?: string | null) {
-  if (!value) return null;
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? null : date.toISOString();
-}
-
 export async function GET() {
-  const { data: articles, error } = await supabase
-    .from("articles")
-    .select("slug,published_at,created_at,updated_at")
-    .eq("status", "published")
-    .order("published_at", { ascending: false })
-    .limit(5000);
-
-  if (error) {
-    return new Response("Unable to generate profile sitemap", { status: 500 });
+  let articles;
+  try {
+    articles = await getProfileSitemapRows();
+  } catch {
+    return new Response("Unable to generate profile sitemap", { status: 503 });
   }
 
   const urls = (articles || [])
     .filter((article) => Boolean(article.slug))
     .map((article) => {
-      const loc = `${SITE_URL}/bunyodkorlar/${article.slug}`;
-      const lastmod =
-        validIsoDate(article.updated_at) ||
-        validIsoDate(article.published_at) ||
-        validIsoDate(article.created_at);
+      const loc = `${SITE_URL}/bunyodkorlar/${encodeURIComponent(article.slug)}`;
+      const lastmod = profileLastModified(article);
 
       return [
         "  <url>",
