@@ -4,13 +4,55 @@ import { AbsoluteFill, Img, Sequence, interpolate, useCurrentFrame } from "remot
 
 export const INTRO_FPS = 30;
 const scenes = [
-  { label: "SIZNING HIKOYANGIZ", title: "Yutuqlaringiz haqida boshqalar ham bilsin.", body: "Mehnatingiz, bilimingiz va tajribangizni bir sahifada namoyon eting.", tags: ["Ta’lim", "Ijod", "Faoliyat"], number: "01" },
-  { label: "BUNYODKOR NIMA?", title: "Yoshlar haqidagi raqamli ensiklopediya.", body: "O‘zbekiston bunyodkor yoshlarining hayot yo‘li va yutuqlarini jamlaymiz.", tags: ["Biografiya", "Yutuqlar", "Maqsadlar"], number: "02" },
-  { label: "SIZ HAQINGIZDA MAQOLA", title: "Faoliyatingiz — tartibli va tushunarli.", body: "Ta’limingiz, tajribangiz va muhim natijalaringiz biografik maqolada yoritiladi.", tags: ["Shaxsiy profil", "Biografik maqola"], number: "03" },
-  { label: "ISMINGIZ ORTIDA — HIKOYANGIZ", title: "Sizni izlashsa, yutuqlaringizni bilishsin.", body: "Siz haqingizdagi biografiya Google va sun’iy intellekt qidiruvlarida topilishi mumkin. Yutuqlaringizni kengroq auditoriyaga taniting.", tags: ["Google", "Sun’iy intellekt", "Biografiya"], number: "04" },
-  { label: "ULASHISH QULAY", title: "Bitta havola. Siz haqingizda ko‘p ma’lumot.", body: "Profilingizni havola va QR kod orqali boshqalarga ulashing.", tags: ["Havola", "QR kod", "Telegram"], number: "05" },
-  { label: "QANDAY QO‘SHILAMAN?", title: "Arizadan boshlanadigan yangi sahifa.", body: "Ariza yuboring. Tahririyat ma’lumotlarni ko‘rib chiqadi. Tasdiqdan so‘ng maqola nashr qilinadi.", tags: ["Ariza", "Ko‘rib chiqish", "Nashr"], number: "06" },
-  { label: "NAVBAT SIZGA", title: "O‘z hikoyangizni Bunyodkorda qoldiring.", body: "Quyidagi “Ariza qoldirish” tugmasini bosing va o‘zingiz haqingizda ma’lumot yuboring.", tags: ["bunyodkor.com"], number: "07" },
+  {
+    "label": "BUNYODKOR ENSIKLOPEDIYASI",
+    "title": "Yutuqlaringiz e’tiborga loyiq.",
+    "body": "O‘zbekiston yoshlarini tanitadigan platformada o‘z o‘rningizni egallang.",
+    "tags": [
+      "Yoshlar",
+      "Yutuqlar"
+    ],
+    "number": "01"
+  },
+  {
+    "label": "SIZ HAQINGIZDA MAQOLA",
+    "title": "Hayot yo‘lingiz — bir maqolada.",
+    "body": "Ta’limingiz, faoliyatingiz va yutuqlaringizni biografiyada yoritamiz.",
+    "tags": [
+      "Biografiya",
+      "Shaxsiy sahifa"
+    ],
+    "number": "02"
+  },
+  {
+    "label": "GOOGLE VA SUN’IY INTELLEKT",
+    "title": "Ismingiz orqali topilish imkoniyati.",
+    "body": "Biografiyangiz Google va sun’iy intellekt qidiruvlarida topilishi mumkin.",
+    "tags": [
+      "Google",
+      "Sun’iy intellekt"
+    ],
+    "number": "03"
+  },
+  {
+    "label": "ULASHISH QULAY",
+    "title": "O‘zingizni bitta havola bilan taniting.",
+    "body": "Maqolangizni do‘stlar, hamkorlar va ijtimoiy tarmoqlarda ulashing.",
+    "tags": [
+      "Shaxsiy havola",
+      "QR kod"
+    ],
+    "number": "04"
+  },
+  {
+    "label": "NAVBAT SIZGA",
+    "title": "Siz haqingizda ham maqola chiqsin!",
+    "body": "“Ariza qoldirish” tugmasini bosing. Ma’lumotlaringizni ko‘rib chiqamiz.",
+    "tags": [
+      "bunyodkor.com"
+    ],
+    "number": "05"
+  }
 ];
 export const INTRO_FRAMES = scenes.length * 180;
 
