@@ -48,7 +48,7 @@ export default function IntroVideoWidget() {
 
   return createPortal(<div className="bunyodkor-intro">
     <div hidden={expanded}>{dismissed ? <button ref={triggerRef} className="intro-reopen" onClick={open}>▶ Bunyodkor haqida</button> : <aside className="intro-widget" aria-label="Bunyodkor tanishtiruv videosi">
-      <div className="intro-widget-top"><span>36 soniya</span><button className="intro-close intro-pause" aria-label={paused ? "Videoni davom ettirish" : "Videoni to‘xtatish"} onClick={() => setPaused(value => !value)}>{paused ? "▶" : "Ⅱ"}</button><button className="intro-close" aria-label="Tanishtiruv videosini yopish" onClick={dismiss}>×</button></div>
+      <div className="intro-widget-top"><span>42 soniya</span><button className="intro-close intro-pause" aria-label={paused ? "Videoni davom ettirish" : "Videoni to‘xtatish"} onClick={() => setPaused(value => !value)}>{paused ? "▶" : "Ⅱ"}</button><button className="intro-close" aria-label="Tanishtiruv videosini yopish" onClick={dismiss}>×</button></div>
       <div className="intro-mini-stage"><IntroPlayer expanded={false} autoPlay={autoPlay} paused={paused || expanded} /><button ref={triggerRef} className="intro-expand" aria-label="Tanishtiruv videosini kattalashtirish" onClick={open}><span>▶ Kattalashtirish</span></button></div>
       <Link className="intro-apply" href="/ariza-qoldirish">Ariza qoldirish</Link>
     </aside>}</div>
