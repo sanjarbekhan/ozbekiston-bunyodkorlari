@@ -565,3 +565,58 @@ html[data-theme="night"] .bunyodkor-home > section:not(:first-of-type) { backgro
   .home-invitation { flex-direction: column; align-items: stretch; padding: 24px; gap: 22px; }
   .home-invitation-button { max-width: none; }
 }
+
+/* Inset portrait frames: cool blue enamel, a fine warm edge and soft depth. */
+.portrait-frame {
+  position: relative;
+  isolation: isolate;
+  padding: 14px;
+  overflow: hidden;
+  border: 1px solid #a9c9ee;
+  border-radius: 28px;
+  background: linear-gradient(135deg, #f4f9ff 0%, #c3ddfa 32%, #edf6ff 58%, #a9c9ee 100%);
+  box-shadow: inset 0 1px 0 #fff, 0 12px 32px rgb(28 79 142 / 12%);
+}
+.portrait-frame::before {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  z-index: 2;
+  border: 1px solid #be9f62;
+  border-radius: 22px;
+  pointer-events: none;
+}
+.portrait-frame-image {
+  display: block;
+  border: 1px solid rgb(255 255 255 / 85%);
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgb(23 58 107 / 16%);
+}
+.portrait-frame-card {
+  margin: 12px 12px 0;
+  padding: 12px;
+  border-radius: 22px;
+  transition: border-color .25s, box-shadow .25s;
+}
+.portrait-frame-card::before { inset: 5px; border-radius: 17px; }
+.portrait-frame-card .portrait-frame-image { border-radius: 11px; }
+.public-profile-card:hover .portrait-frame-card,
+.public-profile-card:focus-visible .portrait-frame-card {
+  border-color: #648fd2;
+  box-shadow: inset 0 1px 0 #fff, 0 8px 24px rgb(28 79 142 / 22%);
+}
+.portrait-frame-hero { width: 100%; max-width: 420px; justify-self: center; }
+html[data-theme="night"] .portrait-frame {
+  background: linear-gradient(135deg, #334fa6, #172873 42%, #3b5bb7 72%, #213882);
+  border-color: #718dc9;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 20%), 0 14px 36px rgb(0 0 0 / 20%);
+}
+html[data-theme="night"] .portrait-frame::before { border-color: #d4b675; }
+html[data-theme="night"] .portrait-frame-image { border-color: #839ccc; }
+@media (max-width: 480px) {
+  .portrait-frame-card { margin: 9px 9px 0; padding: 10px; }
+  .portrait-frame-hero { max-width: 360px; padding: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .portrait-frame-card { transition: none; }
+}

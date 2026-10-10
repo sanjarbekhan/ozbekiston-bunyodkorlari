@@ -196,12 +196,12 @@ export default async function ArticlePage({
           </Link>
 
           <div className="mt-8 grid gap-8 lg:grid-cols-[360px_1fr] lg:items-center lg:gap-14">
-            <div className="overflow-hidden rounded-[30px] border border-slate-200 bg-[#f4f7fb] shadow-[0_18px_50px_rgba(15,23,42,.08)]">
+            <div className="portrait-frame portrait-frame-hero">
               {article.image_url ? (
                 <img
                   src={article.image_url}
                   alt={article.title}
-                  className="aspect-[4/5] w-full object-cover"
+                  className="portrait-frame-image aspect-[4/5] w-full object-cover"
                 />
               ) : (
                 <div className="flex aspect-[4/5] items-center justify-center p-8 text-center text-sm font-bold text-slate-400">

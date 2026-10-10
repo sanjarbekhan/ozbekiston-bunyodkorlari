@@ -59,14 +59,14 @@ export default function PublicArticleCard({
       href={`/bunyodkorlar/${slug}`}
       className="public-profile-card group flex h-full flex-col overflow-hidden rounded-[26px] border border-slate-200/80 bg-white shadow-[0_10px_30px_rgba(15,23,42,0.07)] transition duration-300 hover:-translate-y-1 hover:border-[#0043a4]/25 hover:shadow-[0_18px_44px_rgba(15,23,42,0.12)]"
     >
-      <div className="aspect-square overflow-hidden bg-[#edf1f6]">
+      <div className="portrait-frame portrait-frame-card aspect-square">
         {imageUrl ? (
           <img
             src={imageUrl}
             alt={title}
             loading="lazy"
             decoding="async"
-            className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.025]"
+            className="portrait-frame-image h-full w-full object-cover"
           />
         ) : (
           <div className="flex h-full items-center justify-center px-6 text-center text-sm font-bold text-slate-400">
