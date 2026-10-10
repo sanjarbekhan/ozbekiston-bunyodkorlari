@@ -3,23 +3,24 @@
 import { AbsoluteFill, Img, Sequence, interpolate, useCurrentFrame } from "remotion";
 
 export const INTRO_FPS = 30;
-export const INTRO_FRAMES = 1080;
 const scenes = [
   { label: "SIZNING HIKOYANGIZ", title: "Yutuqlaringiz haqida boshqalar ham bilsin.", body: "Mehnatingiz, bilimingiz va tajribangizni bir sahifada namoyon eting.", tags: ["Ta’lim", "Ijod", "Faoliyat"], number: "01" },
   { label: "BUNYODKOR NIMA?", title: "Yoshlar haqidagi raqamli ensiklopediya.", body: "O‘zbekiston bunyodkor yoshlarining hayot yo‘li va yutuqlarini jamlaymiz.", tags: ["Biografiya", "Yutuqlar", "Maqsadlar"], number: "02" },
   { label: "SIZ HAQINGIZDA MAQOLA", title: "Faoliyatingiz — tartibli va tushunarli.", body: "Ta’limingiz, tajribangiz va muhim natijalaringiz biografik maqolada yoritiladi.", tags: ["Shaxsiy profil", "Biografik maqola"], number: "03" },
-  { label: "ULASHISH QULAY", title: "Bitta havola. Siz haqingizda ko‘p ma’lumot.", body: "Profilingizni havola va QR kod orqali boshqalarga ulashing.", tags: ["Havola", "QR kod", "Telegram"], number: "04" },
-  { label: "QANDAY QO‘SHILAMAN?", title: "Arizadan boshlanadigan yangi sahifa.", body: "Ariza yuboring. Tahririyat ma’lumotlarni ko‘rib chiqadi. Tasdiqdan so‘ng maqola nashr qilinadi.", tags: ["Ariza", "Ko‘rib chiqish", "Nashr"], number: "05" },
-  { label: "NAVBAT SIZGA", title: "O‘z hikoyangizni Bunyodkorda qoldiring.", body: "Quyidagi “Ariza qoldirish” tugmasini bosing va o‘zingiz haqingizda ma’lumot yuboring.", tags: ["bunyodkor.com"], number: "06" },
+  { label: "ISMINGIZ ORTIDA — HIKOYANGIZ", title: "Sizni izlashsa, yutuqlaringizni bilishsin.", body: "Siz haqingizdagi biografiya Google va sun’iy intellekt qidiruvlarida topilishi mumkin. Yutuqlaringizni kengroq auditoriyaga taniting.", tags: ["Google", "Sun’iy intellekt", "Biografiya"], number: "04" },
+  { label: "ULASHISH QULAY", title: "Bitta havola. Siz haqingizda ko‘p ma’lumot.", body: "Profilingizni havola va QR kod orqali boshqalarga ulashing.", tags: ["Havola", "QR kod", "Telegram"], number: "05" },
+  { label: "QANDAY QO‘SHILAMAN?", title: "Arizadan boshlanadigan yangi sahifa.", body: "Ariza yuboring. Tahririyat ma’lumotlarni ko‘rib chiqadi. Tasdiqdan so‘ng maqola nashr qilinadi.", tags: ["Ariza", "Ko‘rib chiqish", "Nashr"], number: "06" },
+  { label: "NAVBAT SIZGA", title: "O‘z hikoyangizni Bunyodkorda qoldiring.", body: "Quyidagi “Ariza qoldirish” tugmasini bosing va o‘zingiz haqingizda ma’lumot yuboring.", tags: ["bunyodkor.com"], number: "07" },
 ];
+export const INTRO_FRAMES = scenes.length * 180;
 
 function StoryScene({ scene }: { scene: (typeof scenes)[number] }) {
   const frame = useCurrentFrame();
-  return <AbsoluteFill style={{ padding: "64px 58px 78px", opacity: interpolate(frame, [0, 14, 168, 179], [0, 1, 1, scene.number === "06" ? 1 : 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }), translate: `0 ${interpolate(frame, [0, 22], [24, 0], { extrapolateRight: "clamp" })}px` }}>
+  return <AbsoluteFill style={{ padding: "64px 58px 78px", opacity: interpolate(frame, [0, 14, 168, 179], [0, 1, 1, scene === scenes[scenes.length - 1] ? 1 : 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }), translate: `0 ${interpolate(frame, [0, 22], [24, 0], { extrapolateRight: "clamp" })}px` }}>
     <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
       <Img src="/tilda/images/ozbye-new-logo.svg" style={{ width: 72, height: 72, objectFit: "contain" }} />
       <span style={{ fontSize: 26, fontWeight: 850, letterSpacing: 4, color: "#245991" }}>BUNYODKOR</span>
-      <span style={{ marginLeft: "auto", fontSize: 24, color: "#526984" }}>{scene.number} / 06</span>
+      <span style={{ marginLeft: "auto", fontSize: 24, color: "#526984" }}>{scene.number} / {String(scenes.length).padStart(2, "0")}</span>
     </div>
     <div style={{ marginTop: 75, fontSize: 23, fontWeight: 800, letterSpacing: 3, color: "#207c82" }}>{scene.label}</div>
     <div style={{ marginTop: 26, fontSize: 60, fontWeight: 850, lineHeight: 1.12, letterSpacing: -2.2, color: "#163e68" }}>{scene.title}</div>
