@@ -1,6 +1,6 @@
 // Bunyodkor 2026 visual system: Manrope typography and white motion UI.
 import type { Metadata } from "next";
-import { Manrope } from "next/font/google";
+import { Bodoni_Moda, Manrope } from "next/font/google";
 import "./globals.css";
 import ThemeController from "@/components/ThemeController";
 
@@ -10,6 +10,12 @@ const manrope = Manrope({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-manrope",
+});
+
+const premium = Bodoni_Moda({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-premium",
 });
 
 export const metadata: Metadata = {
@@ -76,7 +82,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="uz" className={manrope.variable} suppressHydrationWarning>
+    <html lang="uz" className={manrope.variable + " " + premium.variable} suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{

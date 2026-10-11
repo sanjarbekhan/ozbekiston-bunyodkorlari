@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import PublicArticleCard from "@/components/PublicArticleCard";
+import InfiniteArticlesCarousel from "@/components/InfiniteArticlesCarousel";
 import SiteFooter from "@/components/SiteFooter";
 import IntroVideoWidget from "@/components/IntroVideoWidget";
 import SiteMenu from "@/components/SiteMenu";
@@ -30,7 +30,7 @@ type HomeArticle = {
   slug: string;
   category: string | null;
   image_url: string | null;
-  description: string | null;
+  description?: string | null;
   published_at: string | null;
   created_at: string;
 };
@@ -100,10 +100,10 @@ export default async function Home() {
   const [articlesResult, publishedResult, categoryResult, monthResult] = await Promise.all([
     supabase
       .from("articles")
-      .select("id, title, slug, category, image_url, description, published_at, created_at")
+      .select("id, title, slug, category, image_url, published_at, created_at")
       .eq("status", "published")
       .order("published_at", { ascending: false })
-      .limit(8),
+      .limit(1000),
     supabase.from("articles").select("id", { count: "exact", head: true }).eq("status", "published"),
     supabase
       .from("articles")
@@ -214,8 +214,8 @@ export default async function Home() {
           <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
             <div>
               <p className="text-[11px] font-black uppercase tracking-[0.2em] text-[#2866ff]">Ensiklopediya</p>
-              <h2 className="mt-3 max-w-3xl text-[38px] font-black leading-[1.02] tracking-[-0.05em] text-[#0c1830] sm:text-[50px] md:text-[58px]">
-                Har bir yutuq ortida bir hikoya bor
+              <h2 className="home-premium-heading mt-3 max-w-3xl text-[38px] font-black leading-[1.02] tracking-[-0.05em] text-[#0c1830] sm:text-[50px] md:text-[58px]">
+                Yoshlarimiz bilan tanishing
               </h2>
             </div>
             <Link href="/bunyodkorlar" className="inline-flex items-center gap-2 text-sm font-black text-[#2866ff] hover:text-[#1745b4]">
@@ -223,28 +223,15 @@ export default async function Home() {
             </Link>
           </div>
 
-          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {articles.slice(0, 4).map((article) => (
-              <PublicArticleCard
-                key={article.id}
-                title={article.title}
-                slug={article.slug}
-                imageUrl={article.image_url}
-                category={article.category}
-                description={article.description}
-                date={article.published_at || article.created_at}
-                compact
-              />
-            ))}
-          </div>
-          <div className="home-invitation">
-            <div>
-              <p className="home-invitation-label">BU SAHIFALAR ORASIDA SIZ HAM BO‘LING</p>
-              <h3>Yutuqlaringiz siz haqingizda gapirsin.</h3>
-              <p>Ta’lim, ijod yoki kasbiy faoliyat — o‘z yo‘lingizni biografik maqolada jamlang.</p>
-            </div>
-            <Link href="/ariza-qoldirish" className="home-invitation-button">Men ham maqola chiqarmoqchiman <span aria-hidden="true">↗</span></Link>
-          </div>
+          <InfiniteArticlesCarousel articles={articles} />
+          <Link href="/iqtiboslar" className="quote-marquee" aria-label="Iqtiboslar sahifasiga o‘tish">
+            <span className="quote-marquee-track" aria-hidden="true">
+              {Array.from({ length: 8 }, (_, index) => (
+                <span key={index} className="quote-marquee-item">✦ &nbsp; IQTIBOSLAR SAHIFASI &nbsp; ✦</span>
+              ))}
+            </span>
+            <span className="sr-only">Iqtiboslar sahifasi</span>
+          </Link>
         </div>
       </section>
 
@@ -252,7 +239,7 @@ export default async function Home() {
         <div className="mx-auto max-w-7xl">
           <div className="mx-auto max-w-3xl text-center">
             <p className="text-[11px] font-black uppercase tracking-[0.2em] text-[#2866ff]">Nima uchun qo‘shilish kerak?</p>
-            <h2 className="mt-3 text-[38px] font-black leading-[1.03] tracking-[-0.05em] text-[#0c1830] sm:text-[50px] md:text-[58px]">
+            <h2 className="home-premium-heading mt-3 text-[38px] font-black leading-[1.03] tracking-[-0.05em] text-[#0c1830] sm:text-[50px] md:text-[58px]">
               Sizni tanishtiradigan maqola. Yutuqlaringizni jamlaydigan sahifa.
             </h2>
           </div>
@@ -275,7 +262,7 @@ export default async function Home() {
         <div className="mx-auto max-w-7xl rounded-[34px] border border-[#e3ebf6] bg-white p-6 shadow-[0_20px_65px_rgba(30,62,112,.06)] sm:p-8 md:p-10">
           <div className="mx-auto max-w-3xl text-center">
             <p className="text-[11px] font-black uppercase tracking-[0.2em] text-[#2866ff]">Jarayon qanday?</p>
-            <h2 className="mt-3 text-[36px] font-black leading-[1.04] tracking-[-0.05em] text-[#0c1830] sm:text-[48px] md:text-[56px]">
+            <h2 className="home-premium-heading mt-3 text-[36px] font-black leading-[1.04] tracking-[-0.05em] text-[#0c1830] sm:text-[48px] md:text-[56px]">
               Ariza topshirish juda oson
             </h2>
           </div>
@@ -299,7 +286,7 @@ export default async function Home() {
           <div className="absolute -right-16 -top-20 h-72 w-72 rounded-full bg-[#5f87ff]/15 blur-3xl" />
           <div className="relative max-w-2xl">
             <p className="text-[11px] font-black uppercase tracking-[0.2em] text-[#2866ff]">Siz ham bunyodkor bo‘lishingiz mumkin</p>
-            <h2 className="mt-3 text-[34px] font-black leading-[1.04] tracking-[-0.045em] text-[#0c1830] sm:text-[44px]">
+            <h2 className="home-premium-heading mt-3 text-[34px] font-black leading-[1.04] tracking-[-0.045em] text-[#0c1830] sm:text-[44px]">
               Keyingi hikoya siz haqingizda bo‘lsin.
             </h2>
             <p className="mt-4 max-w-xl text-base font-semibold leading-7 text-[#65738c]">
