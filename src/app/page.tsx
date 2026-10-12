@@ -182,13 +182,13 @@ export default async function Home() {
             className="home-hero-action inline-flex min-h-11 items-center justify-center rounded-xl bg-[#245bff] px-4 py-2.5 text-center text-[11px] font-black text-white shadow-[0_8px_24px_rgba(36,91,255,.24)] transition hover:-translate-y-0.5 sm:text-xs lg:min-h-12 lg:rounded-2xl lg:px-6 lg:text-sm"
           >
             Ariza qoldirish
-          </a
+          </a>
           <a
             href="/bunyodkorlar"
             className="home-hero-action inline-flex min-h-11 items-center justify-center rounded-xl border border-[#245bff]/30 bg-white/95 px-4 py-2.5 text-center text-[11px] font-black text-[#173a9a] shadow-[0_8px_24px_rgba(15,35,75,.10)] backdrop-blur transition hover:-translate-y-0.5 sm:text-xs lg:min-h-12 lg:rounded-2xl lg:px-6 lg:text-sm"
           >
             Ensiklopediyani ko‘rish
-          </a
+          </a>
         </div>
       </div>
     </section>
