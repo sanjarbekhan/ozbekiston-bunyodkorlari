@@ -144,15 +144,15 @@ export default function ConnectAccount() {
    await run(async()=>{
      if(first.trim().length<2||last.trim().length<2||!Number.isInteger(safeAge)||safeAge<13||safeAge>100)
        throw new Error("Ism va familiya 2 belgidan uzun, yosh 13–100 oralig‘ida bo‘lsin.");
-     const [d,p]=await Promise.all([
-       details
-         ? supabase.from("connect_account_details").update({first_name:first.trim(),last_name:last.trim(),age:safeAge,updated_at:new Date().toISOString()}).eq("user_id",user.id)
-         : supabase.from("connect_account_details").insert({user_id:user.id,first_name:first.trim(),last_name:last.trim(),age:safeAge}),
-       profile
-         ? supabase.from("connect_profiles").update({display_name:(first.trim()+" "+last.trim())}).eq("user_id",user.id)
-         : supabase.from("connect_profiles").insert({user_id:user.id,display_name:(first.trim()+" "+last.trim())}),
-     ]);
-     if(d.error||p.error)throw new Error(d.error?.message||p.error?.message);
+     // Save private age/details before enabling or updating public chat profile.
+     const d=details
+       ? await supabase.from("connect_account_details").update({first_name:first.trim(),last_name:last.trim(),age:safeAge,updated_at:new Date().toISOString()}).eq("user_id",user.id)
+       : await supabase.from("connect_account_details").insert({user_id:user.id,first_name:first.trim(),last_name:last.trim(),age:safeAge});
+     if(d.error)throw d.error;
+     const p=profile
+       ? await supabase.from("connect_profiles").update({display_name:(first.trim()+" "+last.trim())}).eq("user_id",user.id)
+       : await supabase.from("connect_profiles").insert({user_id:user.id,display_name:(first.trim()+" "+last.trim())});
+     if(p.error)throw p.error;
      await loadOwnProfile();setNotice("Profilingiz saqlandi.");
    });
  }
