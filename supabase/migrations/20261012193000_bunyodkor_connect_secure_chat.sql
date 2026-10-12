@@ -257,13 +257,13 @@ grant execute on function public.connect_review_claim(uuid,boolean) to authentic
 
 
 create or replace function public.connect_review_report(p_report uuid)
-returns void language plpgsql security definer set search_path = '' as $
+returns void language plpgsql security definer set search_path = '' as $$
 begin
  if auth.uid() is distinct from '988b7d1f-4028-42a6-9a8f-be869224be6e'::uuid then
   raise exception 'Ruxsat berilmagan.';
  end if;
  update public.connect_reports set status='reviewed' where id=p_report;
-end $;
+end $$;
 revoke all on function public.connect_review_report(uuid) from public;
 grant execute on function public.connect_review_report(uuid) to authenticated;
 
