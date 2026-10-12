@@ -103,6 +103,17 @@ export default function ConnectApp() {
     return () => listener.subscription.unsubscribe();
   }, []);
 
+  // Never show a previous account's private conversation state after logout/account switching.
+  useEffect(() => {
+    setProfile(null);
+    setClaims([]);
+    setThreads([]);
+    setSelectedId(null);
+    setMessages([]);
+    setMessageInput("");
+    setName("");
+  }, [user?.id]);
+
   useEffect(() => { void loadPersonal(); }, [loadPersonal]);
   useEffect(() => {
     if (!selectedId) return;
@@ -151,7 +162,7 @@ export default function ConnectApp() {
     event.preventDefault();
     await action(async () => {
       const result = loginMode === "signup"
-        ? await supabase.auth.signUp({ email: email.trim(), password })
+        ? await supabase.auth.signUp({ email: email.trim(), password, options: { emailRedirectTo: "https://www.bunyodkor.com/chat" } })
         : await supabase.auth.signInWithPassword({ email: email.trim(), password });
       if (result.error) throw result.error;
       setNotice(loginMode === "signup" ? "Ro‘yxatdan o‘tish so‘rovi yuborildi. Emailingizni tasdiqlang." : "Hisobga kirdingiz.");
