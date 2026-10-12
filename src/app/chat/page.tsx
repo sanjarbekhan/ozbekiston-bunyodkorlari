@@ -1,27 +1,22 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import SiteMenu from "@/components/SiteMenu";
-import SiteFooter from "@/components/SiteFooter";
 import ConnectApp from "@/components/connect/ConnectApp";
 
 export const metadata: Metadata = {
-  title: "Bunyodkor Connect — Chat",
-  description: "Bunyodkor yoshlar bilan savollar va hamkorlik takliflari orqali muloqot qiling.",
-  robots: { index: false, follow: false },
+ title:"Xabarlar — Bunyodkor Connect",
+ description:"Bunyodkor yoshlari bilan savol-javob va hamkorlik uchun shaxsiy suhbatlar.",
+ robots:{index:false,follow:false},
 };
-
-export default function ChatPage() {
-  return (
-    <main className="min-h-screen bg-[#f6faff] text-[#172d54]">
-      <SiteMenu />
-      {process.env.NEXT_PUBLIC_BUNYODKOR_CONNECT_ENABLED === "true"
-        ? <ConnectApp />
-        : <section className="mx-auto min-h-[55vh] max-w-xl px-5 py-16 text-center">
-            <h1 className="text-3xl font-black text-[#164c9c]">Bunyodkor Connect</h1>
-            <p className="mt-5 text-base leading-7 text-[#64748b]">Xavfsiz yozishmalar bo‘limi tayyorlanmoqda. Tahririyat profil tasdiqlash va chat tizimini ishga tushirgandan so‘ng foydalanish mumkin bo‘ladi.</p>
-            <Link href="/bunyodkorlar" className="mt-7 inline-flex rounded-xl bg-[#245fff] px-6 py-3 font-bold text-white">Ensiklopediyaga qaytish</Link>
-          </section>}
-      <SiteFooter />
-    </main>
-  );
+export default function ChatPage(){
+ return <main className="min-h-screen bg-[#0a0d12] text-white">
+  <SiteMenu/>
+  {process.env.NEXT_PUBLIC_BUNYODKOR_CONNECT_ENABLED==="true"
+   ? <ConnectApp/>
+   : <section className="mx-auto flex min-h-[70vh] max-w-lg flex-col items-center justify-center px-5 text-center">
+     <h1 className="text-3xl font-bold">Bunyodkor Connect</h1>
+     <p className="mt-4 text-sm text-[#a3afc0]">Chat xizmati hozircha tayyorlanmoqda.</p>
+     <Link href="/bunyodkorlar" className="mt-5 rounded-full bg-[#3487f5] px-5 py-3 font-bold">Ensiklopediya ↗</Link>
+   </section>}
+ </main>;
 }

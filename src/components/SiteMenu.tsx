@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import ProfileNavButton from "@/components/connect/ProfileNavButton";
 
 const mobileItems = [
   ["/", "Bosh sahifa"],
@@ -12,6 +13,7 @@ const mobileItems = [
   ["/haqida", "Loyiha haqida"],
   ["/tavsiyalari", "Tavsiyalar"],
   ["/iqtiboslar", "Iqtiboslar"],
+  ["/profil", "Shaxsiy profil"],
   ...(process.env.NEXT_PUBLIC_BUNYODKOR_CONNECT_ENABLED === "true" ? [["/chat", "Bunyodkor Connect"]] as const : []),
   ["/hamkor-loyihasi", "Hamkorlik"],
 ] as const;
@@ -59,6 +61,7 @@ export default function SiteMenu() {
 
   return (
     <>
+    {!pathname.startsWith("/chat") && (
     <header className="sticky top-0 z-[90] border-b border-[#edf1f6] bg-white shadow-[0_8px_28px_rgba(15,35,75,.06)]">
       <div className="relative mx-auto w-full max-w-[1200px] bg-white">
         <Link href="/" aria-label="Bosh sahifa" className="block w-full">
@@ -74,6 +77,7 @@ export default function SiteMenu() {
             />
           </picture>
         </Link>
+        <ProfileNavButton />
 
         <button
           type="button"
@@ -138,6 +142,7 @@ export default function SiteMenu() {
         />
       )}
     </header>
+    )}
     <nav className="bunyodkor-bottom-nav" aria-label="Mobil navigatsiya">
       {bottomLinks.map(([href, label, kind]) => (
         <a
