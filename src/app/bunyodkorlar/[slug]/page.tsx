@@ -233,7 +233,20 @@ export default async function ArticlePage({
                 </p>
               )}
 
-              <div className="mt-7 flex flex-wrap gap-2.5 text-xs font-bold text-slate-600">
+              {process.env.NEXT_PUBLIC_BUNYODKOR_CONNECT_ENABLED === "true" && (
+                 <div className="mt-6 flex flex-wrap gap-3">
+                   <Link href={"/chat?article=" + article.id + "&kind=question"}
+                     className="inline-flex min-h-11 items-center gap-2 rounded-2xl bg-[#245fff] px-5 py-3 text-sm font-bold text-white shadow-[0_8px_24px_rgba(36,91,255,.18)] hover:bg-[#164bd8]">
+                     ✉ Savol berish
+                   </Link>
+                   <Link href={"/chat?article=" + article.id + "&kind=collaboration"}
+                     className="inline-flex min-h-11 items-center gap-2 rounded-2xl border border-[#b6d0fa] bg-white px-5 py-3 text-sm font-bold text-[#245fff] hover:bg-[#edf4ff]">
+                     Hamkorlik taklif qilish ↗
+                   </Link>
+                 </div>
+               )}
+
+               <div className="mt-7 flex flex-wrap gap-2.5 text-xs font-bold text-slate-600">
                 {published && (
                   <span className="rounded-full border border-slate-200 bg-[#f8fafc] px-4 py-2.5">
                     Nashr: {published}
