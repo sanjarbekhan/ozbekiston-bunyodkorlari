@@ -12,6 +12,7 @@ const mobileItems = [
   ["/haqida", "Loyiha haqida"],
   ["/tavsiyalari", "Tavsiyalar"],
   ["/iqtiboslar", "Iqtiboslar"],
+  ...(process.env.NEXT_PUBLIC_BUNYODKOR_CONNECT_ENABLED === "true" ? [["/chat", "Bunyodkor Connect"]] as const : []),
   ["/hamkor-loyihasi", "Hamkorlik"],
 ] as const;
 
@@ -22,13 +23,14 @@ const bottomLinks = [
   ["/ariza-qoldirish", "Ariza", "file"],
 ] as const;
 
-function BottomIcon({ kind }: { kind: "house" | "users" | "quote" | "file" | "menu" }) {
+function BottomIcon({ kind }: { kind: "house" | "users" | "quote" | "file" | "menu" | "chat" }) {
   return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     {kind === "house" && <><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Z" /><path d="M9 21v-8h6v8" /></>}
     {kind === "users" && <><path d="M16 20v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 20v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" /></>}
     {kind === "quote" && <><path d="M10 11H4V5h7v8l-4 5" /><path d="M21 11h-6V5h7v8l-4 5" /></>}
     {kind === "file" && <><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" /><path d="M14 2v6h6M12 12v7M8.5 15.5h7" /></>}
     {kind === "menu" && <><path d="M4 7h16M4 12h16M4 17h16" /></>}
+    {kind === "chat" && <><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5H8l-5 2 1.5-4.5A8.5 8.5 0 1 1 21 11.5Z"/><path d="M8 11h8M8 14h5"/></>}
   </svg>;
 }
 
@@ -149,16 +151,23 @@ export default function SiteMenu() {
           <span>{label}</span>
         </a>
       ))}
-      <button
-        type="button"
-        className={"bunyodkor-bottom-tab" + (open ? " is-active" : "")}
-        aria-expanded={open}
-        aria-label="Menyuni ochish"
-        onClick={() => { setOpen((value) => !value); window.scrollTo({ top: 0, behavior: "auto" }); }}
-      >
-        <BottomIcon kind="menu" />
-        <span>Menyu</span>
-      </button>
+      {process.env.NEXT_PUBLIC_BUNYODKOR_CONNECT_ENABLED === "true" ? (
+        <a href="/chat" aria-current={isActive("/chat") ? "page" : undefined}
+           className={"bunyodkor-bottom-tab" + (isActive("/chat") ? " is-active" : "")}>
+          <BottomIcon kind="chat" /><span>Chat</span>
+        </a>
+      ) : (
+        <button
+          type="button"
+          className={"bunyodkor-bottom-tab" + (open ? " is-active" : "")}
+          aria-expanded={open}
+          aria-label="Menyuni ochish"
+          onClick={() => { setOpen((value) => !value); window.scrollTo({ top: 0, behavior: "auto" }); }}
+        >
+          <BottomIcon kind="menu" />
+          <span>Menyu</span>
+        </button>
+      )}
     </nav>
     </>
   );

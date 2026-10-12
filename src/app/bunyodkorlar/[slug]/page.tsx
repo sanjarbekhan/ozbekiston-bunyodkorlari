@@ -7,6 +7,7 @@ import ArticleSharePanel from "@/components/ArticleSharePanel";
 import CommentSection from "@/components/CommentSection";
 import SiteFooter from "@/components/SiteFooter";
 import SiteMenu from "@/components/SiteMenu";
+import ConnectContactActions from "@/components/connect/ConnectContactActions";
 import type { ArticleRecord } from "@/lib/article-types";
 import { supabase } from "@/lib/supabase";
 import { protectMinorPersonalData, publicCategories, publicCategoryLabel } from "@/lib/public-format";
@@ -233,7 +234,11 @@ export default async function ArticlePage({
                 </p>
               )}
 
-              <div className="mt-7 flex flex-wrap gap-2.5 text-xs font-bold text-slate-600">
+              {process.env.NEXT_PUBLIC_BUNYODKOR_CONNECT_ENABLED === "true" && (
+                 <ConnectContactActions articleId={article.id} />
+               )}
+
+               <div className="mt-7 flex flex-wrap gap-2.5 text-xs font-bold text-slate-600">
                 {published && (
                   <span className="rounded-full border border-slate-200 bg-[#f8fafc] px-4 py-2.5">
                     Nashr: {published}
