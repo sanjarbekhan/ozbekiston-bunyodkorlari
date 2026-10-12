@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import PublicArticleCard from "@/components/PublicArticleCard";
 import { normalizeCategory, publicCategories } from "@/lib/public-format";
 
@@ -30,11 +30,6 @@ export default function PublicArticles({
 }) {
   const [search, setSearch] = useState(initialSearch);
   const [categoryFilter, setCategoryFilter] = useState("all");
-  const [visibleCount, setVisibleCount] = useState(24);
-  useEffect(() => {
-    const fromUrl = new URLSearchParams(window.location.search).get("q");
-    if (fromUrl) setSearch(fromUrl.trim().slice(0, 120));
-  }, []);
 
   const categories = useMemo(() => {
     const normalized = new Map<string, string>();
@@ -82,7 +77,6 @@ export default function PublicArticles({
   function resetFilters() {
     setSearch("");
     setCategoryFilter("all");
-    setVisibleCount(24);
   }
 
   return (
@@ -94,7 +88,7 @@ export default function PublicArticles({
             <input
               className="w-full rounded-2xl border border-slate-200 bg-[#f8fafc] px-4 py-3.5 text-sm font-semibold text-[#111827] outline-none transition placeholder:text-slate-400 focus:border-[#245fff] focus:bg-white md:px-5 md:text-base"
               value={search}
-              onChange={(e) => { setSearch(e.target.value); setVisibleCount(24); }}
+              onChange={(e) => setSearch(e.target.value)}
               placeholder="Ism, familiya yoki kalit so‘z..."
             />
           </label>
@@ -104,7 +98,7 @@ export default function PublicArticles({
             <select
               className="w-full rounded-2xl border border-slate-200 bg-[#f8fafc] px-4 py-3.5 text-sm font-semibold text-[#111827] outline-none transition focus:border-[#245fff] focus:bg-white md:px-5 md:text-base"
               value={categoryFilter}
-              onChange={(e) => { setCategoryFilter(e.target.value); setVisibleCount(24); }}
+              onChange={(e) => setCategoryFilter(e.target.value)}
             >
               <option value="all">Barcha yo‘nalishlar</option>
               {categories.map((category) => (
@@ -132,7 +126,7 @@ export default function PublicArticles({
       </div>
 
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {filteredArticles.slice(0, visibleCount).map((article) => (
+        {filteredArticles.map((article) => (
           <PublicArticleCard
             key={article.id}
             title={article.title}
@@ -164,14 +158,6 @@ export default function PublicArticles({
           </div>
         )}
       </div>
-      {filteredArticles.length > visibleCount && (
-        <div className="mt-8 flex justify-center">
-          <button type="button" onClick={() => setVisibleCount((count) => count + 24)}
-            className="min-h-12 rounded-full border border-[#b7cff6] bg-white px-7 py-3 text-sm font-extrabold text-[#185bc5] shadow-sm transition hover:bg-[#eef4ff] focus-visible:outline">
-            Yana ko‘rsatish ({Math.min(visibleCount, filteredArticles.length)} / {filteredArticles.length})
-          </button>
-        </div>
-      )}
     </>
   );
 }

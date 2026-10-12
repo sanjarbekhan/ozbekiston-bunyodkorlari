@@ -9,7 +9,7 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: auto; }
+html { scroll-behavior: smooth; }
 body {
   margin: 0;
   background: var(--background);
@@ -738,41 +738,4 @@ html[data-theme="night"] .quote-marquee { background-image: repeating-linear-gra
 @media (prefers-reduced-motion: reduce) {
   .quote-marquee-track { animation: none; }
   .bunyodkor-bottom-tab { transition: none; }
-}
-
-/* Fast, reliable mobile CTA clicks and lightweight animated intro preview. */
-.home-hero-action { position: relative; z-index: 1; touch-action: manipulation; }
-.bunyodkor-bottom-tab { touch-action: manipulation; }
-.intro-light-preview {
-  position: relative;
-  aspect-ratio: 4 / 5;
-  overflow: hidden;
-  background: linear-gradient(155deg, #edf6ff, #dceafb 70%, #e1f9ff);
-}
-.intro-light-slide {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  padding: 11px 9px 46px;
-  opacity: 0;
-  animation: intro-light-sequence 30s linear infinite both;
-  pointer-events: none;
-}
-.intro-light-brand { display: flex; gap: 3px; align-items: center; color: #26548f; font-size: 6px; font-weight: 900; letter-spacing: .06em; }
-.intro-light-brand small { margin-left: auto; color: #58789f; font-size: 6px; font-weight: 600; }
-.intro-light-eyebrow { margin: 23px 0 0; color: #248993; font-size: 6px; letter-spacing: .1em; font-weight: 800; }
-.intro-light-slide h3 { margin: 7px 0 0; color: #173e64; font-size: 15px; line-height: 1.12; font-weight: 850; letter-spacing: -.04em; }
-.intro-light-accent { width: 25px; height: 3px; margin-top: 12px; border-radius: 8px; background: #37afb6; }
-.intro-light-slide > p:last-child { margin: 8px 0 0; color: #45637e; font-size: 8px; line-height: 1.5; }
-.intro-mini-stage[data-paused="true"] .intro-light-slide,
-.intro-mini-stage[hidden] .intro-light-slide { animation-play-state: paused; }
-@keyframes intro-light-sequence {
-  0% { opacity: 0; transform: translateY(4px); }
-  2%, 18% { opacity: 1; transform: translateY(0); }
-  20%, 100% { opacity: 0; transform: translateY(-3px); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .intro-light-slide { animation: none; }
-  .intro-light-slide:first-child { opacity: 1; }
 }

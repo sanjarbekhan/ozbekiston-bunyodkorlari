@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import PublicArticleCard from "@/components/PublicArticleCard";
 
 type Article = {
@@ -19,29 +19,7 @@ export default function InfiniteArticlesCarousel({ articles }: { articles: Artic
   const [paused, setPaused] = useState(false);
   const [interacting, setInteracting] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
-  const [startIndex, setStartIndex] = useState(0);
-  const playing = !paused && !interacting && !reducedMotion && articles.length > 1;
-
-  // Render only ten cards, then advance the window through all biographies.
-  const visibleArticles = useMemo(() => {
-    if (articles.length <= 1) return articles;
-    return Array.from({ length: 10 }, (_, i) => articles[(startIndex + i) % articles.length]);
-  }, [articles, startIndex]);
-
-  const normalizeScroll = useCallback(() => {
-    const scroll = scrollerRef.current;
-    const track = scroll?.firstElementChild as HTMLElement | null;
-    const first = track?.children[0] as HTMLElement | undefined;
-    const second = track?.children[1] as HTMLElement | undefined;
-    if (!scroll || !first || !second || articles.length < 2) return;
-    const step = second.offsetLeft - first.offsetLeft;
-    if (step <= 0) return;
-    const advance = Math.min(7, Math.floor(scroll.scrollLeft / step));
-    if (advance > 0) {
-      scroll.scrollLeft -= advance * step;
-      setStartIndex((value) => (value + advance) % articles.length);
-    }
-  }, [articles.length]);
+  const playing = !paused && !interacting && !reducedMotion;
 
   useEffect(() => {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -52,23 +30,41 @@ export default function InfiniteArticlesCarousel({ articles }: { articles: Artic
   }, []);
 
   useEffect(() => {
-    if (!playing) return;
+    if (!playing || articles.length < 2) return;
     let raf = 0;
-    let previous = 0;
+    let last = 0;
     const tick = (timestamp: number) => {
-      const scroll = scrollerRef.current;
-      if (scroll && !document.hidden) {
-        if (previous) scroll.scrollLeft += Math.min(timestamp - previous, 80) * .018;
-        normalizeScroll();
+      const scroller = scrollerRef.current;
+      if (scroller) {
+        const track = scroller.firstElementChild as HTMLElement | null;
+        const first = track?.children[0] as HTMLElement | undefined;
+        const loopStart = track?.children[articles.length] as HTMLElement | undefined;
+        const loopWidth = first && loopStart ? loopStart.offsetLeft - first.offsetLeft : 0;
+        if (loopWidth > 0 && scroller.scrollWidth > scroller.clientWidth) {
+          if (last) scroller.scrollLeft += Math.min(timestamp - last, 80) * 0.018;
+          if (scroller.scrollLeft >= loopWidth) scroller.scrollLeft -= loopWidth;
+        }
       }
-      previous = timestamp;
+      last = timestamp;
       raf = window.requestAnimationFrame(tick);
     };
     raf = window.requestAnimationFrame(tick);
     return () => window.cancelAnimationFrame(raf);
-  }, [playing, normalizeScroll]);
+  }, [playing, articles.length]);
 
-  if (articles.length === 0) return null;
+  if (!articles.length) return null;
+  const extra = articles.slice(0, Math.min(6, articles.length));
+  const renderCard = (article: Article) => (
+    <PublicArticleCard
+      title={article.title}
+      slug={article.slug}
+      imageUrl={article.image_url}
+      category={article.category}
+      description={article.description}
+      date={article.published_at || article.created_at}
+      compact
+    />
+  );
 
   return (
     <div className="home-bio-carousel" aria-label="Bunyodkor yoshlarning biografik maqolalari">
@@ -82,7 +78,6 @@ export default function InfiniteArticlesCarousel({ articles }: { articles: Artic
         className="home-bio-carousel-scroll"
         tabIndex={0}
         aria-label="Maqolalarni chapga yoki o‘ngga surib ko‘ring"
-        onScroll={normalizeScroll}
         onMouseEnter={() => setInteracting(true)}
         onMouseLeave={() => setInteracting(false)}
         onTouchStart={() => setInteracting(true)}
@@ -91,17 +86,12 @@ export default function InfiniteArticlesCarousel({ articles }: { articles: Artic
         onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget as Node)) setInteracting(false); }}
       >
         <div className="home-bio-carousel-track">
-          {visibleArticles.map((article, index) => (
-            <div className="home-bio-carousel-item" key={article.id + "-" + index}>
-              <PublicArticleCard
-                title={article.title}
-                slug={article.slug}
-                imageUrl={article.image_url}
-                category={article.category}
-                description={article.description}
-                date={article.published_at || article.created_at}
-                compact
-              />
+          {articles.map((article) => (
+            <div className="home-bio-carousel-item" key={article.id}>{renderCard(article)}</div>
+          ))}
+          {extra.map((article) => (
+            <div className="home-bio-carousel-item" key={"repeat-" + article.id} aria-hidden="true" inert>
+              {renderCard(article)}
             </div>
           ))}
         </div>

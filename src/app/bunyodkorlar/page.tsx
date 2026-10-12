@@ -19,7 +19,14 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function BunyodkorlarPage() {
+export default async function BunyodkorlarPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
+  const params = await searchParams;
+  const initialSearch = (params.q || "").trim().slice(0, 120);
+
   const { data: articles } = await supabase
     .from("articles")
     .select("id,title,slug,category,image_url,description,published_at,created_at,status")
@@ -59,7 +66,7 @@ export default async function BunyodkorlarPage() {
       </header>
 
       <section className="mx-auto max-w-7xl px-4 py-10 md:px-8 md:py-14">
-        <PublicArticles articles={articles || []} />
+        <PublicArticles articles={articles || []} initialSearch={initialSearch} />
       </section>
 
       <SiteFooter />
