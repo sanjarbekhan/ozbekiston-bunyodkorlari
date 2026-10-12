@@ -776,3 +776,21 @@ html[data-theme="night"] .quote-marquee { background-image: repeating-linear-gra
   .intro-light-slide { animation: none; }
   .intro-light-slide:first-child { opacity: 1; }
 }
+
+/* Connect 2.0: immersive DM screen, scoped to /chat; whole site remains always white. */
+body:has(.connect-shell) { background: #0a0d12; }
+.connect-message-scroll { scrollbar-width: thin; scrollbar-color: #37404c transparent; }
+.connect-message-scroll::-webkit-scrollbar { width: 5px; }
+.connect-message-scroll::-webkit-scrollbar-thumb { background: #39414d; border-radius: 20px; }
+@media (max-width: 767px) {
+  body:has(.connect-shell) .bunyodkor-bottom-nav {
+    border-color: #303a46; background: #11161e; box-shadow: 0 12px 45px rgb(0 0 0 / 35%);
+    -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+  }
+  body:has(.connect-shell) .bunyodkor-bottom-tab { color: #ccd4de; }
+  body:has(.connect-shell) .bunyodkor-bottom-tab.is-active { background: #283e5d; color: #7fb6ff; }
+  body:has(.connect-thread-open) .bunyodkor-bottom-nav { display: none !important; }
+  body:has(.connect-thread-open) { padding-bottom: 0 !important; }
+  .connect-thread-open .connect-conversation { height: 100dvh; min-height: 100dvh; }
+  .connect-thread-open .connect-message-scroll { min-height: 0; }
+}
