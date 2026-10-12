@@ -138,7 +138,7 @@ export default function SiteMenu() {
     </header>
     <nav className="bunyodkor-bottom-nav" aria-label="Mobil navigatsiya">
       {bottomLinks.map(([href, label, kind]) => (
-        <Link
+        <a
           key={href}
           href={href}
           aria-current={isActive(href) ? "page" : undefined}
@@ -147,14 +147,14 @@ export default function SiteMenu() {
         >
           <BottomIcon kind={kind} />
           <span>{label}</span>
-        </Link>
+        </a>
       ))}
       <button
         type="button"
         className={"bunyodkor-bottom-tab" + (open ? " is-active" : "")}
         aria-expanded={open}
         aria-label="Menyuni ochish"
-        onClick={() => { setOpen((value) => !value); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+        onClick={() => { setOpen((value) => !value); window.scrollTo({ top: 0, behavior: "auto" }); }}
       >
         <BottomIcon kind="menu" />
         <span>Menyu</span>

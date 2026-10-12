@@ -176,34 +176,19 @@ export default async function Home() {
             />
           </picture>
         </div>
-        <div className="hero-art-night">
-          <picture className="block w-full">
-            <source media="(min-width: 1024px)" srcSet="/images/bunyodkor-hero-desktop-night.png" />
-            <img
-              src="/images/bunyodkor-hero-mobile-night.png"
-              alt="O‘zbekiston Bunyodkor Yoshlari Ensiklopediyasi — kechki ko‘rinish"
-              className="block h-auto w-full"
-              width={1080}
-              height={1920}
-              loading="eager"
-              fetchPriority="high"
-            />
-          </picture>
-        </div>
-
-        <div className="absolute left-[39%] right-[5%] top-[72%] z-20 flex flex-col gap-2.5 lg:left-[5.5%] lg:right-auto lg:top-[36.5%] lg:flex-row lg:gap-3">
-          <Link
+        <div className="absolute left-[39%] right-[5%] top-[72%] z-40 flex flex-col gap-2.5 lg:left-[5.5%] lg:right-auto lg:top-[36.5%] lg:flex-row lg:gap-3">
+          <a
             href="/ariza-qoldirish"
-            className="inline-flex min-h-11 items-center justify-center rounded-xl bg-[#245bff] px-4 py-2.5 text-center text-[11px] font-black text-white shadow-[0_8px_24px_rgba(36,91,255,.24)] transition hover:-translate-y-0.5 sm:text-xs lg:min-h-12 lg:rounded-2xl lg:px-6 lg:text-sm"
+            className="home-hero-action inline-flex min-h-11 items-center justify-center rounded-xl bg-[#245bff] px-4 py-2.5 text-center text-[11px] font-black text-white shadow-[0_8px_24px_rgba(36,91,255,.24)] transition hover:-translate-y-0.5 sm:text-xs lg:min-h-12 lg:rounded-2xl lg:px-6 lg:text-sm"
           >
             Ariza qoldirish
-          </Link>
-          <Link
+          </a>
+          <a
             href="/bunyodkorlar"
-            className="inline-flex min-h-11 items-center justify-center rounded-xl border border-[#245bff]/30 bg-white/95 px-4 py-2.5 text-center text-[11px] font-black text-[#173a9a] shadow-[0_8px_24px_rgba(15,35,75,.10)] backdrop-blur transition hover:-translate-y-0.5 sm:text-xs lg:min-h-12 lg:rounded-2xl lg:px-6 lg:text-sm"
+            className="home-hero-action inline-flex min-h-11 items-center justify-center rounded-xl border border-[#245bff]/30 bg-white/95 px-4 py-2.5 text-center text-[11px] font-black text-[#173a9a] shadow-[0_8px_24px_rgba(15,35,75,.10)] backdrop-blur transition hover:-translate-y-0.5 sm:text-xs lg:min-h-12 lg:rounded-2xl lg:px-6 lg:text-sm"
           >
             Ensiklopediyani ko‘rish
-          </Link>
+          </a>
         </div>
       </div>
     </section>
