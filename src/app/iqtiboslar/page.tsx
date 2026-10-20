@@ -3,8 +3,6 @@ import Link from "next/link";
 import SiteFooter from "@/components/SiteFooter";
 import SiteMenu from "@/components/SiteMenu";
 import { supabase } from "@/lib/supabase";
-import { TEMPORARY_STATIC_MODE } from "@/lib/temporary-mode";
-import { publishedByDate } from "@/lib/temporary-static";
 import { normalizePublicQuote } from "@/lib/public-format";
 
 export const revalidate = 60;
@@ -76,9 +74,7 @@ function extractQuote(article: Article) {
 }
 
 export default async function SahifasiPage() {
-  const { data } = TEMPORARY_STATIC_MODE
-    ? { data: publishedByDate.slice(0, 80) }
-    : await supabase
+  const { data } = await supabase
     .from("articles")
     .select("id,title,slug,image_url,content_blocks,content")
     .eq("status", "published")
@@ -127,7 +123,7 @@ export default async function SahifasiPage() {
                     <div className="h-14 w-14 shrink-0 overflow-hidden rounded-2xl bg-slate-100">
                       {article.image_url ? (
                         <img src={article.image_url} alt={article.title} className="h-full w-full object-cover" />
-                      ) : <span className="flex h-full w-full items-center justify-center bg-[#e5efff] text-xl font-black text-[#3265ac]">{article.title.trim().slice(0, 1)}</span>}
+                      ) : null}
                     </div>
                     <div className="min-w-0">
                       <h2 className="line-clamp-2 text-sm font-extrabold leading-5 text-[#111827]">

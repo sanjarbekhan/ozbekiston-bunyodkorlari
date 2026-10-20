@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { TEMPORARY_STATIC_MODE } from "@/lib/temporary-mode";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import ProfileNavButton from "@/components/connect/ProfileNavButton";
@@ -62,7 +61,6 @@ export default function SiteMenu() {
 
   return (
     <>
-    {TEMPORARY_STATIC_MODE && <div role="status" className="bg-amber-50 px-4 py-2 text-center text-xs font-semibold text-amber-900">Vaqtinchalik o‘qish rejimi: maqolalar mavjud, admin, chat va ariza yuborish xizmatlari vaqtincha ishlamaydi.</div>}
     {!pathname.startsWith("/chat") && (
     <header className="sticky top-0 z-[90] border-b border-[#edf1f6] bg-white shadow-[0_8px_28px_rgba(15,35,75,.06)]">
       <div className="relative mx-auto w-full max-w-[1200px] bg-white">
@@ -79,7 +77,7 @@ export default function SiteMenu() {
             />
           </picture>
         </Link>
-        {!TEMPORARY_STATIC_MODE && <ProfileNavButton />}
+        <ProfileNavButton />
 
         <button
           type="button"
@@ -158,7 +156,7 @@ export default function SiteMenu() {
           <span>{label}</span>
         </a>
       ))}
-      {!TEMPORARY_STATIC_MODE && process.env.NEXT_PUBLIC_BUNYODKOR_CONNECT_ENABLED === "true" ? (
+      {process.env.NEXT_PUBLIC_BUNYODKOR_CONNECT_ENABLED === "true" ? (
         <a href="/chat" aria-current={isActive("/chat") ? "page" : undefined}
            className={"bunyodkor-bottom-tab" + (isActive("/chat") ? " is-active" : "")}>
           <BottomIcon kind="chat" /><span>Chat</span>

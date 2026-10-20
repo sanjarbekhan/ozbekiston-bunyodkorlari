@@ -10,8 +10,6 @@ import SiteMenu from "@/components/SiteMenu";
 import ConnectContactActions from "@/components/connect/ConnectContactActions";
 import type { ArticleRecord } from "@/lib/article-types";
 import { supabase } from "@/lib/supabase";
-import { TEMPORARY_STATIC_MODE } from "@/lib/temporary-mode";
-import { findPublishedArticle, publishedArticles } from "@/lib/temporary-static";
 import { protectMinorPersonalData, publicCategories, publicCategoryLabel } from "@/lib/public-format";
 
 export const revalidate = 60;
@@ -44,7 +42,6 @@ function canonicalFor(slug: string) {
 }
 
 const getArticle = cache(async (slug: string) => {
-  if (TEMPORARY_STATIC_MODE) return findPublishedArticle(slug);
   const { data, error } = await supabase
     .from("articles")
     .select("*")
@@ -55,10 +52,6 @@ const getArticle = cache(async (slug: string) => {
   if (error) throw new Error("Unable to load published article");
   return data as ArticleRecord | null;
 });
-
-export async function generateStaticParams() {
-  return TEMPORARY_STATIC_MODE ? publishedArticles.map(({ slug }) => ({ slug })) : [];
-}
 
 export async function generateMetadata({
   params,
@@ -141,17 +134,15 @@ export default async function ArticlePage({
   const categories = publicCategories(article.category);
   const published = formatDate(article.published_at || article.created_at);
 
-  let comments: PublicComment[] = [];
-  if (!TEMPORARY_STATIC_MODE) {
-    const commentsResult = await supabase
-      .from("article_comments")
-      .select("id, author_name, body, created_at")
-      .eq("article_id", article.id)
-      .eq("status", "approved")
-      .order("created_at", { ascending: false })
-      .limit(50);
-    comments = (commentsResult.data || []) as PublicComment[];
-  }
+  const commentsResult = await supabase
+    .from("article_comments")
+    .select("id, author_name, body, created_at")
+    .eq("article_id", article.id)
+    .eq("status", "approved")
+    .order("created_at", { ascending: false })
+    .limit(50);
+
+  const comments = (commentsResult.data || []) as PublicComment[];
   const schema = {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -214,9 +205,8 @@ export default async function ArticlePage({
                   className="aspect-[4/5] w-full object-cover"
                 />
               ) : (
-                <div className="relative flex aspect-[4/5] flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-[#e5f0ff] to-[#d2e3fb] p-8 text-center">
-                  <span className="flex h-28 w-28 items-center justify-center rounded-[32px] border border-white bg-white/75 text-5xl font-black text-[#2259ad] shadow-xl">{article.title.trim().split(/\s+/).slice(0, 2).map((part) => part[0] || "").join("").toLocaleUpperCase("uz-UZ")}</span>
-                  <span className="mt-6 text-xs font-black uppercase tracking-[.2em] text-[#567fb9]">Bunyodkor yoshlar</span>
+                <div className="flex aspect-[4/5] items-center justify-center p-8 text-center text-sm font-bold text-slate-400">
+                  Profil rasmi mavjud emas
                 </div>
               )}
             </div>
@@ -244,7 +234,7 @@ export default async function ArticlePage({
                 </p>
               )}
 
-              {!TEMPORARY_STATIC_MODE && process.env.NEXT_PUBLIC_BUNYODKOR_CONNECT_ENABLED === "true" && (
+              {process.env.NEXT_PUBLIC_BUNYODKOR_CONNECT_ENABLED === "true" && (
                  <ConnectContactActions articleId={article.id} />
                )}
 
@@ -316,7 +306,7 @@ export default async function ArticlePage({
               />
             </article>
 
-            {!TEMPORARY_STATIC_MODE && <CommentSection articleId={article.id} initialComments={comments} />}
+            <CommentSection articleId={article.id} initialComments={comments} />
           </div>
         </div>
       </section>

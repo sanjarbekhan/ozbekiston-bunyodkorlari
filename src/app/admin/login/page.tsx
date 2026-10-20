@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import { TEMPORARY_STATIC_MODE } from "@/lib/temporary-mode";
 
 const ADMIN_EMAIL = "sanjarhasanov465@gmail.com";
 
@@ -12,17 +11,6 @@ export default function AdminLoginPage() {
   const [password, setPassword] = useState("");
   const [errorText, setErrorText] = useState("");
   const [loading, setLoading] = useState(false);
-
-  if (TEMPORARY_STATIC_MODE) {
-    return <main className="flex min-h-screen items-center justify-center bg-[#eef3fb] px-4">
-      <section className="w-full max-w-md rounded-3xl bg-white p-8 shadow-xl">
-        <p className="text-xs font-black uppercase tracking-[.22em] text-[#0043a4]">O‘zBYE CMS</p>
-        <h1 className="mt-2 text-3xl font-black">Admin panel vaqtincha yopiq</h1>
-        <p className="mt-4 text-sm leading-7 text-slate-600">Supabase bepul tarifida trafik limiti oshgani uchun kirish xizmati vaqtincha cheklangan. Hisobingiz va parolingiz o‘zgartirilmagan. Xizmat tiklangach admin panel odatdagidek ishlaydi.</p>
-        <a href="/" className="mt-6 inline-flex rounded-xl bg-[#0043a4] px-5 py-3 text-sm font-bold text-white">Bosh sahifaga qaytish</a>
-      </section>
-    </main>;
-  }
 
   async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault(); setErrorText(""); setLoading(true);

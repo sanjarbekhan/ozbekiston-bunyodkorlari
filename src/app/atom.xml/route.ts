@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
-import { TEMPORARY_STATIC_MODE } from "@/lib/temporary-mode";
-import { publishedByDate } from "@/lib/temporary-static";
 
 export const dynamic = "force-dynamic";
 
@@ -26,9 +24,7 @@ function atomDate(value?: string | null) {
 }
 
 export async function GET() {
-  const { data: articles } = TEMPORARY_STATIC_MODE
-    ? { data: publishedByDate.slice(0, 100) }
-    : await supabase
+  const { data: articles } = await supabase
     .from("articles")
     .select("title,slug,description,category,published_at,created_at,updated_at")
     .eq("status", "published")

@@ -1,7 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { NextRequest, NextResponse } from "next/server";
 import { cleanText, validateBiographySubmission } from "@/lib/biography-application";
-import { TEMPORARY_STATIC_MODE } from "@/lib/temporary-mode";
 
 const MAX_BODY_BYTES = 80 * 1024;
 
@@ -14,7 +13,6 @@ function getRequestIp(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  if (TEMPORARY_STATIC_MODE) return NextResponse.json({ error: "Anketalar vaqtincha qabul qilinmayapti; ma’lumotlaringiz saqlanmadi." }, { status: 503 });
   try {
     const contentLength = Number(request.headers.get("content-length") || 0);
     if (contentLength > MAX_BODY_BYTES) {

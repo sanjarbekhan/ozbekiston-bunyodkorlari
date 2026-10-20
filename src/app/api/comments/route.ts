@@ -1,6 +1,5 @@
 import { createHash } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
-import { TEMPORARY_STATIC_MODE } from "@/lib/temporary-mode";
 
 function clientIp(request: NextRequest) {
   const forwarded = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
@@ -8,7 +7,6 @@ function clientIp(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  if (TEMPORARY_STATIC_MODE) return NextResponse.json({ error: "Izoh qoldirish vaqtincha to‘xtatilgan." }, { status: 503 });
   try {
     const body = await request.json();
     const articleId = typeof body?.articleId === "string" ? body.articleId.trim() : "";

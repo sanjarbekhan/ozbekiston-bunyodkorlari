@@ -53,7 +53,6 @@ export default function PublicArticleCard({
   const desc = cleanText(description);
   const formattedDate = formatDate(date);
   const categories = publicCategories(category);
-  const initials = title.trim().split(/\s+/).slice(0, 2).map((part) => part[0] || "").join("").toLocaleUpperCase("uz-UZ");
 
   return (
     <Link
@@ -70,11 +69,8 @@ export default function PublicArticleCard({
             className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.025]"
           />
         ) : (
-          <div className="relative flex h-full flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-[#e6f0ff] via-[#eff6ff] to-[#dceaff] px-6 text-center">
-            <span aria-hidden="true" className="absolute -right-12 -top-10 h-40 w-40 rounded-full border-[28px] border-[#c3d9ff]/35" />
-            <span aria-hidden="true" className="absolute -bottom-12 -left-12 h-40 w-40 rounded-full border-[28px] border-white/50" />
-            <span className="relative flex h-24 w-24 items-center justify-center rounded-[30px] border border-white bg-white/80 text-4xl font-black tracking-[-.07em] text-[#2259ad] shadow-lg shadow-blue-900/5">{initials}</span>
-            <span className="relative mt-5 text-[10px] font-black uppercase tracking-[.21em] text-[#668ac2]">Bunyodkor yoshlar</span>
+          <div className="flex h-full items-center justify-center px-6 text-center text-sm font-bold text-slate-400">
+            Rasm mavjud emas
           </div>
         )}
       </div>

@@ -3,8 +3,6 @@ import PublicArticles from "@/components/PublicArticles";
 import SiteFooter from "@/components/SiteFooter";
 import SiteMenu from "@/components/SiteMenu";
 import { supabase } from "@/lib/supabase";
-import { TEMPORARY_STATIC_MODE } from "@/lib/temporary-mode";
-import { publishedByDate } from "@/lib/temporary-static";
 
 export const revalidate = 60;
 
@@ -22,9 +20,7 @@ export const metadata: Metadata = {
 };
 
 export default async function BunyodkorlarPage() {
-  const { data: articles } = TEMPORARY_STATIC_MODE
-    ? { data: publishedByDate.slice(0, 500).map(({ id, title, slug, category, image_url, description, published_at, created_at, status }) => ({ id, title, slug, category, image_url, description, published_at, created_at, status })) }
-    : await supabase
+  const { data: articles } = await supabase
     .from("articles")
     .select("id,title,slug,category,image_url,description,published_at,created_at,status")
     .eq("status", "published")

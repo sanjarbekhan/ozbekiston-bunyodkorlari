@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import { TEMPORARY_STATIC_MODE } from "@/lib/temporary-mode";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
@@ -27,9 +26,6 @@ function getRequestIp(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  if (TEMPORARY_STATIC_MODE) {
-    return NextResponse.json({ error: "Arizalar vaqtinchalik rejimda qabul qilinmayapti. Ma'lumotlaringiz bazaga saqlanmadi." }, { status: 503 });
-  }
   try {
     const body = await request.json();
 

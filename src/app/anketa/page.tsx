@@ -3,7 +3,6 @@ import Image from "next/image";
 import BiographyApplicationForm from "@/components/BiographyApplicationForm";
 import SiteMenu from "@/components/SiteMenu";
 import { normalizeTelegram } from "@/lib/biography-application";
-import { TEMPORARY_STATIC_MODE } from "@/lib/temporary-mode";
 
 export const metadata: Metadata = {
   title: "Biografik anketa | O‘zbekiston Bunyodkor Yoshlari",
@@ -67,7 +66,7 @@ export default async function BiographyApplicationPage({ searchParams }: PagePro
             </p>
           </aside>
 
-          {TEMPORARY_STATIC_MODE ? <section role="status" className="rounded-[28px] border border-amber-200 bg-white p-8 shadow-sm"><h2 className="text-2xl font-black">Biografik anketa vaqtincha to‘xtatilgan</h2><p className="mt-4 text-sm leading-7 text-slate-600">Supabase trafik limiti oshgani sababli yuborilgan ma’lumotlar bazaga yozilmaydi. Shu bois anketani vaqtincha yopdik. Xizmat tiklangach anketa qayta ishlaydi.</p><a className="mt-6 inline-flex rounded-xl bg-[#0043a4] px-5 py-3 text-sm font-bold text-white" href="/bunyodkorlar">Maqolalarni ko‘rish</a></section> : <BiographyApplicationForm initialTelegram={initialTelegram} />}
+          <BiographyApplicationForm initialTelegram={initialTelegram} />
         </div>
       </section>
     </main>
