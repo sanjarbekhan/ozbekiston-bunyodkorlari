@@ -102,7 +102,7 @@ export default async function Home() {
 
   const [articlesResult, publishedResult, categoryResult, monthResult] = TEMPORARY_STATIC_MODE
     ? [
-        { data: publishedByDate.slice(0, 1000), error: null },
+        { data: publishedByDate.slice(0, 1000).map(({ id, title, slug, category, image_url, published_at, created_at }) => ({ id, title, slug, category, image_url, published_at, created_at })), error: null },
         { count: publishedByDate.length },
         { data: publishedByDate.map((a) => ({ category: a.category })) },
         { count: publishedByDate.filter((a) => (a.published_at || "") >= monthStart).length },
