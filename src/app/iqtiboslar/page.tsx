@@ -127,7 +127,7 @@ export default async function SahifasiPage() {
                     <div className="h-14 w-14 shrink-0 overflow-hidden rounded-2xl bg-slate-100">
                       {article.image_url ? (
                         <img src={article.image_url} alt={article.title} className="h-full w-full object-cover" />
-                      ) : null}
+                      ) : <span className="flex h-full w-full items-center justify-center bg-[#e5efff] text-xl font-black text-[#3265ac]">{article.title.trim().slice(0, 1)}</span>}
                     </div>
                     <div className="min-w-0">
                       <h2 className="line-clamp-2 text-sm font-extrabold leading-5 text-[#111827]">
