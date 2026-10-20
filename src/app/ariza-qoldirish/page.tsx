@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import ApplicationForm from "@/components/ApplicationForm";
+import { TEMPORARY_STATIC_MODE } from "@/lib/temporary-mode";
 import SiteFooter from "@/components/SiteFooter";
 import SiteMenu from "@/components/SiteMenu";
 
@@ -39,7 +40,13 @@ export default function ArizaQoldirishPage() {
 
       <section className="px-4 py-10 md:px-8 md:py-14">
         <div className="mx-auto grid max-w-5xl gap-7 lg:grid-cols-[1fr_360px] lg:items-start">
-          <ApplicationForm />
+          {TEMPORARY_STATIC_MODE ? (
+            <div role="status" className="rounded-[28px] border border-amber-200 bg-white p-8 shadow-sm">
+              <h2 className="text-2xl font-extrabold text-[#071426]">Ariza qabul qilish vaqtincha to‘xtatilgan</h2>
+              <p className="mt-4 text-sm font-medium leading-7 text-slate-600">Ma’lumotlar xizmatidagi vaqtinchalik cheklov sababli arizalar hozir bazaga saqlanmaydi. Sizning ma’lumotlaringiz yo‘qolib qolmasligi uchun ariza shakli vaqtincha yopildi. Xizmat tiklangach qayta urinib ko‘ring.</p>
+              <a href="/bunyodkorlar" className="mt-6 inline-flex rounded-xl bg-[#0043a4] px-5 py-3 text-sm font-bold text-white">Maqolalarni ko‘rish</a>
+            </div>
+          ) : <ApplicationForm />}
 
           <aside className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-[0_12px_40px_rgba(15,23,42,.05)] md:p-7">
             <p className="text-xs font-black uppercase tracking-[0.18em] text-[#0043a4]">
