@@ -214,8 +214,9 @@ export default async function ArticlePage({
                   className="aspect-[4/5] w-full object-cover"
                 />
               ) : (
-                <div className="flex aspect-[4/5] items-center justify-center p-8 text-center text-sm font-bold text-slate-400">
-                  Profil rasmi mavjud emas
+                <div className="relative flex aspect-[4/5] flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-[#e5f0ff] to-[#d2e3fb] p-8 text-center">
+                  <span className="flex h-28 w-28 items-center justify-center rounded-[32px] border border-white bg-white/75 text-5xl font-black text-[#2259ad] shadow-xl">{article.title.trim().split(/\s+/).slice(0, 2).map((part) => part[0] || "").join("").toLocaleUpperCase("uz-UZ")}</span>
+                  <span className="mt-6 text-xs font-black uppercase tracking-[.2em] text-[#567fb9]">Bunyodkor yoshlar</span>
                 </div>
               )}
             </div>
