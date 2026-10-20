@@ -1,4 +1,6 @@
 import { supabase } from "@/lib/supabase";
+import { TEMPORARY_STATIC_MODE } from "@/lib/temporary-mode";
+import { publishedArticles } from "@/lib/temporary-static";
 
 type ProfileSitemapRow = {
   slug: string;
@@ -8,6 +10,7 @@ type ProfileSitemapRow = {
 };
 
 export async function getProfileSitemapRows(): Promise<ProfileSitemapRow[]> {
+  if (TEMPORARY_STATIC_MODE) return publishedArticles.map(({ slug, published_at, created_at, updated_at }) => ({ slug, published_at, created_at, updated_at }));
   const rows: ProfileSitemapRow[] = [];
   const pageSize = 500;
   for (let from = 0; ; from += pageSize) {
