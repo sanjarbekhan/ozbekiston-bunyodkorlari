@@ -3,6 +3,8 @@ import Link from "next/link";
 import SiteFooter from "@/components/SiteFooter";
 import SiteMenu from "@/components/SiteMenu";
 import { supabase } from "@/lib/supabase";
+import { TEMPORARY_STATIC_MODE } from "@/lib/temporary-mode";
+import { publishedByDate } from "@/lib/temporary-static";
 import { normalizePublicQuote } from "@/lib/public-format";
 
 export const revalidate = 60;
@@ -74,7 +76,9 @@ function extractQuote(article: Article) {
 }
 
 export default async function SahifasiPage() {
-  const { data } = await supabase
+  const { data } = TEMPORARY_STATIC_MODE
+    ? { data: publishedByDate.slice(0, 80) }
+    : await supabase
     .from("articles")
     .select("id,title,slug,image_url,content_blocks,content")
     .eq("status", "published")
