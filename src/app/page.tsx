@@ -6,6 +6,8 @@ import IntroVideoWidget from "@/components/IntroVideoWidget";
 import SiteMenu from "@/components/SiteMenu";
 import UzbekistanHeroMap from "@/components/UzbekistanHeroMap";
 import { supabase } from "@/lib/supabase";
+import { TEMPORARY_STATIC_MODE } from "@/lib/temporary-mode";
+import { publishedByDate } from "@/lib/temporary-static";
 import { publicCategories } from "@/lib/public-format";
 
 export const revalidate = 60;
@@ -97,7 +99,14 @@ export default async function Home() {
   const now = new Date();
   const monthStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1)).toISOString();
 
-  const [articlesResult, publishedResult, categoryResult, monthResult] = await Promise.all([
+  const [articlesResult, publishedResult, categoryResult, monthResult] = TEMPORARY_STATIC_MODE
+    ? [
+        { data: publishedByDate.slice(0, 1000), error: null },
+        { count: publishedByDate.length },
+        { data: publishedByDate.map((a) => ({ category: a.category })) },
+        { count: publishedByDate.filter((a) => (a.published_at || "") >= monthStart).length },
+      ]
+    : await Promise.all([
     supabase
       .from("articles")
       .select("id, title, slug, category, image_url, published_at, created_at")
