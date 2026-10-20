@@ -1,6 +1,8 @@
 import SiteFooter from "@/components/SiteFooter";
 import SiteMenu from "@/components/SiteMenu";
 import { supabase } from "@/lib/supabase";
+import { TEMPORARY_STATIC_MODE } from "@/lib/temporary-mode";
+import { temporaryRankingRows } from "@/lib/temporary-ranking";
 import RankingClient, { type Period, type RankingRow, type SortMode } from "./RankingClient";
 
 export const revalidate = 60;
@@ -69,8 +71,8 @@ export default async function RankingPage({
   searchParams: Promise<{ sort?: string; period?: string; q?: string }>;
 }) {
   const params = await searchParams;
-  const periodKeys = currentPeriodKeys();
-  const rows = await fetchPeriodicRows(periodKeys);
+  const periodKeys = TEMPORARY_STATIC_MODE ? { week: "2026-W43", month: "2026-10", year: "2026" } : currentPeriodKeys();
+  const rows = TEMPORARY_STATIC_MODE ? temporaryRankingRows : await fetchPeriodicRows(periodKeys);
 
   return (
     <main className="min-h-screen bg-[#eef8fc] text-[#10253a]">
@@ -85,6 +87,7 @@ export default async function RankingPage({
             </p>
           </div>
 
+          {TEMPORARY_STATIC_MODE && <p className="mt-5 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm font-semibold text-amber-900">Reyting 20-oktabr 2026 holatidagi nusxa. Ma’lumotlar bazasi cheklovi tugamaguncha ballar yangilanmaydi.</p>}
           <RankingClient
             rows={rows}
             periodKeys={periodKeys}
