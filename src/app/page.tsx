@@ -6,6 +6,8 @@ import IntroVideoWidget from "@/components/IntroVideoWidget";
 import SiteMenu from "@/components/SiteMenu";
 import UzbekistanHeroMap from "@/components/UzbekistanHeroMap";
 import { supabase } from "@/lib/supabase";
+import { TEMPORARY_STATIC_MODE } from "@/lib/temporary-mode";
+import { publishedByDate } from "@/lib/temporary-static";
 import { publicCategories } from "@/lib/public-format";
 
 export const revalidate = 60;
@@ -67,8 +69,9 @@ function HeroProfileCard({
             loading="eager"
           />
         ) : (
-          <div className="flex h-full items-center justify-center text-xs font-extrabold text-slate-400">
-            Rasm mavjud emas
+          <div className="flex h-full flex-col items-center justify-center bg-gradient-to-br from-[#dceafe] to-[#c3dcfa] px-3 text-center">
+            <span className="text-4xl font-black text-[#2358a4]">{article.title.trim().split(/\s+/).slice(0, 2).map((part) => part[0] || "").join("").toLocaleUpperCase("uz-UZ")}</span>
+            <span className="mt-2 text-[8px] font-extrabold uppercase tracking-wider text-[#5280b6]">Bunyodkor</span>
           </div>
         )}
         <span className="absolute right-2.5 top-2.5 flex h-7 w-7 items-center justify-center rounded-full bg-[#2563ff] text-[12px] font-black text-white shadow-[0_6px_18px_rgba(37,99,255,.34)]">
@@ -97,7 +100,14 @@ export default async function Home() {
   const now = new Date();
   const monthStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1)).toISOString();
 
-  const [articlesResult, publishedResult, categoryResult, monthResult] = await Promise.all([
+  const [articlesResult, publishedResult, categoryResult, monthResult] = TEMPORARY_STATIC_MODE
+    ? [
+        { data: publishedByDate.slice(0, 1000).map(({ id, title, slug, category, image_url, published_at, created_at }) => ({ id, title, slug, category, image_url, published_at, created_at })), error: null },
+        { count: publishedByDate.length },
+        { data: publishedByDate.map((a) => ({ category: a.category })) },
+        { count: publishedByDate.filter((a) => (a.published_at || "") >= monthStart).length },
+      ]
+    : await Promise.all([
     supabase
       .from("articles")
       .select("id, title, slug, category, image_url, published_at, created_at")

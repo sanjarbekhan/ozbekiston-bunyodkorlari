@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
+import { TEMPORARY_STATIC_MODE } from "@/lib/temporary-mode";
+import legacyRows from "@/data/temporary-legacy-urls.json";
 
 function canonicalRedirect(request: NextRequest, slug: string) {
   return NextResponse.redirect(
@@ -18,6 +20,24 @@ export async function GET(
   const { legacy } = await params;
   const decoded = legacy.map(decodeURIComponent).filter(Boolean);
   const legacyPath = decoded.join("/");
+
+  // Preserve historic links without querying the restricted Supabase API.
+  if (TEMPORARY_STATIC_MODE) {
+    const urls = [
+      `https://bunyodkor.com/tpost/${legacyPath}`,
+      `https://www.bunyodkor.com/tpost/${legacyPath}`,
+    ];
+    const suffix = legacyPath.match(/^[a-z0-9]{8,20}1-(.+)$/i)?.[1];
+    const match = legacyRows.find((row) =>
+      (row.source_url && (urls.includes(row.source_url) || (suffix && row.source_url.endsWith(`-${suffix}`)))) ||
+      decoded.some((value) => value === row.slug || value === row.source_id || value === row.legacy_post_id)
+    );
+    if (match) return canonicalRedirect(request, match.slug);
+    const trailing = [...decoded].reverse().find((value) => /^[a-z0-9]+(?:-[a-z0-9]+)+$/i.test(value));
+    if (trailing) return canonicalRedirect(request, trailing);
+    return NextResponse.redirect(new URL("/bunyodkorlar", request.url), 301);
+  }
+
 
   if (legacyPath) {
     const sourceCandidates = [
