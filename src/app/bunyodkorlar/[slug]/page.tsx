@@ -315,7 +315,7 @@ export default async function ArticlePage({
               />
             </article>
 
-            <CommentSection articleId={article.id} initialComments={comments} />
+            {!TEMPORARY_STATIC_MODE && <CommentSection articleId={article.id} initialComments={comments} />}
           </div>
         </div>
       </section>
