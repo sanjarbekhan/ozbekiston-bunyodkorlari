@@ -10,6 +10,8 @@ import SiteMenu from "@/components/SiteMenu";
 import ConnectContactActions from "@/components/connect/ConnectContactActions";
 import type { ArticleRecord } from "@/lib/article-types";
 import { supabase } from "@/lib/supabase";
+import { TEMPORARY_STATIC_MODE } from "@/lib/temporary-mode";
+import { findPublishedArticle, publishedArticles } from "@/lib/temporary-static";
 import { protectMinorPersonalData, publicCategories, publicCategoryLabel } from "@/lib/public-format";
 
 export const revalidate = 60;
@@ -42,6 +44,7 @@ function canonicalFor(slug: string) {
 }
 
 const getArticle = cache(async (slug: string) => {
+  if (TEMPORARY_STATIC_MODE) return findPublishedArticle(slug);
   const { data, error } = await supabase
     .from("articles")
     .select("*")
@@ -52,6 +55,10 @@ const getArticle = cache(async (slug: string) => {
   if (error) throw new Error("Unable to load published article");
   return data as ArticleRecord | null;
 });
+
+export async function generateStaticParams() {
+  return TEMPORARY_STATIC_MODE ? publishedArticles.map(({ slug }) => ({ slug })) : [];
+}
 
 export async function generateMetadata({
   params,
@@ -134,15 +141,17 @@ export default async function ArticlePage({
   const categories = publicCategories(article.category);
   const published = formatDate(article.published_at || article.created_at);
 
-  const commentsResult = await supabase
-    .from("article_comments")
-    .select("id, author_name, body, created_at")
-    .eq("article_id", article.id)
-    .eq("status", "approved")
-    .order("created_at", { ascending: false })
-    .limit(50);
-
-  const comments = (commentsResult.data || []) as PublicComment[];
+  let comments: PublicComment[] = [];
+  if (!TEMPORARY_STATIC_MODE) {
+    const commentsResult = await supabase
+      .from("article_comments")
+      .select("id, author_name, body, created_at")
+      .eq("article_id", article.id)
+      .eq("status", "approved")
+      .order("created_at", { ascending: false })
+      .limit(50);
+    comments = (commentsResult.data || []) as PublicComment[];
+  }
   const schema = {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -234,7 +243,7 @@ export default async function ArticlePage({
                 </p>
               )}
 
-              {process.env.NEXT_PUBLIC_BUNYODKOR_CONNECT_ENABLED === "true" && (
+              {!TEMPORARY_STATIC_MODE && process.env.NEXT_PUBLIC_BUNYODKOR_CONNECT_ENABLED === "true" && (
                  <ConnectContactActions articleId={article.id} />
                )}
 
