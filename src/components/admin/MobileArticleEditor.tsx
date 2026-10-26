@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { refreshPublicContent } from "@/lib/refresh-public-content";
 import type { ContentBlock } from "@/lib/article-types";
 import CategoryPicker from "@/components/admin/CategoryPicker";
 import RichTextEditor from "@/components/admin/RichTextEditor";
@@ -236,6 +237,8 @@ export default function MobileArticleEditor({ initial }: { initial?: Partial<Art
       return;
     }
 
+    const refreshed = await refreshPublicContent({ kind: "articles", slugs: Array.from(new Set([initial?.slug, form.slug.trim() || slugify(form.title)].filter((slug): slug is string => Boolean(slug)))) });
+    if (!refreshed) window.alert("O‘zgarish saqlandi. Saytdagi kesh bir soat ichida avtomatik yangilanadi.");
     router.push("/admin");
     router.refresh();
   }
@@ -249,6 +252,8 @@ export default function MobileArticleEditor({ initial }: { initial?: Partial<Art
       setBusy(false);
       return;
     }
+    const refreshed = await refreshPublicContent({ kind: "articles", slugs: Array.from(new Set([initial?.slug, form.slug.trim() || slugify(form.title)].filter((slug): slug is string => Boolean(slug)))) });
+    if (!refreshed) window.alert("O‘zgarish saqlandi. Saytdagi kesh bir soat ichida avtomatik yangilanadi.");
     router.push("/admin");
     router.refresh();
   }

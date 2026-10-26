@@ -1,9 +1,9 @@
 import SiteFooter from "@/components/SiteFooter";
 import SiteMenu from "@/components/SiteMenu";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/lib/public-supabase";
 import RankingClient, { type Period, type RankingRow, type SortMode } from "./RankingClient";
 
-export const revalidate = 60;
+export const revalidate = 3600;
 
 function isoWeekKey(date: Date) {
   const value = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));

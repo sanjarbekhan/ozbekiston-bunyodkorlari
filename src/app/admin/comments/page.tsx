@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { refreshPublicContent } from "@/lib/refresh-public-content";
 
 type CommentStatus = "pending" | "approved" | "rejected";
 
@@ -92,6 +93,7 @@ export default function CommentsAdminPage() {
       setItems((current) => current.map((item) => item.id === id ? old : item));
       setMessage("Holatni saqlashda xatolik: " + error.message);
     }
+    if (!error && old) await refreshPublicContent({ kind: "comments", articleId: old.article_id });
     setBusyId(null);
   }
 
@@ -105,6 +107,8 @@ export default function CommentsAdminPage() {
       setItems(previous);
       setMessage("Kommentariyani o‘chirishda xatolik: " + error.message);
     }
+    const old = previous.find(item => item.id === id);
+    if (!error && old) await refreshPublicContent({ kind: "comments", articleId: old.article_id });
     setBusyId(null);
   }
 

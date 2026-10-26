@@ -1,3 +1,5 @@
+import { revalidateTag } from "next/cache";
+import { rankingTag } from "@/lib/public-cache";
 import { createClient } from "@supabase/supabase-js";
 import { NextRequest, NextResponse } from "next/server";
 import type { ArticleRecord } from "@/lib/article-types";
@@ -81,6 +83,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: rankingError.message }, { status: 400 });
     }
 
+    revalidateTag(rankingTag, { expire: 0 });
     return NextResponse.json({ ok: true, ranking });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Bunyodkor AI reyting tahlilida xatolik yuz berdi.";

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { refreshPublicContent } from "@/lib/refresh-public-content";
 
 const ADMIN_USER_ID = "988b7d1f-4028-42a6-9a8f-be869224be6e";
 
@@ -137,6 +138,8 @@ export default function AdminPage() {
         return;
       }
 
+      const refreshed = await refreshPublicContent({ kind: "articles", slugs: [article.slug] });
+      if (!refreshed) alert("Holat saqlandi. Saytdagi kesh bir soat ichida avtomatik yangilanadi.");
       setArticles((current) =>
         current.map((item) =>
           item.id === article.id

@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/lib/public-supabase";
 
-export const dynamic = "force-dynamic";
+export const dynamic = "force-static";
+export const revalidate = 3600;
 
 const SITE_URL = "https://www.bunyodkor.com";
 
@@ -24,13 +25,14 @@ function rssDate(value?: string | null) {
 }
 
 export async function GET() {
-  const { data: articles } = await supabase
+  const { data: articles, error } = await supabase
     .from("articles")
     .select("title,slug,description,category,published_at,created_at,updated_at")
     .eq("status", "published")
     .order("published_at", { ascending: false })
     .limit(100);
 
+  if (error) throw new Error("Unable to load published feed entries");
   const latest = articles?.[0];
   const lastBuildDate = rssDate(
     latest?.updated_at || latest?.published_at || latest?.created_at
@@ -66,7 +68,7 @@ export async function GET() {
   return new NextResponse(xml, {
     headers: {
       "Content-Type": "application/rss+xml; charset=utf-8",
-      "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
+      "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
     },
   });
 }

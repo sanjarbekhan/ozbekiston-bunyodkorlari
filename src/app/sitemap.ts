@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { getProfileSitemapRows, profileLastModified } from "@/lib/profile-sitemap";
 
-export const revalidate = 60;
+export const revalidate = 3600;
 
 const SITE_URL = "https://www.bunyodkor.com";
 const url = (path: string) => `${SITE_URL}${path}`;

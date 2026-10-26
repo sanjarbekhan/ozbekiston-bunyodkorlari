@@ -5,10 +5,10 @@ import SiteFooter from "@/components/SiteFooter";
 import IntroVideoWidget from "@/components/IntroVideoWidget";
 import SiteMenu from "@/components/SiteMenu";
 import UzbekistanHeroMap from "@/components/UzbekistanHeroMap";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/lib/public-supabase";
 import { publicCategories } from "@/lib/public-format";
 
-export const revalidate = 60;
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "O‘zbekiston Bunyodkor Yoshlari Ensiklopediyasi",
@@ -117,13 +117,8 @@ export default async function Home() {
       .gte("published_at", monthStart),
   ]);
 
-  if (articlesResult.error) {
-    return (
-      <main className="min-h-screen bg-white p-8 text-[#111827]">
-        <h1 className="text-2xl font-bold">Sahifani yuklab bo‘lmadi</h1>
-        <p className="mt-2 text-slate-600">Iltimos, birozdan so‘ng qayta urinib ko‘ring.</p>
-      </main>
-    );
+  if (articlesResult.error || publishedResult.error || categoryResult.error || monthResult.error) {
+    throw new Error("Unable to load published homepage content");
   }
 
   const articles = (articlesResult.data || []) as HomeArticle[];

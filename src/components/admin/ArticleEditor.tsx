@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { refreshPublicContent } from "@/lib/refresh-public-content";
 import type { ContentBlock } from "@/lib/article-types";
 
 const ADMIN_EMAIL = "sanjarhasanov465@gmail.com";
@@ -133,6 +134,8 @@ export default function ArticleEditor({ initial }: { initial?: Partial<ArticleDr
       : supabase.from("articles").insert({ ...payload, created_by: auth.user.id });
     const { error } = await query;
     if (error) { setMessage(error.message); setBusy(false); return; }
+    const refreshed = await refreshPublicContent({ kind: "articles", slugs: Array.from(new Set([initial?.slug, form.slug.trim() || slugify(form.title)].filter((slug): slug is string => Boolean(slug)))) });
+    if (!refreshed) window.alert("O‘zgarish saqlandi. Saytdagi kesh bir soat ichida avtomatik yangilanadi.");
     router.push("/admin"); router.refresh();
   }
 
@@ -141,6 +144,8 @@ export default function ArticleEditor({ initial }: { initial?: Partial<ArticleDr
     setBusy(true);
     const { error } = await supabase.from("articles").delete().eq("id", form.id);
     if (error) { setMessage(error.message); setBusy(false); return; }
+    const refreshed = await refreshPublicContent({ kind: "articles", slugs: Array.from(new Set([initial?.slug, form.slug.trim() || slugify(form.title)].filter((slug): slug is string => Boolean(slug)))) });
+    if (!refreshed) window.alert("O‘zgarish saqlandi. Saytdagi kesh bir soat ichida avtomatik yangilanadi.");
     router.push("/admin"); router.refresh();
   }
 

@@ -1,5 +1,8 @@
 ﻿import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/lib/public-supabase";
+
+export const dynamic = "force-static";
+export const revalidate = 3600;
 
 export async function GET() {
   const { data, error } = await supabase

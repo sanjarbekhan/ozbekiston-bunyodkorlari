@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import SiteFooter from "@/components/SiteFooter";
 import SiteMenu from "@/components/SiteMenu";
-import { supabase } from "@/lib/supabase";
+import { uncachedSupabase } from "@/lib/public-supabase";
+import { unstable_cache } from "next/cache";
+import { collectionTag, PUBLIC_TTL } from "@/lib/public-cache";
 import { normalizePublicQuote } from "@/lib/public-format";
 
-export const revalidate = 60;
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "Iqtiboslar",
@@ -73,18 +75,24 @@ function extractQuote(article: Article) {
   return normalizePublicQuote(matches[0] || "");
 }
 
-export default async function SahifasiPage() {
-  const { data } = await supabase
+const getQuotes = unstable_cache(async () => {
+  const { data, error } = await uncachedSupabase
     .from("articles")
     .select("id,title,slug,image_url,content_blocks,content")
     .eq("status", "published")
     .order("published_at", { ascending: false })
     .limit(80);
-
-  const quotes = ((data || []) as Article[])
-    .map((article) => ({ ...article, quote: extractQuote(article) }))
-    .filter((article) => article.quote)
+  if (error) throw new Error("Unable to load published quotes");
+  // Persist only what the quote cards render, not every biography's full text.
+  return ((data || []) as Article[])
+    .map(article => ({ id: article.id, title: article.title, slug: article.slug,
+      image_url: article.image_url, quote: extractQuote(article) }))
+    .filter(article => article.quote)
     .slice(0, 12);
+}, ['public-quotes-v1'], { revalidate: PUBLIC_TTL, tags: [collectionTag] });
+
+export default async function SahifasiPage() {
+  const quotes = await getQuotes();
 
   return (
     <main className="min-h-screen bg-[#f4f7fb] text-[#111827]">

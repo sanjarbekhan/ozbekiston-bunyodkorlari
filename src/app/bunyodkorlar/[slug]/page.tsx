@@ -9,10 +9,11 @@ import SiteFooter from "@/components/SiteFooter";
 import SiteMenu from "@/components/SiteMenu";
 import ConnectContactActions from "@/components/connect/ConnectContactActions";
 import type { ArticleRecord } from "@/lib/article-types";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/lib/public-supabase";
 import { protectMinorPersonalData, publicCategories, publicCategoryLabel } from "@/lib/public-format";
 
-export const revalidate = 60;
+export const revalidate = 3600;
+export async function generateStaticParams() { return []; }
 const SITE_URL = "https://www.bunyodkor.com";
 
 type PublicComment = {
@@ -142,6 +143,7 @@ export default async function ArticlePage({
     .order("created_at", { ascending: false })
     .limit(50);
 
+  if (commentsResult.error) throw new Error("Unable to load approved comments");
   const comments = (commentsResult.data || []) as PublicComment[];
   const schema = {
     "@context": "https://schema.org",

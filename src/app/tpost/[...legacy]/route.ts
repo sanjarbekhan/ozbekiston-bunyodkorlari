@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/lib/public-supabase";
 
 function canonicalRedirect(request: NextRequest, slug: string) {
   return NextResponse.redirect(

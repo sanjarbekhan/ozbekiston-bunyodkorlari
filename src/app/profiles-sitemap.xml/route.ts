@@ -1,6 +1,6 @@
 import { getProfileSitemapRows, profileLastModified } from "@/lib/profile-sitemap";
 
-export const revalidate = 60;
+export const revalidate = 3600;
 
 const SITE_URL = "https://www.bunyodkor.com";
 
@@ -46,7 +46,7 @@ export async function GET() {
   return new Response(xml, {
     headers: {
       "Content-Type": "application/xml; charset=utf-8",
-      "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
+      "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
     },
   });
 }

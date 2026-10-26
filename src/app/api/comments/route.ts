@@ -1,3 +1,5 @@
+import { revalidateTag } from "next/cache";
+import { commentsTag } from "@/lib/public-cache";
 import { createHash } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -60,6 +62,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (result?.comment?.status === "approved" || result?.status === "approved") revalidateTag(commentsTag(articleId), { expire: 0 });
     return NextResponse.json(result);
   } catch {
     return NextResponse.json({ error: "Kommentariyani yuborishda xatolik yuz berdi." }, { status: 500 });

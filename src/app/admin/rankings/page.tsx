@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { refreshPublicContent } from "@/lib/refresh-public-content";
 
 const ADMIN_USER_ID = "988b7d1f-4028-42a6-9a8f-be869224be6e";
 
@@ -129,6 +130,7 @@ export default function RankingsAdminPage() {
       .single();
     if (error || !data) setMessage(error?.message || "Statusni saqlab bo‘lmadi.");
     else setRankings((current) => current.map((item) => item.id === ranking.id ? data as unknown as Ranking : item));
+    if (!error && data) await refreshPublicContent({ kind: "rankings" });
     setBusyId(null);
   }
 

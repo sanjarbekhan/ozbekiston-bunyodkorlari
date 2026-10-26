@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import PublicArticles from "@/components/PublicArticles";
 import SiteFooter from "@/components/SiteFooter";
 import SiteMenu from "@/components/SiteMenu";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/lib/public-supabase";
 
-export const revalidate = 60;
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "Bunyodkorlar katalogi",
@@ -20,13 +20,14 @@ export const metadata: Metadata = {
 };
 
 export default async function BunyodkorlarPage() {
-  const { data: articles } = await supabase
+  const { data: articles, error } = await supabase
     .from("articles")
     .select("id,title,slug,category,image_url,description,published_at,created_at,status")
     .eq("status", "published")
     .order("published_at", { ascending: false })
     .limit(500);
 
+  if (error) throw new Error("Unable to load published catalogue");
   return (
     <main className="min-h-screen bg-[#f8fbff] text-[#111827]">
       <SiteMenu />
