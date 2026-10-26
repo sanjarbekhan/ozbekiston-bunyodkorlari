@@ -13,14 +13,12 @@ export default function IntroVideoWidget() {
   const [dismissed, setDismissed] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [autoPlay, setAutoPlay] = useState(false);
-  const [mobilePreview, setMobilePreview] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
       try { setDismissed(sessionStorage.getItem("bunyodkor-intro-v1") === "closed"); } catch { /* Storage may be disabled. */ }
-      setMobilePreview(window.matchMedia("(max-width: 767px)").matches);
       setAutoPlay(!window.matchMedia("(prefers-reduced-motion: reduce)").matches);
       setReady(true);
     }, 1400);
@@ -48,34 +46,12 @@ export default function IntroVideoWidget() {
   function open() { setAutoPlay(true); setExpanded(true); }
   if (!ready) return null;
 
-  const mobileSlides = [
-    ["Yutuqlaringiz e’tiborga loyiq.", "O‘zbekiston yoshlarini tanitadigan platforma."],
-    ["Hayot yo‘lingiz — bir maqolada.", "Faoliyatingiz va yutuqlaringizni yoritamiz."],
-    ["Ismingiz orqali topilish imkoniyati.", "Google va AI qidiruvida ko‘rinishingiz mumkin."],
-    ["O‘zingizni bir havola bilan taniting.", "Maqolangizni do‘stlaringizga ulashing."],
-    ["Navbat sizga!", "Biografik maqola uchun ariza yuboring."],
-  ] as const;
 
   return createPortal(<div className="bunyodkor-intro">
     <div hidden={expanded}>{dismissed ? <button ref={triggerRef} className="intro-reopen" onClick={open}>▶ Bunyodkor haqida</button> : <aside className="intro-widget" aria-label="Bunyodkor tanishtiruv videosi">
-      <div className="intro-widget-top"><span>30 soniya</span><button className="intro-close intro-pause" aria-label={paused ? "Videoni davom ettirish" : "Videoni to‘xtatish"} onClick={() => setPaused(value => !value)}>{paused ? "▶" : "Ⅱ"}</button><button className="intro-close" aria-label="Tanishtiruv videosini yopish" onClick={dismiss}>×</button></div>
+      <div className="intro-widget-top"><span>35 soniya</span><button className="intro-close intro-pause" aria-label={paused ? "Videoni davom ettirish" : "Videoni to‘xtatish"} onClick={() => setPaused(value => !value)}>{paused ? "▶" : "Ⅱ"}</button><button className="intro-close" aria-label="Tanishtiruv videosini yopish" onClick={dismiss}>×</button></div>
       <div className="intro-mini-stage" data-paused={paused}>
-        {mobilePreview ? (
-          <div className="intro-light-preview" aria-label="30 soniyalik tanishtiruv">
-            {mobileSlides.map(([title, detail], index) => (
-              <div className="intro-light-slide" key={title} style={{ animationDelay: String(index * 6) + "s" }}>
-                <div className="intro-light-brand">
-                  <img src="/tilda/images/ozbye-new-logo.svg" width="21" height="21" alt="" />
-                  BUNYODKOR <small>{String(index + 1).padStart(2, "0")} / 05</small>
-                </div>
-                <p className="intro-light-eyebrow">BUNYODKOR ENSIKLOPEDIYASI</p>
-                <h3>{title}</h3>
-                <div className="intro-light-accent" />
-                <p>{detail}</p>
-              </div>
-            ))}
-          </div>
-        ) : <IntroPlayer expanded={false} autoPlay={autoPlay} paused={paused || expanded} />}
+        <IntroPlayer expanded={false} autoPlay={autoPlay} paused={paused || expanded} />
         <button ref={triggerRef} className="intro-expand" aria-label="Tanishtiruv videosini kattalashtirish" onClick={open}><span>▶ Kattalashtirish</span></button></div>
       <Link className="intro-apply" href="/ariza-qoldirish">Ariza qoldirish</Link>
     </aside>}</div>

@@ -1,9 +1,49 @@
 "use client";
 import { useEffect, useRef } from "react";
-import { Player, type PlayerRef } from "@remotion/player";
-import IntroFilm, { INTRO_FPS, INTRO_FRAMES } from "./IntroFilm";
-export default function IntroPlayer({ expanded, autoPlay, paused = false }: { expanded: boolean; autoPlay: boolean; paused?: boolean }) {
-  const ref = useRef<PlayerRef>(null);
-  useEffect(() => { if (paused) ref.current?.pause(); else if (autoPlay) ref.current?.play(); }, [paused, autoPlay]);
-  return <Player ref={ref} component={IntroFilm} compositionWidth={720} compositionHeight={900} durationInFrames={INTRO_FRAMES} fps={INTRO_FPS} autoPlay={autoPlay} controls={expanded} clickToPlay={expanded} doubleClickToFullscreen={expanded} showVolumeControls={false} style={{ width: "100%", aspectRatio: "4 / 5" }} acknowledgeRemotionLicense />;
+
+const VIDEO_SRC = "/videos/bunyodkor-intro-2026.mp4";
+
+export default function IntroPlayer({
+  expanded,
+  autoPlay,
+  paused = false,
+}: {
+  expanded: boolean;
+  autoPlay: boolean;
+  paused?: boolean;
+}) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (paused) {
+      video.pause();
+    } else if (autoPlay) {
+      void video.play().catch(() => {
+        // Mobile browsers may require the user to tap Play.
+      });
+    }
+  }, [autoPlay, paused]);
+
+  return (
+    <video
+      ref={videoRef}
+      src={VIDEO_SRC}
+      autoPlay={autoPlay}
+      muted
+      loop
+      playsInline
+      controls={expanded}
+      preload={expanded ? "auto" : "metadata"}
+      aria-label="Bunyodkor tanishtiruv videosi"
+      style={{
+        display: "block",
+        width: "100%",
+        aspectRatio: "9 / 16",
+        objectFit: "contain",
+        backgroundColor: "#101820",
+      }}
+    />
+  );
 }
