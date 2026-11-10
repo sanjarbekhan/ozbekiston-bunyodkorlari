@@ -180,11 +180,12 @@ export default function MobileArticleEditor({ initial }: { initial?: Partial<Art
     }
 
     setBusy(true);
-    setMessage("");
+    setMessage("Maqola saqlanmoqda...");
 
+    try {
     const { data: auth, error: authError } = await supabase.auth.getUser();
     if (authError || !auth.user || auth.user.id !== ADMIN_USER_ID) {
-      setMessage("Admin sessiyasi tugagan yoki bu hisobga admin ruxsati berilmagan. Qayta kiring.");
+      setMessage(authError ? `Hisobni tekshirishda xato: ${authError.message}. Matnni nusxalab saqlang va qayta kirib ko‘ring.` : "Bu hisobga admin ruxsati berilmagan. Matnni nusxalab saqlang va admin hisobiga kiring.");
       setBusy(false);
       return;
     }
@@ -241,6 +242,11 @@ export default function MobileArticleEditor({ initial }: { initial?: Partial<Art
     if (!refreshed) window.alert("O‘zgarish saqlandi. Saytdagi kesh bir soat ichida avtomatik yangilanadi.");
     router.push("/admin");
     router.refresh();
+    } catch (error) {
+      setMessage(`Saqlash yakunlanmadi: ${error instanceof Error ? error.message : "Kutilmagan xato"}. Matn shu oynada saqlanib turibdi; sahifani yopmang.`);
+    } finally {
+      setBusy(false);
+    }
   }
 
   async function remove() {
@@ -576,11 +582,16 @@ export default function MobileArticleEditor({ initial }: { initial?: Partial<Art
       </div>
 
       <div className="fixed inset-x-0 bottom-0 z-50 border-t border-slate-200 bg-white/95 p-3 shadow-[0_-10px_30px_rgba(15,23,42,.08)] backdrop-blur md:static md:mx-auto md:mt-2 md:max-w-4xl md:border-0 md:bg-transparent md:px-5 md:shadow-none">
+        {message && (
+          <p role="status" aria-live="polite" className="mx-auto mb-3 max-w-4xl rounded-xl border border-blue-200 bg-blue-50 p-3 text-sm font-semibold text-blue-950">
+            {message}
+          </p>
+        )}
         <div className="mx-auto grid max-w-4xl grid-cols-2 gap-2">
           <button
             type="button"
             onClick={() => save("draft")}
-            disabled={busy || !form.title.trim()}
+            disabled={busy}
             className="min-h-12 rounded-2xl border border-[#0043a4]/20 bg-white px-4 py-3 text-sm font-extrabold text-[#0043a4] disabled:opacity-40"
           >
             Qoralama saqlash
@@ -588,7 +599,7 @@ export default function MobileArticleEditor({ initial }: { initial?: Partial<Art
           <button
             type="button"
             onClick={() => save("published")}
-            disabled={busy || !form.title.trim()}
+            disabled={busy}
             className="min-h-12 rounded-2xl bg-[#0043a4] px-4 py-3 text-sm font-extrabold text-white shadow-lg shadow-blue-900/10 disabled:opacity-40"
           >
             {busy ? "Saqlanmoqda..." : initialStatus === "published" ? "Yangilash" : "E’lon qilish"}
